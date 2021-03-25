@@ -1,4 +1,13 @@
+Registers=[]
+for i in range(0,32):
+    Registers.append(0)
+
+
+
+
 #decoding functions
+
+
 def R_Format(binaryInstruction):
     #add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
     funct7=binaryInstruction[0:7]
@@ -12,9 +21,11 @@ def R_Format(binaryInstruction):
         if(funct7=="0000000"):
             if(funct3=="000"):
                 #add
+               #execute("add",rs1,rs2,rd)
                 print("add")
             elif(funct3=="111"):
                 #and
+                #execute("and", rs1, rs2, rd)
                 print("and")
             elif(funct3=="110"):
                 #or
@@ -56,13 +67,16 @@ def R_Format(binaryInstruction):
                 print("Error")
         else:
             print("Error")
-
+    else:
+        print("Error")
     return
 
 
 #fetching
 file = open('machinecd.mc', 'r')
+PC=0
 for line in file:
+    PC+=4
     binaryno=bin(int(line[2:], 16))[2:].zfill(32)
     print("Instruction in binary: ",binaryno)
     opcode=binaryno[25:32]
@@ -91,5 +105,6 @@ for line in file:
     elif opcode in UJ_oper:
         # decode
         pass
-
+    else:
+        print("Error")
 
