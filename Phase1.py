@@ -8,10 +8,8 @@ for i in range(1,32):
         x[i]=int("0x7FFFFFF0",16)  #sp
 
 
-
-
 #executing functions
-def execute(string,rs1,rs2,rd):
+def executeMuskan(string,rs1,rs2,rd):
     if(string=="add"):   #executing add
         rs1=int(rs1,2)
         rs2 = int(rs2, 2)
@@ -50,7 +48,21 @@ def execute(string,rs1,rs2,rd):
             print("x[", i, "]=", x[i])
 
 
-
+def executeManan(string, rs1, rs2, rd):
+    rd = int(rd, 2)
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    if string == 'xor':
+        x[rd] = x[rs1] ^ x[rs2]
+    elif string == 'mul':
+        x[rd] = x[rs1] * x[rs2]
+    elif string == "div":
+        x[rd] = x[rs1] // x[rs2]
+    elif string == "rem":
+        x[rd] = x[rs1] % x[rs2]
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
 
 
 
@@ -69,22 +81,22 @@ def R_Format(binaryInstruction):
         if(funct7=="0000000"):
             if(funct3=="000"):
                 #add
-                execute("add",rs1,rs2,rd)
+                executeMuskan("add",rs1,rs2,rd)
                 print("add")
             elif(funct3=="111"):
                 #and
-                execute("and", rs1, rs2, rd)
+                executeMuskan("and", rs1, rs2, rd)
                 print(x)
                 print("and")
             elif(funct3=="110"):
                 #or
-                execute("or", rs1, rs2, rd)
+                executeMuskan("or", rs1, rs2, rd)
                 print(x)
                 #add, and, or, sll,
                 print("or")
             elif(funct3=="001"):
                 #sll
-                execute("sll", rs1, rs2, rd)
+                executeMuskan("sll", rs1, rs2, rd)
                 print(x)
                 print("sll")
             elif(funct3=="010"):
@@ -95,6 +107,7 @@ def R_Format(binaryInstruction):
                 print("srl")
             elif(funct3=="100"):
                 #xor
+                executeManan("xor", rs1, rs2, rd)
                 print("xor")
             else:
                 print("Error")
@@ -110,12 +123,15 @@ def R_Format(binaryInstruction):
         elif(funct7=="0000001"):
             if (funct3 == "000"):
                 # mul
+                executeManan("mul", rs1, rs2, rd)
                 print("mul")
             elif (funct3 == "100"):
                 # div
+                executeManan("div", rs1, rs2, rd)
                 print("div")
             elif (funct3 == "110"):
                 # rem
+                executeManan("rem", rs1, rs2, rd)
                 print("rem")
             else:
                 print("Error")
@@ -124,6 +140,25 @@ def R_Format(binaryInstruction):
     else:
         print("Error")
     return
+
+
+def sb_format(binary):
+    opcode = binary[25:32]
+    funct3 = binary[17:20]
+    rs1 = binary[12:17]
+    rs2 = binary[7:12]
+    imm = binary[20:25] + binary[0:7]
+    if funct3 == '000':
+        print("beq")
+    elif funct3 == '001':
+        print("bne")
+    elif funct3 == '101':
+        print("bge")
+    elif funct3 == '100':
+        print("blt")
+    else:
+        print("Error")
+    print("Opcode:" + opcode, funct3, rs2, rs1, imm)
 
 
 #fetching
@@ -138,7 +173,7 @@ for line in file:
     R_oper=["0110011"]
     I_oper=["0010011","0000011","1100111"]
     S_oper=["0100011"]
-    SB_oper=["1100111"]
+    SB_oper=["1100011"]
     U_oper=["0110111","0010111"]
     UJ_oper=["1101111"]
     if opcode in R_oper:
@@ -152,6 +187,7 @@ for line in file:
         pass
     elif opcode in SB_oper:
         # decode
+        sb_format(binaryno)
         pass
     elif opcode in U_oper:
         # decode
@@ -161,4 +197,9 @@ for line in file:
         pass
     else:
         print("Error")
+
+
+
+
+
 
