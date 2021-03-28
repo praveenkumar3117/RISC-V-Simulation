@@ -68,7 +68,7 @@ def executeManan(string, rs1, rs2, rd):
 
 
 # decoding functions
-def R_Format(binaryInstruction):	#MUSKAN GUPTA 2019CSB100		
+def R_Format(binaryInstruction):	#MUSKAN GUPTA 2019CSB1100		
     #add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
     funct7=binaryInstruction[0:7]
     rs2=binaryInstruction[7:12]
