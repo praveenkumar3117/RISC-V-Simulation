@@ -249,6 +249,33 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     else:
         print("ERROR")
 
+def U_Format(machinecode):       #RAJASEKHAR 2019CSB1105
+    #auipc,lui   
+    opcode=machinecode[25:32]   # opcode is enough to distinguish u and uj format instructions    
+    
+    if(opcode=="0010111"):
+        #auipc
+        print("auipc")
+    elif(opcode=="0110111"):
+        #lui
+        print("lui")
+    else:
+        print("Error")  
+        
+    return
+
+def UJ_Format(machinecode):       #RAJASEKHAR 2019CSB1105
+    #jal
+    opcode=machinecode[25:32]
+    
+    if(opcode=="1101111"):
+        #jal
+        print("jal")
+    else:
+        print("Error")
+        
+    return
+
 
 # fetching
 file = open('machinecd.mc', 'r')
@@ -282,10 +309,12 @@ for line in file:
 
     elif opcode in U_oper:
         # decode
-        pass
+        U_Format(binaryno)
+        
     elif opcode in UJ_oper:
         # decode
-        pass
+        UJ_Format(binaryno)
+        
     else:
         print("Error")
 
