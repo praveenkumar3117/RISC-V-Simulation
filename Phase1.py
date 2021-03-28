@@ -239,7 +239,7 @@ for line in file:
     elif opcode in SB_oper:
         # decode
         sb_format(binaryno)
-        pass
+      
     elif opcode in U_oper:
         # decode
         pass
