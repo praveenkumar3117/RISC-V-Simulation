@@ -68,7 +68,7 @@ def executeManan(string, rs1, rs2, rd):
 
 
 # decoding functions
-def R_Format(binaryInstruction):
+def R_Format(binaryInstruction):	#MUSKAN GUPTA 2019CSB100		
     #add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
     funct7=binaryInstruction[0:7]
     rs2=binaryInstruction[7:12]
@@ -142,7 +142,7 @@ def R_Format(binaryInstruction):
     return
 
 
-def sb_format(binary):
+def sb_format(binary):			#MANAN SINGHAL 2019CSB1099
     opcode = binary[25:32]
     funct3 = binary[17:20]
     rs1 = binary[12:17]
@@ -159,7 +159,57 @@ def sb_format(binary):
     else:
         print("Error")
     print("Opcode:" + opcode, funct3, rs2, rs1, imm)
+    
+    
 
+def S_Format(m_c):			#PRAVEEN KUMAR 2019CSB1108
+
+	func3=m_c[17:20]			#funct3
+	rs1=m_c[12:17]			#source register1
+	rs2=m_c[7:12]			#source register2
+	imm=m_c[0:7]+m_c[20:25]	#offset added to base adress
+	#print("funct3:", func3)
+	#print("rs1:",rs1)
+	#print("rs2:",rs2)
+	#print("immediate:",imm)
+	Sr1=0;				#for decimal value of source register1
+	Sr2=0;				#for decimal value of source register2
+	for i in range(0,5):
+		if(rs1[i]=='1'):
+			Sr1=Sr1+pow(2,4-i)
+		if(rs2[i]=='1'):
+			Sr2=Sr2+pow(2,4-i)
+	#print("Decimal Value of rs1:",Sr1)
+	#print("Decimal Value of rs2:",Sr2)
+	Offset=0;
+	for i in range (0,12):
+		if(imm[i]=='1'):
+			Offset=Offset+pow(2,11-i)
+	
+	
+	#print("Decimal Value of offset:",Offset)
+			
+	if(func3=='000'):
+	
+		#Execution of store_byte(sb)
+		print("S_B")
+		
+	
+	elif(func3=='001'):
+	
+		#Execution of store_halfword(sh)
+		print("S_H")
+		
+	
+	elif(func3=='010'):
+	
+		#Execution of store_word(sw)
+		print("S_W")
+	else:
+		print("ERROR")
+		
+	
+	
 
 #fetching
 file = open('machinecd.mc', 'r')
@@ -183,8 +233,9 @@ for line in file:
         # decode
         pass
     elif opcode in S_oper:
+    	S_Format(binaryno)
         # decode
-        pass
+        
     elif opcode in SB_oper:
         # decode
         sb_format(binaryno)
