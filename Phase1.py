@@ -103,6 +103,51 @@ def executeRajasekhar(string, rs1, rs2, rd):
     print("Registers :")
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
+        
+def executePraveen(string,rd,rs1,imm):					#PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
+	rs1=int(rs1,2)
+	rd=int(rd,2)
+	imm=int(imm,2)	
+	
+	
+	
+	if(string=="addi"):
+		print("Operation is addi")
+		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
+			s=x[rs1] + imm
+			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
+				x[rd]=s
+
+	elif(string=="andi"):
+		print("Operation is andi")
+		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
+			s=x[rs1]&imm
+			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
+				x[rd]=s
+
+	elif(string=="ori"):
+		print("Operation is ori")
+		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
+			s=x[rs1]|imm
+			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
+				x[rd]=s	
+	
+	print("rs1= ", rs1," rd= ", rd," imm= ",imm)
+	print("Registers :")
+	for i in range(0, 32):
+            print("x[", i, "]=", x[i])
+	
+	
+
+
+
+
+
+
+
+
+
+
 
 
 # decoding functions
@@ -195,7 +240,7 @@ def I_Format(binaryInstruction):  # Pratima_Singh
     funct3 = binaryInstruction[17:20]
     rd = binaryInstruction[20:25]
     opcode = binaryInstruction[25:32]
-    print("opcode: ", opcode, " imm: ", imm, " rs1", rs1, " funct3", funct3, " rd ", rd)
+    print("opcode: ", opcode, " imm: ", imm, " rs1: ", rs1, " funct3: ", funct3, " rd: ", rd)
     if (opcode == "0000011"):
         if (funct3 == "000"):
             # lb
@@ -211,12 +256,15 @@ def I_Format(binaryInstruction):  # Pratima_Singh
     elif (opcode == "0010011"):
         if (funct3 == "000"):
             # addi
+            executePraveen("addi",rd,rs1,imm)
             print("addi")
         elif (funct3 == "111"):
             # andi
+            executePraveen("andi",rd,rs1,imm)
             print("andi")
         elif (funct3 == "110"):
             # ori
+            executePraveen("ori",rd,rs1,imm)
             print("ori")
         else:
             print("Error")
