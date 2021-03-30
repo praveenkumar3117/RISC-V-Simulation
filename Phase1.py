@@ -72,7 +72,7 @@ def executePratima(string,rd,imm,PC):
     if string == "lui":  # executing lui
         x[rd] = 0 | imm
         x[rd] = x[rd] << 12
-    elif string == "auipc": # executing lui
+    elif string == "auipc": # executing auipc
 	    temp = 0 | imm
 	    temp = temp << 12
 	    x[rd] = PC + temp
