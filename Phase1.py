@@ -81,6 +81,28 @@ def executePratima(string,rd,imm,PC):
     print("Registers :")
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
+        
+def executeRajasekhar(string, rs1, rs2, rd):
+    #slt,sra,srl,sub
+    rd = int(rd, 2)
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    
+    if(string == "slt"):
+        if(x[rs1]<x[rs2]):
+            x[rd]=1
+        else:
+            x[rd]=0    
+    elif (string == "sra"):
+        x[rd] = x[rs1] >> x[rs2]
+    elif (string == "srl"):
+        x[rd] = x[rs1] >> x[rs2]
+    elif (string == "sub"):
+        x[rd] = x[rs1] - x[rs2]
+    
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
 
 
 # decoding functions
@@ -117,9 +139,13 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
                 print("sll")
             elif (funct3 == "010"):
                 # slt
+                executeRajasekhar("slt", rs1, rs2, rd)
+                print(x)
                 print("slt")
             elif (funct3 == "101"):
                 # srl
+                executeRajasekhar("srl", rs1, rs2, rd)
+                print(x)
                 print("srl")
             elif (funct3 == "100"):
                 # xor
@@ -130,9 +156,13 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
         elif (funct7 == "0100000"):
             if (funct3 == "000"):
                 # sub
+                executeRajasekhar("sub", rs1, rs2, rd)
+                print(x)
                 print("sub")
             elif (funct3 == "101"):
                 # sra
+                executeRajasekhar("sra", rs1, rs2, rd)
+                print(x)
                 print("sra")
             else:
                 print("Error")
@@ -337,6 +367,40 @@ for line in file:
 
     else:
         print("Error")
+        
+        
+#function to convert any -ve number into 32 bit twos compliment binary number
+def findTwoscomplement(str):      #Rajasekhar 2019CSB1105
+    #note: argument for this function is 32bit binary str of positive number
+    # to convert any integer into 32bit binary number. use '{:032b}'.format(n) where n is the number
+    n = len(str) 
+   
+    i = n - 1
+    while(i >= 0):
+        if (str[i] == '1'):
+            break
+  
+        i -= 1
+   
+    if (i == -1):
+        return '1'+str
+     
+    k = i - 1
+    while(k >= 0):
+          
+        # Just flip the values
+        if (str[k] == '1'):
+            str = list(str)
+            str[k] = '0'
+            str = ''.join(str)
+        else:
+            str = list(str)
+            str[k] = '1'
+            str = ''.join(str)
+  
+        k -= 1
+  
+    return str
 
 
 
