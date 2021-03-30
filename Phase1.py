@@ -65,6 +65,24 @@ def executeManan(string, rs1, rs2, rd):
         print("x[", i, "]=", x[i])
 
 
+def executePratima(string,rd,imm,PC):
+    imm = int(imm, 2)
+    rd = int(rd, 2)
+    print("imm = ", imm, " rd = ", rd)
+    if string == "lui":  # executing lui
+        x[rd] = 0 | imm
+        x[rd] = x[rd] << 12
+    elif string == "auipc": # executing lui
+	    temp = 0 | imm
+	    temp = temp << 12
+	    x[rd] = PC + temp
+    else:
+            print("Error")
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
+
+
 # decoding functions
 def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
     # add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
@@ -140,49 +158,46 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
     return
 
 
-def I_Format(binaryInstruction): #Pratima_Singh
-    #addi, andi, ori, lb, lh, lw, jalr
-    imm=binaryInstruction[0:12]
-    rs1=binaryInstruction[12:17]
-    funct3=binaryInstruction[17:20]
-    rd=binaryInstruction[20:25]
-    opcode=binaryInstruction[25:32]
-    print("opcode: ",opcode," imm: ",imm," rs1",rs1," funct3",funct3," rd ",rd)
-    if(opcode=="0000011"):
-            if(funct3=="000"):
-                #lb
-                print("lb")
-            elif(funct3=="001"):
-                #lh
-                print("lh")
-            elif(funct3=="010"):
-                #lw
-                print("lw")
-            else:
-                print("Error")
-    elif(opcode=="0010011"):
-            if(funct3=="000"):
-                #addi
-                print("addi")
-            elif(funct3=="111"):
-                #andi
-                print("andi")
-            elif(funct3=="110"):
-                #ori
-                print("ori")
-            else:
-                print("Error")
-    elif(opcode=="1100111"):
-            if(funct3=="000"):
-                #jalr
-                print("jalr")
-            else:
-                print("Error")
+def I_Format(binaryInstruction):  # Pratima_Singh
+    # addi, andi, ori, lb, lh, lw, jalr
+    imm = binaryInstruction[0:12]
+    rs1 = binaryInstruction[12:17]
+    funct3 = binaryInstruction[17:20]
+    rd = binaryInstruction[20:25]
+    opcode = binaryInstruction[25:32]
+    print("opcode: ", opcode, " imm: ", imm, " rs1", rs1, " funct3", funct3, " rd ", rd)
+    if (opcode == "0000011"):
+        if (funct3 == "000"):
+            # lb
+            print("lb")
+        elif (funct3 == "001"):
+            # lh
+            print("lh")
+        elif (funct3 == "010"):
+            # lw
+            print("lw")
+        else:
+            print("Error")
+    elif (opcode == "0010011"):
+        if (funct3 == "000"):
+            # addi
+            print("addi")
+        elif (funct3 == "111"):
+            # andi
+            print("andi")
+        elif (funct3 == "110"):
+            # ori
+            print("ori")
+        else:
+            print("Error")
+    elif (opcode == "1100111"):
+        if (funct3 == "000"):
+            # jalr
+            print("jalr")
+        else:
+            print("Error")
 
     return
-
-
-
 
 
 def sb_format(binary):  # MANAN SINGHAL 2019CSB1099
@@ -249,31 +264,36 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     else:
         print("ERROR")
 
-def U_Format(machinecode):       #RAJASEKHAR 2019CSB1105
-    #auipc,lui   
-    opcode=machinecode[25:32]   # opcode is enough to distinguish u and uj format instructions    
-    
-    if(opcode=="0010111"):
-        #auipc
+
+def U_Format(machinecode,PC):  # RAJASEKHAR 2019CSB1105
+    # auipc,lui
+    imm = machinecode[0:20]
+    rd = machinecode[20:25]
+    opcode = machinecode[25:32]  # opcode is enough to distinguish u and uj format instructions
+    if (opcode == "0010111"):
+        # auipc
         print("auipc")
-    elif(opcode=="0110111"):
-        #lui
+        executePratima("auipc", rd, imm, PC)
+    elif (opcode == "0110111"):
+        # lui
         print("lui")
+        executePratima("lui", rd, imm, PC)
     else:
-        print("Error")  
-        
+        print("Error")
+
     return
 
-def UJ_Format(machinecode):       #RAJASEKHAR 2019CSB1105
-    #jal
-    opcode=machinecode[25:32]
-    
-    if(opcode=="1101111"):
-        #jal
+
+def UJ_Format(machinecode):  # RAJASEKHAR 2019CSB1105
+    # jal
+    opcode = machinecode[25:32]
+
+    if (opcode == "1101111"):
+        # jal
         print("jal")
     else:
         print("Error")
-        
+
     return
 
 
@@ -309,12 +329,12 @@ for line in file:
 
     elif opcode in U_oper:
         # decode
-        U_Format(binaryno)
-        
+        U_Format(binaryno,PC)
+
     elif opcode in UJ_oper:
         # decode
         UJ_Format(binaryno)
-        
+
     else:
         print("Error")
 
