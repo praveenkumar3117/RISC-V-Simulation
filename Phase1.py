@@ -12,7 +12,6 @@ memory = {}
 
 # executing functions
 def executeMuskan(string, rs1, rs2, rd):
-
     if (string == "add"):  # executing add
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
@@ -313,11 +312,7 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     # print("rs1:",rs1)
     # print("rs2:",rs2)
     # print("immediate:",imm)
-<<<<<<< HEAD
     Sr1 = 0  # for decimal value of source register1
-=======
-    Sr1 = 0 # for decimal value of source register1
->>>>>>> f117c006f3bfe64cb8e6e3e0f44e8eb39b36b937
     Sr2 = 0  # for decimal value of source register2
     for i in range(0, 5):
         if (rs1[i] == '1'):
@@ -388,24 +383,14 @@ def UJ_Format(machinecode):  # RAJASEKHAR 2019CSB1105
 # fetching
 file = open('machinecd.mc', 'r')
 PC = 0
-<<<<<<< HEAD
 datasegOrnot = 0
-=======
-datasegOrnot=0
->>>>>>> f117c006f3bfe64cb8e6e3e0f44e8eb39b36b937
 for line in file:
     if (line == "\n"):
         datasegOrnot = 1
         continue
-<<<<<<< HEAD
     if (datasegOrnot == 1):  # fetching memory from data segment
         dataArray = line.split(' ')
         memory[int(dataArray[0], 16)] = int(dataArray[1], 16)
-=======
-    if (datasegOrnot == 1):        #fetching memory from data segment
-        dataArray = line.split(' ')
-        memory[int(dataArray[0],16)]=int(dataArray[1],16)
->>>>>>> f117c006f3bfe64cb8e6e3e0f44e8eb39b36b937
         continue
     inputsArray = line.split(' ')
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
@@ -449,12 +434,6 @@ for line in file:
 print(memory)  # printing memory key is address and value is data
 
 
-print(memory)#printing memory key is address and value is data
-
-
-
-
-
 # function to convert any -ve number into 32 bit twos compliment binary number
 def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
     # note: argument for this function is 32bit binary str of positive number
@@ -487,7 +466,3 @@ def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
         k -= 1
 
     return str
-<<<<<<< HEAD
-=======
-
->>>>>>> f117c006f3bfe64cb8e6e3e0f44e8eb39b36b937
