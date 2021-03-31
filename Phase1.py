@@ -7,6 +7,8 @@ for i in range(1, 32):
     elif (i == 2):
         x[i] = int("0x7FFFFFF0", 16)  # sp
 
+memory = {}
+
 
 # executing functions
 def executeMuskan(string, rs1, rs2, rd):
@@ -65,89 +67,77 @@ def executeManan(string, rs1, rs2, rd):
         print("x[", i, "]=", x[i])
 
 
-def executePratima(string,rd,imm,PC):
+def executePratima(string, rd, imm, PC):
     imm = int(imm, 2)
     rd = int(rd, 2)
     print("imm = ", imm, " rd = ", rd)
     if string == "lui":  # executing lui
         x[rd] = 0 | imm
         x[rd] = x[rd] << 12
-    elif string == "auipc": # executing auipc
-	    temp = 0 | imm
-	    temp = temp << 12
-	    x[rd] = PC + temp
+    elif string == "auipc":  # executing auipc
+        temp = 0 | imm
+        temp = temp << 12
+        x[rd] = PC + temp
     else:
-            print("Error")
+        print("Error")
     print("Registers :")
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
-        
+
+
 def executeRajasekhar(string, rs1, rs2, rd):
-    #slt,sra,srl,sub
+    # slt,sra,srl,sub
     rd = int(rd, 2)
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
-    
-    if(string == "slt"):
-        if(x[rs1]<x[rs2]):
-            x[rd]=1
+
+    if (string == "slt"):
+        if (x[rs1] < x[rs2]):
+            x[rd] = 1
         else:
-            x[rd]=0    
+            x[rd] = 0
     elif (string == "sra"):
         x[rd] = x[rs1] >> x[rs2]
     elif (string == "srl"):
         x[rd] = x[rs1] >> x[rs2]
     elif (string == "sub"):
         x[rd] = x[rs1] - x[rs2]
-    
+
     print("Registers :")
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
-        
-def executePraveen(string,rd,rs1,imm):					#PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
-	rs1=int(rs1,2)
-	rd=int(rd,2)
-	imm=int(imm,2)	
-	
-	
-	
-	if(string=="addi"):
-		print("Operation is addi")
-		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
-			s=x[rs1] + imm
-			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
-				x[rd]=s
-
-	elif(string=="andi"):
-		print("Operation is andi")
-		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
-			s=x[rs1]&imm
-			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
-				x[rd]=s
-
-	elif(string=="ori"):
-		print("Operation is ori")
-		if(imm<=pow(2,11)-1  and imm>=-pow(2,11)):					#checking range of imm
-			s=x[rs1]|imm
-			if(s>=-(pow(2,31)) and s<=(pow(2,31))-1):		#checking for underflow or overflow
-				x[rd]=s	
-	
-	print("rs1= ", rs1," rd= ", rd," imm= ",imm)
-	print("Registers :")
-	for i in range(0, 32):
-            print("x[", i, "]=", x[i])
-	
-	
 
 
+def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
+    rs1 = int(rs1, 2)
+    rd = int(rd, 2)
+    imm = int(imm, 2)
 
+    if (string == "addi"):
+        print("Operation is addi")
+        if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
+            s = x[rs1] + imm
+            if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                x[rd] = s
 
+    elif (string == "andi"):
+        print("Operation is andi")
+        if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
+            s = x[rs1] & imm
+            if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                x[rd] = s
 
+    elif (string == "ori"):
+        print("Operation is ori")
+        if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
+            s = x[rs1] | imm
+            if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                x[rd] = s
 
-
-
-
-
+    print("rs1= ", rs1, " rd= ", rd, " imm= ", imm)
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
 
 
 # decoding functions
@@ -256,15 +246,15 @@ def I_Format(binaryInstruction):  # Pratima_Singh
     elif (opcode == "0010011"):
         if (funct3 == "000"):
             # addi
-            executePraveen("addi",rd,rs1,imm)
+            executePraveen("addi", rd, rs1, imm)
             print("addi")
         elif (funct3 == "111"):
             # andi
-            executePraveen("andi",rd,rs1,imm)
+            executePraveen("andi", rd, rs1, imm)
             print("andi")
         elif (funct3 == "110"):
             # ori
-            executePraveen("ori",rd,rs1,imm)
+            executePraveen("ori", rd, rs1, imm)
             print("ori")
         else:
             print("Error")
@@ -343,7 +333,7 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
         print("ERROR")
 
 
-def U_Format(machinecode,PC):  # RAJASEKHAR 2019CSB1105
+def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
     # auipc,lui
     imm = machinecode[0:20]
     rd = machinecode[20:25]
@@ -379,8 +369,12 @@ def UJ_Format(machinecode):  # RAJASEKHAR 2019CSB1105
 file = open('machinecd.mc', 'r')
 PC = 0
 for line in file:
-    PC += 4
-    binaryno = bin(int(line[2:], 16))[2:].zfill(32)
+    if line == "\n":
+        print("Hello")
+        continue
+    inputsArray = line.split(' ')
+    binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
+    #binaryno = bin(int(line[2:], 16))[2:].zfill(32)
     print("Instruction in binary: ", binaryno)
     opcode = binaryno[25:32]
     # print("opcode in the instruction ",opcode)
@@ -407,7 +401,7 @@ for line in file:
 
     elif opcode in U_oper:
         # decode
-        U_Format(binaryno,PC)
+        U_Format(binaryno, PC)
 
     elif opcode in UJ_oper:
         # decode
@@ -415,27 +409,28 @@ for line in file:
 
     else:
         print("Error")
-        
-        
-#function to convert any -ve number into 32 bit twos compliment binary number
-def findTwoscomplement(str):      #Rajasekhar 2019CSB1105
-    #note: argument for this function is 32bit binary str of positive number
+    PC += 4
+
+
+# function to convert any -ve number into 32 bit twos compliment binary number
+def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
+    # note: argument for this function is 32bit binary str of positive number
     # to convert any integer into 32bit binary number. use '{:032b}'.format(n) where n is the number
-    n = len(str) 
-   
+    n = len(str)
+
     i = n - 1
-    while(i >= 0):
+    while (i >= 0):
         if (str[i] == '1'):
             break
-  
+
         i -= 1
-   
+
     if (i == -1):
-        return '1'+str
-     
+        return '1' + str
+
     k = i - 1
-    while(k >= 0):
-          
+    while (k >= 0):
+
         # Just flip the values
         if (str[k] == '1'):
             str = list(str)
@@ -445,13 +440,7 @@ def findTwoscomplement(str):      #Rajasekhar 2019CSB1105
             str = list(str)
             str[k] = '1'
             str = ''.join(str)
-  
+
         k -= 1
-  
+
     return str
-
-
-
-
-
-
