@@ -17,37 +17,43 @@ def executeMuskan(string, rs1, rs2, rd):
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
         print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
-        x[rd] = x[rs1] + x[rs2]
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
+        s = x[rs1] + x[rs2]
+        if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+            x[rd] = s
+
+
     elif (string == "and"):  # executing and
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
         print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
-        x[rd] = x[rs1] & x[rs2]
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
+        s = x[rs1] & x[rs2]
+        if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+            x[rd] = s
+
+
     elif (string == "or"):  # executing or
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
         print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
-        x[rd] = x[rs1] | x[rs2]
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
+        s = x[rs1] | x[rs2]
+        if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+            x[rd] = s
+
+
     elif (string == "sll"):  # executing sll
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
         print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
-        x[rd] = x[rs1] << x[rs2]
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
+        s = x[rs1] << x[rs2]
+        if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+            x[rd] = s
+
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
 
 
 def executeManan(string, rs1, rs2, rd):
@@ -55,16 +61,25 @@ def executeManan(string, rs1, rs2, rd):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
     if string == 'xor':
-        x[rd] = x[rs1] ^ x[rs2]
+        output = x[rs1] ^ x[rs2]
+        if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            x[rd] = output
     elif string == 'mul':
-        x[rd] = x[rs1] * x[rs2]
+        output = x[rs1] * x[rs2]
+        if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            x[rd] = output
     elif string == "div":
-        x[rd] = x[rs1] // x[rs2]
+        output = x[rs1] // x[rs2]
+        if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            x[rd] = output
     elif string == "rem":
-        x[rd] = x[rs1] % x[rs2]
+        output = x[rs1] % x[rs2]
+        if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            x[rd] = output
+    print(string)
     print("Registers :")
     for i in range(0, 32):
-        print("x[", i, "]=", x[i])
+        print("x[", i, "]=", x[i], end=" ", sep='')
 
 
 def executePratima(string, rd, imm, PC):
@@ -269,11 +284,11 @@ def I_Format(binaryInstruction):  # Pratima_Singh
 
 
 def sb_format(binary):  # MANAN SINGHAL 2019CSB1099
-    opcode = binary[25:32]
+    sb_opcode = binary[25:32]
     funct3 = binary[17:20]
     rs1 = binary[12:17]
     rs2 = binary[7:12]
-    imm = binary[20:25] + binary[0:7]
+    imm = binary[0] + binary[24] + binary[1:7] + binary[20:24]
     if funct3 == '000':
         print("beq")
     elif funct3 == '001':
@@ -284,7 +299,7 @@ def sb_format(binary):  # MANAN SINGHAL 2019CSB1099
         print("blt")
     else:
         print("Error")
-    print("Opcode:" + opcode, funct3, rs2, rs1, imm)
+    print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
 
 
 def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
@@ -297,8 +312,8 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     # print("rs1:",rs1)
     # print("rs2:",rs2)
     # print("immediate:",imm)
-    Sr1 = 0;  # for decimal value of source register1
-    Sr2 = 0;  # for decimal value of source register2
+    Sr1 = 0  # for decimal value of source register1
+    Sr2 = 0  # for decimal value of source register2
     for i in range(0, 5):
         if (rs1[i] == '1'):
             Sr1 = Sr1 + pow(2, 4 - i)
@@ -306,7 +321,7 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
             Sr2 = Sr2 + pow(2, 4 - i)
     # print("Decimal Value of rs1:",Sr1)
     # print("Decimal Value of rs2:",Sr2)
-    Offset = 0;
+    Offset = 0
     for i in range(0, 12):
         if (imm[i] == '1'):
             Offset = Offset + pow(2, 11 - i)
@@ -368,13 +383,18 @@ def UJ_Format(machinecode):  # RAJASEKHAR 2019CSB1105
 # fetching
 file = open('machinecd.mc', 'r')
 PC = 0
+datasegOrnot = 0
 for line in file:
-    if line == "\n":
-        print("Hello")
+    if (line == "\n"):
+        datasegOrnot = 1
+        continue
+    if (datasegOrnot == 1):  # fetching memory from data segment
+        dataArray = line.split(' ')
+        memory[int(dataArray[0], 16)] = int(dataArray[1], 16)
         continue
     inputsArray = line.split(' ')
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
-    #binaryno = bin(int(line[2:], 16))[2:].zfill(32)
+    # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
     print("Instruction in binary: ", binaryno)
     opcode = binaryno[25:32]
     # print("opcode in the instruction ",opcode)
@@ -410,6 +430,8 @@ for line in file:
     else:
         print("Error")
     PC += 4
+
+print(memory)  # printing memory key is address and value is data
 
 
 # function to convert any -ve number into 32 bit twos compliment binary number
