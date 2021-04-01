@@ -112,11 +112,23 @@ def executeRajasekhar(string, rs1, rs2, rd):
         else:
             x[rd] = 0
     elif (string == "sra"):
-        x[rd] = x[rs1] >> x[rs2]
+        result = x[rs1] >> x[rs2]
+        lowerlimit= -1*(1<<31)
+        upperlimit= (1<<31) -1
+        if(lowerlimit<=result and result<=upperlimit): #checking underflow and overflow condition
+            x[rd]=result
     elif (string == "srl"):
-        x[rd] = x[rs1] >> x[rs2]
+        result = x[rs1] >> x[rs2]
+        lowerlimit= -1*(1<<31)
+        upperlimit= (1<<31) -1
+        if(lowerlimit<=result and result<=upperlimit):
+            x[rd]=result
     elif (string == "sub"):
-        x[rd] = x[rs1] - x[rs2]
+        result = x[rs1] - x[rs2]
+        lowerlimit= -1*(1<<31)
+        upperlimit= (1<<31) -1
+        if(lowerlimit<=result and result<=upperlimit):
+            x[rd]=result
 
     print("Registers :")
     for i in range(0, 32):
@@ -167,6 +179,28 @@ def executeManan1(string, rs1, rs2, imm, pc):
             pc = pc + 4
     elif string == 'blt':
         if x[rs1] < x[rs2]:
+            pc = pc + imm
+        else:
+            pc = pc + 4
+
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i], end=" ", sep='')
+
+    return pc
+
+def executeRajasekhar1(string, rs1, rs2, imm, pc):
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    imm = int(imm, 2)
+    imm = imm << 1
+    if(string=='beq'):
+        if(x[rs1] == x[rs2]):
+            pc = pc + imm
+        else:
+            pc = pc + 4
+    elif(string=='bne'):
+        if(x[rs1] != x[rs2]):
             pc = pc + imm
         else:
             pc = pc + 4
@@ -315,10 +349,10 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
     # print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
     if funct3 == '000':
         print("beq")
-        pc = pc + 4
+        pc = executeRajasekhar1("beq", rs1, rs2, imm, pc)
     elif funct3 == '001':
         print("bne")
-        pc = pc + 4
+        pc = executeRajasekhar1("bne", rs1, rs2, imm, pc)
     elif funct3 == '101':
         print("bge")
         pc = executeManan1("bge", rs1, rs2, imm, pc)
