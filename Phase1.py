@@ -155,6 +155,29 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         print("x[", i, "]=", x[i])
 
 
+def executeManan1(string, rs1, rs2, imm, pc):
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    imm = int(imm, 2)
+    imm = imm << 1
+    if string == "bge":
+        if x[rs1] >= x[rs2]:
+            pc = pc + imm
+        else:
+            pc = pc + 4
+    elif string == 'blt':
+        if x[rs1] < x[rs2]:
+            pc = pc + imm
+        else:
+            pc = pc + 4
+
+    print("Registers :")
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i], end=" ", sep='')
+
+    return pc
+
+
 # decoding functions
 def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
     # add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
@@ -283,23 +306,29 @@ def I_Format(binaryInstruction):  # Pratima_Singh
     return
 
 
-def sb_format(binary):  # MANAN SINGHAL 2019CSB1099
+def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
     sb_opcode = binary[25:32]
     funct3 = binary[17:20]
     rs1 = binary[12:17]
     rs2 = binary[7:12]
     imm = binary[0] + binary[24] + binary[1:7] + binary[20:24]
+    # print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
     if funct3 == '000':
         print("beq")
+        pc = pc + 4
     elif funct3 == '001':
         print("bne")
+        pc = pc + 4
     elif funct3 == '101':
         print("bge")
+        pc = executeManan1("bge", rs1, rs2, imm, pc)
     elif funct3 == '100':
         print("blt")
+        pc = executeManan1("blt", rs1, rs2, imm, pc)
     else:
         print("Error")
-    print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
+
+    return pc
 
 
 def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
@@ -404,32 +433,42 @@ for line in file:
     SB_oper = ["1100011"]
     U_oper = ["0110111", "0010111"]
     UJ_oper = ["1101111"]
-    if opcode in R_oper:
-        # decode
-        R_Format(binaryno)
-    elif opcode in I_oper:
-        # decode
-        I_Format(binaryno)
 
-    elif opcode in S_oper:
-        S_Format(binaryno)
-        # decode
+    address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
+    address_in_decimal = int(address_in_binary, 2)
 
-    elif opcode in SB_oper:
-        # decode
-        sb_format(binaryno)
+    if PC == address_in_decimal:
+        if opcode in R_oper:
+            # decode
 
-    elif opcode in U_oper:
-        # decode
-        U_Format(binaryno, PC)
+            R_Format(binaryno)
+            PC += 4
+        elif opcode in I_oper:
+            # decode
+            I_Format(binaryno)
+            PC += 4
 
-    elif opcode in UJ_oper:
-        # decode
-        UJ_Format(binaryno)
+        elif opcode in S_oper:
+            S_Format(binaryno)
+            PC += 4
+            # decode
 
-    else:
-        print("Error")
-    PC += 4
+        elif opcode in SB_oper:
+            # decode
+            PC = sb_format(binaryno, PC)
+
+        elif opcode in U_oper:
+            # decode
+            U_Format(binaryno, PC)
+            PC += 4
+
+        elif opcode in UJ_oper:
+            # decode
+            UJ_Format(binaryno)
+            PC += 4
+        else:
+            print("Error")
+            PC += 4
 
 print(memory)  # printing memory key is address and value is data
 
