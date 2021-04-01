@@ -7,6 +7,7 @@ for i in range(1, 32):
     elif (i == 2):
         x[i] = int("0x7FFFFFF0", 16)  # sp
 
+
 memory = {}
 
 
@@ -364,6 +365,31 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
 
     return pc
 
+def MemoryStore(string,rs1,rs2,imm):
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    imm = int(imm,2)
+    dataa=hex(x[rs2])[2:].zfill(8)
+
+    if(string=="sw"):
+        if(x[rs1] + imm >= 268435456):   #data segment starts with address 268435456 or 0x10000000
+            memory[x[rs1] + imm] = int(dataa[6:],16)
+            memory[x[rs1] + imm + 1] = int(dataa[4:6],16)
+            memory[x[rs1] + imm + 2] = int(dataa[2:4],16)
+            memory[x[rs1] + imm + 3] = int(dataa[0:2],16)
+    elif(string=="sh"):
+        if (x[rs1] + imm >= 268435456):
+            memory[x[rs1] + imm] = int(dataa[6:],16)
+            memory[x[rs1] + imm + 1] = int(dataa[4:6],16)
+    elif(string=="sb"):
+        if (x[rs1] + imm >= 268435456):
+            memory[x[rs1] + imm] = int(dataa[6:],16)
+
+
+
+
+
+
 
 def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
 
@@ -394,19 +420,21 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     if (func3 == '000'):
 
         # Execution of store_byte(sb)
-        print("S_B")
+        print("sb")
+        MemoryStore("sb", rs1, rs2, imm)
 
 
     elif (func3 == '001'):
 
         # Execution of store_halfword(sh)
-        print("S_H")
+        print("sh")
+        MemoryStore("sh", rs1, rs2, imm)
 
 
     elif (func3 == '010'):
-
         # Execution of store_word(sw)
-        print("S_W")
+        print("sw")
+        MemoryStore("sw", rs1, rs2, imm)
     else:
         print("ERROR")
 
@@ -453,8 +481,16 @@ for line in file:
         continue
     if (datasegOrnot == 1):  # fetching memory from data segment
         dataArray = line.split(' ')
-        memory[int(dataArray[0], 16)] = int(dataArray[1], 16)
+        daata=dataArray[1][2:]
+        memory[int(dataArray[0], 16)] =  int(daata,16)
         continue
+file.close()
+
+
+file = open('machinecd.mc', 'r')
+for line in file:
+    if (line == "\n"):
+        break
     inputsArray = line.split(' ')
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
     # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
