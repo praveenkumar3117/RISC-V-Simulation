@@ -88,12 +88,18 @@ def executePratima(string, rd, imm, PC):
     rd = int(rd, 2)
     print("imm = ", imm, " rd = ", rd)
     if string == "lui":  # executing lui
-        x[rd] = 0 | imm
-        x[rd] = x[rd] << 12
+        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):# checking range of imm
+            x[rd] = 0 | imm
+            temp = x[rd] << 12
+            if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                x[rd] = temp
     elif string == "auipc":  # executing auipc
-        temp = 0 | imm
-        temp = temp << 12
-        x[rd] = PC + temp
+        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):# checking range of imm
+            temp = 0 | imm
+            temp = temp << 12
+            temp = temp + PC
+            if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                x[rd] = temp
     else:
         print("Error")
     print("Registers :")
