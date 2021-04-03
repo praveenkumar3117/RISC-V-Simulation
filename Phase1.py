@@ -7,7 +7,6 @@ for i in range(1, 32):
     elif (i == 2):
         x[i] = int("0x7FFFFFF0", 16)  # sp
 
-
 memory = {}
 
 
@@ -88,13 +87,13 @@ def executePratima(string, rd, imm, PC):
     rd = int(rd, 2)
     print("imm = ", imm, " rd = ", rd)
     if string == "lui":  # executing lui
-        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):# checking range of imm
+        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
             x[rd] = 0 | imm
             temp = x[rd] << 12
             if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 x[rd] = temp
     elif string == "auipc":  # executing auipc
-        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):# checking range of imm
+        if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
             temp = 0 | imm
             temp = temp << 12
             temp = temp + PC
@@ -120,22 +119,22 @@ def executeRajasekhar(string, rs1, rs2, rd):
             x[rd] = 0
     elif (string == "sra"):
         result = x[rs1] >> x[rs2]
-        lowerlimit= -1*(1<<31)
-        upperlimit= (1<<31) -1
-        if(lowerlimit<=result and result<=upperlimit): #checking underflow and overflow condition
-            x[rd]=result
+        lowerlimit = -1 * (1 << 31)
+        upperlimit = (1 << 31) - 1
+        if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
+            x[rd] = result
     elif (string == "srl"):
         result = x[rs1] >> x[rs2]
-        lowerlimit= -1*(1<<31)
-        upperlimit= (1<<31) -1
-        if(lowerlimit<=result and result<=upperlimit):
-            x[rd]=result
+        lowerlimit = -1 * (1 << 31)
+        upperlimit = (1 << 31) - 1
+        if (lowerlimit <= result and result <= upperlimit):
+            x[rd] = result
     elif (string == "sub"):
         result = x[rs1] - x[rs2]
-        lowerlimit= -1*(1<<31)
-        upperlimit= (1<<31) -1
-        if(lowerlimit<=result and result<=upperlimit):
-            x[rd]=result
+        lowerlimit = -1 * (1 << 31)
+        upperlimit = (1 << 31) - 1
+        if (lowerlimit <= result and result <= upperlimit):
+            x[rd] = result
 
     print("Registers :")
     for i in range(0, 32):
@@ -196,18 +195,19 @@ def executeManan1(string, rs1, rs2, imm, pc):
 
     return pc
 
+
 def executeRajasekhar1(string, rs1, rs2, imm, pc):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
     imm = int(imm, 2)
     imm = imm << 1
-    if(string=='beq'):
-        if(x[rs1] == x[rs2]):
+    if (string == 'beq'):
+        if (x[rs1] == x[rs2]):
             pc = pc + imm
         else:
             pc = pc + 4
-    elif(string=='bne'):
-        if(x[rs1] != x[rs2]):
+    elif (string == 'bne'):
+        if (x[rs1] != x[rs2]):
             pc = pc + imm
         else:
             pc = pc + 4
@@ -217,28 +217,31 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
         print("x[", i, "]=", x[i], end=" ", sep='')
 
     return pc
-def executePraveen1(string,rd,imm,pc):				#Praveen Kumar 2019CSB1108    jal  function
-	rd=int(rd,2)
-	imm=int(imm,2)
-	imm=imm << 1
-	if(string=='jal'):
-		temp=pc
-		pc=pc+imm
-		x[rd]=temp + 4
-	return pc
-def executePraveen2(string,rs1,rd,imm,pc):				#Praveen Kumar 2019CSB1108    jalr function
-	rs1=int(rs1,2)
-	rd=int(rd,2)
-	imm=int(imm,2)
-	if(string=='jalr'):
-		temp=pc
-		pc=x[rs1]+imm
-		if(rd!=0):
-			x[rd]=temp+4
-		
-		
-	return pc	
-	
+
+
+def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
+    rd = int(rd, 2)
+    imm = int(imm, 2)
+    imm = imm << 1
+    if (string == 'jal'):
+        temp = pc
+        pc = pc + imm
+        x[rd] = temp + 4
+    return pc
+
+
+def executePraveen2(string, rs1, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jalr function
+    rs1 = int(rs1, 2)
+    rd = int(rd, 2)
+    imm = int(imm, 2)
+    if (string == 'jalr'):
+        temp = pc
+        pc = x[rs1] + imm
+        if (rd != 0):
+            x[rd] = temp + 4
+
+    return pc
+
 
 # decoding functions
 def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
@@ -323,7 +326,7 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
     return
 
 
-def I_Format(binaryInstruction,PC):  # Pratima_Singh
+def I_Format(binaryInstruction, PC):  # Pratima_Singh
     # addi, andi, ori, lb, lh, lw, jalr
     imm = binaryInstruction[0:12]
     rs1 = binaryInstruction[12:17]
@@ -335,45 +338,45 @@ def I_Format(binaryInstruction,PC):  # Pratima_Singh
         if (funct3 == "000"):
             # lb
             print("lb")
-            PC+=4
+            PC += 4
         elif (funct3 == "001"):
             # lh
             print("lh")
-            PC+=4
+            PC += 4
         elif (funct3 == "010"):
             # lw
             print("lw")
-            PC+=4
+            PC += 4
         else:
             print("Error")
-            PC+=4
+            PC += 4
     elif (opcode == "0010011"):
         if (funct3 == "000"):
             # addi
             executePraveen("addi", rd, rs1, imm)
             print("addi")
-            PC+=4
+            PC += 4
         elif (funct3 == "111"):
             # andi
             executePraveen("andi", rd, rs1, imm)
             print("andi")
-            PC+=4
+            PC += 4
         elif (funct3 == "110"):
             # ori
             executePraveen("ori", rd, rs1, imm)
             print("ori")
-            PC+=4
+            PC += 4
         else:
             print("Error")
-            PC+=4
+            PC += 4
     elif (opcode == "1100111"):
         if (funct3 == "000"):
             # jalr
-            PC=executePraveen2("jalr",rs1,rd,imm,PC)
+            PC = executePraveen2("jalr", rs1, rd, imm, PC)
             print("jalr")
         else:
             print("Error")
-            PC+=4
+            PC += 4
 
     return PC
 
@@ -402,30 +405,26 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
 
     return pc
 
-def MemoryStore(string,rs1,rs2,imm):
+
+def MemoryStore(string, rs1, rs2, imm):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
-    imm = int(imm,2)
-    dataa=hex(x[rs2])[2:].zfill(8)
+    imm = int(imm, 2)
+    dataa = hex(x[rs2])[2:].zfill(8)
 
-    if(string=="sw"):
-        if(x[rs1] + imm >= 268435456):   #data segment starts with address 268435456 or 0x10000000
-            memory[x[rs1] + imm] = int(dataa[6:],16)
-            memory[x[rs1] + imm + 1] = int(dataa[4:6],16)
-            memory[x[rs1] + imm + 2] = int(dataa[2:4],16)
-            memory[x[rs1] + imm + 3] = int(dataa[0:2],16)
-    elif(string=="sh"):
+    if (string == "sw"):
+        if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
+            memory[x[rs1] + imm] = int(dataa[6:], 16)
+            memory[x[rs1] + imm + 1] = int(dataa[4:6], 16)
+            memory[x[rs1] + imm + 2] = int(dataa[2:4], 16)
+            memory[x[rs1] + imm + 3] = int(dataa[0:2], 16)
+    elif (string == "sh"):
         if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = int(dataa[6:],16)
-            memory[x[rs1] + imm + 1] = int(dataa[4:6],16)
-    elif(string=="sb"):
+            memory[x[rs1] + imm] = int(dataa[6:], 16)
+            memory[x[rs1] + imm + 1] = int(dataa[4:6], 16)
+    elif (string == "sb"):
         if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = int(dataa[6:],16)
-
-
-
-
-
+            memory[x[rs1] + imm] = int(dataa[6:], 16)
 
 
 def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
@@ -495,18 +494,18 @@ def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
     return
 
 
-def UJ_Format(machinecode,pc):  # RAJASEKHAR 2019CSB1105
+def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     # jal
     opcode = machinecode[25:32]
-    imm=machinecode[0]+machinecode[11:20]+machinecode[20]+machinecode[1:11]
-    #imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
-    print(int(imm,2))
-    rd=machinecode[20:25]
+    imm = machinecode[0] + machinecode[11:20] + machinecode[20] + machinecode[1:11]
+    # imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
+    print(int(imm, 2))
+    rd = machinecode[20:25]
     if (opcode == "1101111"):
         # jal
         print(pc)
-        pc=executePraveen1("jal",rd,imm,pc)
-        print("jal",pc)
+        pc = executePraveen1("jal", rd, imm, pc)
+        print("jal", pc)
     else:
         print("Error")
 
@@ -523,21 +522,27 @@ for line in file:
         continue
     if (datasegOrnot == 1):  # fetching memory from data segment
         dataArray = line.split(' ')
-        daata=dataArray[1][2:]
-        memory[int(dataArray[0], 16)] =  int(daata,16)
+        daata = dataArray[1][2:]
+        memory[int(dataArray[0], 16)] = int(daata, 16)
         continue
 file.close()
 
-
+Instruct={}
+last_PC=0
 file = open('machinecd.mc', 'r')
 for line in file:
     if (line == "\n"):
         break
     inputsArray = line.split(' ')
+    tempc = int(inputsArray[0][2:], 16)
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
+    Instruct[tempc] = binaryno
+    last_PC = tempc
+file.close()
     # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
-    print("Instruction in binary: ", binaryno)
-    
+    #print("Instruction in binary: ", binaryno)
+while (PC<=last_PC):
+    binaryno=Instruct[PC]
     opcode = binaryno[25:32]
     # print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
@@ -547,42 +552,42 @@ for line in file:
     U_oper = ["0110111", "0010111"]
     UJ_oper = ["1101111"]
 
-    address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
-    address_in_decimal = int(address_in_binary, 2)
+    #address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
+    #address_in_decimal = int(address_in_binary, 2)
 
-    if PC == address_in_decimal:
-        if opcode in R_oper:
-            # decode
+    #if PC == address_in_decimal:
+    if opcode in R_oper:
+        # decode
 
-            R_Format(binaryno)
-            PC += 4
-        elif opcode in I_oper:
-            # decode
-            PC=I_Format(binaryno,PC)
-            
+        R_Format(binaryno)
+        PC += 4
+    elif opcode in I_oper:
+        # decode
+        PC = I_Format(binaryno, PC)
 
-        elif opcode in S_oper:
-            S_Format(binaryno)
-            PC += 4
-            # decode
 
-        elif opcode in SB_oper:
-            # decode
-            PC = sb_format(binaryno, PC)
+    elif opcode in S_oper:
+        S_Format(binaryno)
+        PC += 4
+        # decode
 
-        elif opcode in U_oper:
-            # decode
-            U_Format(binaryno, PC)
-            PC += 4
+    elif opcode in SB_oper:
+        # decode
+        PC = sb_format(binaryno, PC)
 
-        elif opcode in UJ_oper:
-            # decode
-            PC=UJ_Format(binaryno,PC)
-            
-           	
-        else:
-            print("Error")
-            PC += 4
+    elif opcode in U_oper:
+        # decode
+        U_Format(binaryno, PC)
+        PC += 4
+
+    elif opcode in UJ_oper:
+        # decode
+        PC = UJ_Format(binaryno, PC)
+
+
+    else:
+        print("Error")
+        PC += 4
 
 print(memory)  # printing memory key is address and value is data
 
