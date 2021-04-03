@@ -1,7 +1,7 @@
 x = []  # Registers
 x.append(0)
 for i in range(1, 32):
-    x.append(i)
+    x.append(0)
     if (i == 3):
         x[i] = int("0x10000000", 16)  # gp
     elif (i == 2):
@@ -217,7 +217,28 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
         print("x[", i, "]=", x[i], end=" ", sep='')
 
     return pc
-
+def executePraveen1(string,rd,imm,pc):				#Praveen Kumar 2019CSB1108    jal  function
+	rd=int(rd,2)
+	imm=int(imm,2)
+	imm=imm << 1
+	if(string=='jal'):
+		temp=pc
+		pc=pc+imm
+		x[rd]=temp + 4
+	return pc
+def executePraveen2(string,rs1,rd,imm,pc):				#Praveen Kumar 2019CSB1108    jalr function
+	rs1=int(rs1,2)
+	rd=int(rd,2)
+	imm=int(imm,2)
+	if(string=='jalr'):
+		temp=pc
+		pc=x[rs1]+imm
+		if(rd!=0):
+			x[rd]=temp+4
+		
+		
+	return pc	
+	
 
 # decoding functions
 def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
@@ -302,7 +323,7 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
     return
 
 
-def I_Format(binaryInstruction):  # Pratima_Singh
+def I_Format(binaryInstruction,PC):  # Pratima_Singh
     # addi, andi, ori, lb, lh, lw, jalr
     imm = binaryInstruction[0:12]
     rs1 = binaryInstruction[12:17]
@@ -314,37 +335,47 @@ def I_Format(binaryInstruction):  # Pratima_Singh
         if (funct3 == "000"):
             # lb
             print("lb")
+            PC+=4
         elif (funct3 == "001"):
             # lh
             print("lh")
+            PC+=4
         elif (funct3 == "010"):
             # lw
             print("lw")
+            PC+=4
         else:
             print("Error")
+            PC+=4
     elif (opcode == "0010011"):
         if (funct3 == "000"):
             # addi
             executePraveen("addi", rd, rs1, imm)
             print("addi")
+            PC+=4
         elif (funct3 == "111"):
             # andi
             executePraveen("andi", rd, rs1, imm)
             print("andi")
+            PC+=4
         elif (funct3 == "110"):
             # ori
             executePraveen("ori", rd, rs1, imm)
             print("ori")
+            PC+=4
         else:
             print("Error")
+            PC+=4
     elif (opcode == "1100111"):
         if (funct3 == "000"):
             # jalr
+            PC=executePraveen2("jalr",rs1,rd,imm,PC)
             print("jalr")
         else:
             print("Error")
+            PC+=4
 
-    return
+    return PC
 
 
 def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
@@ -464,17 +495,22 @@ def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
     return
 
 
-def UJ_Format(machinecode):  # RAJASEKHAR 2019CSB1105
+def UJ_Format(machinecode,pc):  # RAJASEKHAR 2019CSB1105
     # jal
     opcode = machinecode[25:32]
-
+    imm=machinecode[0]+machinecode[11:20]+machinecode[20]+machinecode[1:11]
+    #imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
+    print(int(imm,2))
+    rd=machinecode[20:25]
     if (opcode == "1101111"):
         # jal
-        print("jal")
+        print(pc)
+        pc=executePraveen1("jal",rd,imm,pc)
+        print("jal",pc)
     else:
         print("Error")
 
-    return
+    return pc
 
 
 # fetching
@@ -501,6 +537,7 @@ for line in file:
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
     # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
     print("Instruction in binary: ", binaryno)
+    
     opcode = binaryno[25:32]
     # print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
@@ -521,8 +558,8 @@ for line in file:
             PC += 4
         elif opcode in I_oper:
             # decode
-            I_Format(binaryno)
-            PC += 4
+            PC=I_Format(binaryno,PC)
+            
 
         elif opcode in S_oper:
             S_Format(binaryno)
@@ -540,8 +577,9 @@ for line in file:
 
         elif opcode in UJ_oper:
             # decode
-            UJ_Format(binaryno)
-            PC += 4
+            PC=UJ_Format(binaryno,PC)
+            
+           	
         else:
             print("Error")
             PC += 4
