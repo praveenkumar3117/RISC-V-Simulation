@@ -83,7 +83,11 @@ def executeManan(string, rs1, rs2, rd):
 
 
 def executePratima(string, rd, imm, PC):
-    imm = int(imm, 2)
+    if(imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else: imm = int(imm, 2)
     rd = int(rd, 2)
     print("imm = ", imm, " rd = ", rd)
     if string == "lui":  # executing lui
@@ -144,7 +148,13 @@ def executeRajasekhar(string, rs1, rs2, rd):
 def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
     rs1 = int(rs1, 2)
     rd = int(rd, 2)
-    imm = int(imm, 2)
+    print(imm)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
 
     if (string == "addi"):
         print("Operation is addi")
@@ -176,7 +186,12 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
 def executeManan1(string, rs1, rs2, imm, pc):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
-    imm = int(imm, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
     imm = imm << 1
     if string == "bge":
         if x[rs1] >= x[rs2]:
@@ -199,7 +214,12 @@ def executeManan1(string, rs1, rs2, imm, pc):
 def executeRajasekhar1(string, rs1, rs2, imm, pc):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
-    imm = int(imm, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
     imm = imm << 1
     if (string == 'beq'):
         if (x[rs1] == x[rs2]):
@@ -221,7 +241,12 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
 
 def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
     rd = int(rd, 2)
-    imm = int(imm, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
     imm = imm << 1
     if (string == 'jal'):
         temp = pc
@@ -233,7 +258,12 @@ def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  f
 def executePraveen2(string, rs1, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jalr function
     rs1 = int(rs1, 2)
     rd = int(rd, 2)
-    imm = int(imm, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
     if (string == 'jalr'):
         temp = pc
         pc = x[rs1] + imm
@@ -338,14 +368,17 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
         if (funct3 == "000"):
             # lb
             print("lb")
+            Memoryread("lb",rs1,rd,imm)
             PC += 4
         elif (funct3 == "001"):
             # lh
             print("lh")
+            Memoryread("lh", rs1, rd, imm)
             PC += 4
         elif (funct3 == "010"):
             # lw
             print("lw")
+            Memoryread("lw", rs1, rd, imm)
             PC += 4
         else:
             print("Error")
@@ -409,22 +442,88 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
 def MemoryStore(string, rs1, rs2, imm):
     rs1 = int(rs1, 2)
     rs2 = int(rs2, 2)
-    imm = int(imm, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
     dataa = hex(x[rs2])[2:].zfill(8)
-
+    print(dataa)
     if (string == "sw"):
         if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
-            memory[x[rs1] + imm] = int(dataa[6:], 16)
-            memory[x[rs1] + imm + 1] = int(dataa[4:6], 16)
-            memory[x[rs1] + imm + 2] = int(dataa[2:4], 16)
-            memory[x[rs1] + imm + 3] = int(dataa[0:2], 16)
+            memory[x[rs1] + imm] = dataa[6:]
+            memory[x[rs1] + imm + 1] = dataa[4:6]
+            memory[x[rs1] + imm + 2] = dataa[2:4]
+            memory[x[rs1] + imm + 3] = dataa[0:2]
     elif (string == "sh"):
         if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = int(dataa[6:], 16)
-            memory[x[rs1] + imm + 1] = int(dataa[4:6], 16)
+            memory[x[rs1] + imm] = dataa[6:]
+            memory[x[rs1] + imm + 1] = dataa[4:6]
     elif (string == "sb"):
         if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = int(dataa[6:], 16)
+            memory[x[rs1] + imm] = dataa[6:]
+
+
+def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
+    length = len(string)
+    #print(length)
+    neg = -1 #intialize neg with -1
+    sum = 0
+    i = 0 #counter
+    while i <= length-1:
+        if(string[i] == '0'):
+            sum += -pow(2, i)
+        i = i + 1
+    neg = neg + sum
+    return neg
+
+
+
+def Memoryread(string,rs1,rd,imm): #Pratima Singh 2018CEB1021
+    rs1 = int(rs1, 2)
+    rd = int(rd, 2)
+    #print(imm[0:1]) to check the sign bit
+    check = imm
+    if(imm[0:1] == '1'): #imm is a negative number, since sign bit is 1
+        check = str(check)
+        check = check[::-1] #reversing the string
+        #print(t)
+        t1 = findnegative(check)
+        #print(t1)
+        imm = t1
+    else: imm = int(imm ,2) #sign bit is 0
+    print("rs1 :", rs1, "rd :", rd, " imm :", imm)
+    temp1 = x[rs1] + imm
+    if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
+        if(string == "lw") :
+            if (temp1 >= 268435456): #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
+                    print(temp2)
+                    x[rd] = int(temp2,16)
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        elif string == "lh":
+            if temp1 >= 268435456: #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3] + memory[temp1 + 2]
+                    x[rd] = int(temp2, 16)
+
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        elif string == "lb":
+            if temp1>= 268435456: #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3]
+                    x[rd] = int(temp2, 16)
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        else: print("\nError")
+
+        print("Registers :")
+        for i in range(0, 32):
+            print("x[", i, "]=", x[i])
 
 
 def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
@@ -522,8 +621,8 @@ for line in file:
         continue
     if (datasegOrnot == 1):  # fetching memory from data segment
         dataArray = line.split(' ')
-        daata = dataArray[1][2:]
-        memory[int(dataArray[0], 16)] = int(daata, 16)
+        daata = dataArray[1][2:4]
+        memory[int(dataArray[0], 16)] = daata
         continue
 file.close()
 
@@ -534,7 +633,7 @@ for line in file:
     if (line == "\n"):
         break
     inputsArray = line.split(' ')
-    tempc = int(inputsArray[0][2:], 16)
+    tempc = int(inputsArray[0][2:],16)
     binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
     Instruct[tempc] = binaryno
     last_PC = tempc
@@ -624,3 +723,5 @@ def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
         k -= 1
 
     return str
+
+
