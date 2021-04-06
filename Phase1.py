@@ -9,6 +9,13 @@ for i in range(1, 32):
 
 memory = {}
 
+def WriteBack(rd,content):
+    x[rd]=content
+
+def printregister():
+    for i in range(0,32):
+        print("x[",i,"]=",x[i])
+
 
 def execute(string, rs1, rs2, rd, imm, PC):
     # string is referring to the the operation we are going to do
@@ -19,7 +26,7 @@ def execute(string, rs1, rs2, rd, imm, PC):
     elif(string == "slt" or string == "srl" or string == "sub" or string == "sra"):
         executeRajasekhar(string,rs1,rs2,rd)
     elif(string=="addi" or string=="andi" or string=="ori"):
-        executePraveen(string,rd,rs1,rs2)
+        executePraveen(string,rd,rs1,imm)
     elif(string=="lui" or string=="auipc"):
         executePratima(string,rd,imm,PC)
     elif(string=="bge" or string=="blt"):
@@ -42,44 +49,40 @@ def executeMuskan(string, rs1, rs2, rd):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
+        #print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] + x[rs2]
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-            x[rd] = s
+            WriteBack(rd, s)
 
 
     elif (string == "and"):  # executing and
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
+        #print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] & x[rs2]
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-            x[rd] = s
+            WriteBack(rd, s)
 
 
     elif (string == "or"):  # executing or
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
+        #print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] | x[rs2]
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-            x[rd] = s
+            WriteBack(rd, s)
 
 
     elif (string == "sll"):  # executing sll
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
+        #print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] << x[rs2]
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-            x[rd] = s
-
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
+            WriteBack(rd, s)
 
 
 def executeManan(string, rs1, rs2, rd):
@@ -89,23 +92,19 @@ def executeManan(string, rs1, rs2, rd):
     if string == 'xor':
         output = x[rs1] ^ x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            x[rd] = output
+            WriteBack(rd, output)
     elif string == 'mul':
         output = x[rs1] * x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            x[rd] = output
+            WriteBack(rd, output)
     elif string == "div":
         output = x[rs1] // x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            x[rd] = output
+            WriteBack(rd, output)
     elif string == "rem":
         output = x[rs1] % x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            x[rd] = output
-    print(string)
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i], end=" ", sep='')
+            WriteBack(rd, output)
 
 
 def executePratima(string, rd, imm, PC):
@@ -115,25 +114,22 @@ def executePratima(string, rd, imm, PC):
         imm = findnegative(check)
     else: imm = int(imm, 2)
     rd = int(rd, 2)
-    print("imm = ", imm, " rd = ", rd)
+    #print("imm = ", imm, " rd = ", rd)
     if string == "lui":  # executing lui
         if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
-            x[rd] = 0 | imm
-            temp = x[rd] << 12
+            temp = 0 | imm
+            temp = temp << 12
             if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                x[rd] = temp
+                WriteBack(rd, temp)
     elif string == "auipc":  # executing auipc
         if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
             temp = 0 | imm
             temp = temp << 12
             temp = temp + PC
             if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                x[rd] = temp
+                WriteBack(rd, temp)
     else:
         print("Error")
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
 
 
 def executeRajasekhar(string, rs1, rs2, rd):
@@ -144,37 +140,35 @@ def executeRajasekhar(string, rs1, rs2, rd):
 
     if (string == "slt"):
         if (x[rs1] < x[rs2]):
-            x[rd] = 1
+            jot = 1
+            WriteBack(rd, jot)
         else:
-            x[rd] = 0
+            jot = 0
+            WriteBack(rd, jot)
     elif (string == "sra"):
         result = x[rs1] >> x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
-            x[rd] = result
+            WriteBack(rd, result)
     elif (string == "srl"):
         result = x[rs1] >> x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):
-            x[rd] = result
+            WriteBack(rd, result)
     elif (string == "sub"):
         result = x[rs1] - x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):
-            x[rd] = result
-
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
+            WriteBack(rd, result)
 
 
 def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
     rs1 = int(rs1, 2)
     rd = int(rd, 2)
-    print(imm)
+    #print(imm)
     if (imm[0:1] == '1'):
         check = str(imm)
         check = check[::-1]
@@ -183,30 +177,25 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         imm = int(imm, 2)
 
     if (string == "addi"):
-        print("Operation is addi")
+        #print("Operation is addi")
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] + imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                x[rd] = s
+                WriteBack(rd, s)
 
     elif (string == "andi"):
-        print("Operation is andi")
+        #print("Operation is andi")
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] & imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                x[rd] = s
+                WriteBack(rd, s)
 
     elif (string == "ori"):
-        print("Operation is ori")
+        #print("Operation is ori")
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] | imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                x[rd] = s
-
-    print("rs1= ", rs1, " rd= ", rd, " imm= ", imm)
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
+                WriteBack(rd, s)
 
 
 def executeManan1(string, rs1, rs2, imm, pc):
@@ -229,10 +218,6 @@ def executeManan1(string, rs1, rs2, imm, pc):
             pc = pc + imm
         else:
             pc = pc + 4
-
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i], end=" ", sep='')
 
     return pc
 
@@ -258,9 +243,6 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
         else:
             pc = pc + 4
 
-    print("Registers :")
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i], end=" ", sep='')
 
     return pc
 
@@ -277,7 +259,8 @@ def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  f
     if (string == 'jal'):
         temp = pc
         pc = pc + imm
-        x[rd] = temp + 4
+        jot = temp + 4
+        WriteBack(rd, jot)
     return pc
 
 
@@ -294,7 +277,8 @@ def executePraveen2(string, rs1, rd, imm, pc):  # Praveen Kumar 2019CSB1108    j
         temp = pc
         pc = x[rs1] + imm
         if (rd != 0):
-            x[rd] = temp + 4
+            jot = temp + 4
+            WriteBack(rd, jot)
 
     return pc
 
@@ -336,7 +320,6 @@ def MemoryStore(string, dataa,address):
     elif (string == "sb"):
         memory[address] = dataa[6:]
 
-
 def executeRead(string,rs1,rd,imm):
     rs1 = int(rs1, 2)
     rd = int(rd, 2)
@@ -361,34 +344,81 @@ def Memoryread(string,temp1,rd,imm): #Pratima Singh 2018CEB1021
             if (temp1 >= 268435456): #data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
-                    print(temp2)
-                    x[rd] = int(temp2,16)
+                    #print(temp2)
+                    jot = int(temp2,16)
+                    WriteBack(rd,jot)
                 else: print("\n  memory location not found")
             else: print("\n Invalid offset")
         elif string == "lh":
             if temp1 >= 268435456: #data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2]
-                    x[rd] = int(temp2, 16)
-
+                    jot = int(temp2, 16)
+                    WriteBack(rd, jot)
                 else: print("\n  memory location not found")
             else: print("\n Invalid offset")
         elif string == "lb":
             if temp1>= 268435456: #data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
                     temp2 = memory[temp1 + 3]
-                    x[rd] = int(temp2, 16)
+                    jot = int(temp2, 16)
+                    WriteBack(rd, jot)
                 else: print("\n  memory location not found")
             else: print("\n Invalid offset")
         else: print("\nError")
 
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
-
-
 
 #decoding functions
+
+def decode(binaryno,PC):
+    opcode = binaryno[25:32]
+    # print("opcode in the instruction ",opcode)
+    R_oper = ["0110011"]
+    I_oper = ["0010011", "0000011", "1100111"]
+    S_oper = ["0100011"]
+    SB_oper = ["1100011"]
+    U_oper = ["0110111", "0010111"]
+    UJ_oper = ["1101111"]
+
+    # address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
+    # address_in_decimal = int(address_in_binary, 2)
+
+    # if PC == address_in_decimal:
+    if opcode in R_oper:
+        # decode
+
+        R_Format(binaryno,PC)
+        PC += 4
+    elif opcode in I_oper:
+        # decode
+        PC = I_Format(binaryno, PC)
+
+
+    elif opcode in S_oper:
+        S_Format(binaryno,PC)
+        PC += 4
+        # decode
+
+    elif opcode in SB_oper:
+        # decode
+        PC = sb_format(binaryno, PC)
+
+    elif opcode in U_oper:
+        # decode
+        U_Format(binaryno, PC)
+        PC += 4
+
+    elif opcode in UJ_oper:
+        # decode
+        PC = UJ_Format(binaryno, PC)
+
+
+    else:
+        print("Error")
+        PC += 4
+    return PC
+
+
 def R_Format(binaryInstruction,PC):  # MUSKAN GUPTA 2019CSB1100
     # add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
     funct7 = binaryInstruction[0:7]
@@ -489,7 +519,7 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
     funct3 = binaryInstruction[17:20]
     rd = binaryInstruction[20:25]
     opcode = binaryInstruction[25:32]
-    print("opcode: ", opcode, " imm: ", imm, " rs1: ", rs1, " funct3: ", funct3, " rd: ", rd)
+    #print("opcode: ", opcode, " imm: ", imm, " rs1: ", rs1, " funct3: ", funct3, " rd: ", rd)
     if (opcode == "0000011"):
         if (funct3 == "000"):
             # lb
@@ -513,18 +543,18 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
     elif (opcode == "0010011"):
         if (funct3 == "000"):
             # addi
-            executePraveen("addi", rd, rs1, imm)
-            print("addi")
+            execute("addi",rs1," ",rd,imm,PC)
+            #print("addi")
             PC += 4
         elif (funct3 == "111"):
             # andi
-            executePraveen("andi", rd, rs1, imm)
-            print("andi")
+            execute("andi", rs1, " ", rd, imm, PC)
+            #print("andi")
             PC += 4
         elif (funct3 == "110"):
             # ori
-            executePraveen("ori", rd, rs1, imm)
-            print("ori")
+            execute("ori", rs1, " ", rd, imm, PC)
+            #print("ori")
             PC += 4
         else:
             print("Error")
@@ -532,8 +562,8 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
     elif (opcode == "1100111"):
         if (funct3 == "000"):
             # jalr
-            PC = executePraveen2("jalr", rs1, rd, imm, PC)
-            print("jalr")
+            PC = execute("jalr",rs1," ",rd,imm,PC)
+            #print("jalr")
         else:
             print("Error")
             PC += 4
@@ -549,17 +579,17 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
     imm = binary[0] + binary[24] + binary[1:7] + binary[20:24]
     # print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
     if funct3 == '000':
-        print("beq")
-        pc = executeRajasekhar1("beq", rs1, rs2, imm, pc)
+        #print("beq")
+        pc=execute("beq",rs1, rs2," ", imm, pc)
     elif funct3 == '001':
-        print("bne")
-        pc = executeRajasekhar1("bne", rs1, rs2, imm, pc)
+        #print("bne")
+        pc=execute("bne", rs1, rs2," ", imm, pc)
     elif funct3 == '101':
-        print("bge")
-        pc = executeManan1("bge", rs1, rs2, imm, pc)
+        #print("bge")
+        pc = execute("bge", rs1, rs2, " ", imm, pc)
     elif funct3 == '100':
-        print("blt")
-        pc = executeManan1("blt", rs1, rs2, imm, pc)
+        #print("blt")
+        pc = execute("blt", rs1, rs2, " ", imm, pc)
     else:
         print("Error")
 
@@ -637,7 +667,7 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     opcode = machinecode[25:32]
     imm = machinecode[0] + machinecode[11:20] + machinecode[20] + machinecode[1:11]
     # imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
-    print(int(imm, 2))
+    #print(int(imm, 2))
     rd = machinecode[20:25]
     if (opcode == "1101111"):
         # jal
@@ -650,53 +680,7 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     return pc
 
 
-def decode(binaryno,PC):
-    opcode = binaryno[25:32]
-    # print("opcode in the instruction ",opcode)
-    R_oper = ["0110011"]
-    I_oper = ["0010011", "0000011", "1100111"]
-    S_oper = ["0100011"]
-    SB_oper = ["1100011"]
-    U_oper = ["0110111", "0010111"]
-    UJ_oper = ["1101111"]
 
-    # address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
-    # address_in_decimal = int(address_in_binary, 2)
-
-    # if PC == address_in_decimal:
-    if opcode in R_oper:
-        # decode
-
-        R_Format(binaryno)
-        PC += 4
-    elif opcode in I_oper:
-        # decode
-        PC = I_Format(binaryno, PC)
-
-
-    elif opcode in S_oper:
-        S_Format(binaryno)
-        PC += 4
-        # decode
-
-    elif opcode in SB_oper:
-        # decode
-        PC = sb_format(binaryno, PC)
-
-    elif opcode in U_oper:
-        # decode
-        U_Format(binaryno, PC)
-        PC += 4
-
-    elif opcode in UJ_oper:
-        # decode
-        PC = UJ_Format(binaryno, PC)
-
-
-    else:
-        print("Error")
-        PC += 4
-    return PC
 
 def fetch():
 # fetching
@@ -733,8 +717,8 @@ def fetch():
         PC=decode(binaryno,PC)
 
 
-
-
+fetch()
+printregister()
 
 
 print(memory)  # printing memory key is address and value is data
@@ -785,3 +769,4 @@ def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign ex
         i = i + 1
     neg = neg + sum
     return neg
+
