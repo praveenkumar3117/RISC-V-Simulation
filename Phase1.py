@@ -10,6 +10,32 @@ for i in range(1, 32):
 memory = {}
 
 
+def execute(string, rs1, rs2, rd, imm, PC):
+    # string is referring to the the operation we are going to do
+    if (string == "add" or string == "and" or string == "or" or string == "sll"):
+        executeMuskan(string, rs1, rs2, rd)
+    elif(string == "xor" or string == "mul" or string == "div" or string == "rem"):
+        executeManan(string,rs1,rs2,rd)
+    elif(string == "slt" or string == "srl" or string == "sub" or string == "sra"):
+        executeRajasekhar(string,rs1,rs2,rd)
+    elif(string=="addi" or string=="andi" or string=="ori"):
+        executePraveen(string,rd,rs1,rs2)
+    elif(string=="lui" or string=="auipc"):
+        executePratima(string,rd,imm,PC)
+    elif(string=="bge" or string=="blt"):
+        PC=executeManan1(string,rs1, rs2, imm, PC)
+    elif (string == "beq" or string == "bne"):
+        PC = executeRajasekhar1(string,rs1,rs2,imm,PC)
+    elif(string=="jal"):
+        PC=executePraveen1(string, rd, imm, PC)
+    elif(string=="jalr"):
+        PC=executePraveen2(string, rs1, rd, imm, PC)
+    elif(string=="sw" or string=="sh" or string=="sb"):
+        executeStore(string,rs1,rs2,imm)
+    elif(string=="lw" or string=="lh" or string=="lb"):
+        executeRead(string,rs1,rd,imm)
+    return PC
+
 # executing functions
 def executeMuskan(string, rs1, rs2, rd):
     if (string == "add"):  # executing add
@@ -273,8 +299,97 @@ def executePraveen2(string, rs1, rd, imm, pc):  # Praveen Kumar 2019CSB1108    j
     return pc
 
 
-# decoding functions
-def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
+def executeStore(string, rs1, rs2, imm):
+    rs1 = int(rs1, 2)
+    rs2 = int(rs2, 2)
+    if (imm[0:1] == '1'):
+        check = str(imm)
+        check = check[::-1]
+        imm = findnegative(check)
+    else:
+        imm = int(imm, 2)
+    dataa = hex(x[rs2])[2:].zfill(8)
+    #print(dataa)
+    if (string == "sw"):
+        if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
+            address=x[rs1] + imm #calculating address
+            MemoryStore("sw", dataa, address)
+    elif (string == "sh"):
+        if (x[rs1] + imm >= 268435456):
+            address = x[rs1] + imm
+            MemoryStore("sh", dataa, address)
+    elif (string == "sb"):
+        if (x[rs1] + imm >= 268435456):
+            address = x[rs1] + imm
+            MemoryStore("sb", dataa, address)
+
+
+def MemoryStore(string, dataa,address):
+    if (string == "sw"):
+        memory[address] = dataa[6:]
+        memory[address + 1] = dataa[4:6]
+        memory[address + 2] = dataa[2:4]
+        memory[address + 3] = dataa[0:2]
+    elif (string == "sh"):
+        memory[address] = dataa[6:]
+        memory[address + 1] = dataa[4:6]
+    elif (string == "sb"):
+        memory[address] = dataa[6:]
+
+
+def executeRead(string,rs1,rd,imm):
+    rs1 = int(rs1, 2)
+    rd = int(rd, 2)
+    # print(imm[0:1]) to check the sign bit
+    check = imm
+    if (imm[0:1] == '1'):  # imm is a negative number, since sign bit is 1
+        check = str(check)
+        check = check[::-1]  # reversing the string
+        # print(t)
+        t1 = findnegative(check)
+        # print(t1)
+        imm = t1
+    else:
+        imm = int(imm, 2)  # sign bit is 0
+    print("rs1 :", rs1, "rd :", rd, " imm :", imm)
+    temp1 = x[rs1] + imm    #calculating address
+    Memoryread(string,temp1, rd, imm)
+
+def Memoryread(string,temp1,rd,imm): #Pratima Singh 2018CEB1021
+    if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
+        if(string == "lw") :
+            if (temp1 >= 268435456): #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
+                    print(temp2)
+                    x[rd] = int(temp2,16)
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        elif string == "lh":
+            if temp1 >= 268435456: #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3] + memory[temp1 + 2]
+                    x[rd] = int(temp2, 16)
+
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        elif string == "lb":
+            if temp1>= 268435456: #data segment starts with address 268435456 or 0x10000000
+                if temp1 in memory:
+                    temp2 = memory[temp1 + 3]
+                    x[rd] = int(temp2, 16)
+                else: print("\n  memory location not found")
+            else: print("\n Invalid offset")
+        else: print("\nError")
+
+        print("Registers :")
+        for i in range(0, 32):
+            print("x[", i, "]=", x[i])
+
+
+
+#decoding functions
+def R_Format(binaryInstruction,PC):  # MUSKAN GUPTA 2019CSB1100
     # add, and, or, sll, slt, sra, srl, sub, xor, mul, div, rem
     funct7 = binaryInstruction[0:7]
     rs2 = binaryInstruction[7:12]
@@ -287,66 +402,77 @@ def R_Format(binaryInstruction):  # MUSKAN GUPTA 2019CSB1100
         if (funct7 == "0000000"):
             if (funct3 == "000"):
                 # add
-                executeMuskan("add", rs1, rs2, rd)
-                print("add")
+                execute("add", rs1, rs2, rd," ", PC) #" " is don't care for imm
+
+                #print("add")
             elif (funct3 == "111"):
                 # and
-                executeMuskan("and", rs1, rs2, rd)
-                print(x)
-                print("and")
+                execute("and", rs1, rs2, rd, " ", PC)
+                #print(x)
+                #print("and")
             elif (funct3 == "110"):
                 # or
-                executeMuskan("or", rs1, rs2, rd)
-                print(x)
+                execute("or", rs1, rs2, rd, " ", PC)
+
+                #print(x)
                 # add, and, or, sll,
-                print("or")
+                #print("or")
             elif (funct3 == "001"):
                 # sll
-                executeMuskan("sll", rs1, rs2, rd)
-                print(x)
-                print("sll")
+                execute("sll", rs1, rs2, rd, " ", PC)
+
+                #print(x)
+                #print("sll")
             elif (funct3 == "010"):
                 # slt
-                executeRajasekhar("slt", rs1, rs2, rd)
-                print(x)
-                print("slt")
+                execute("slt", rs1, rs2, rd, " ", PC)
+                #executeRajasekhar("slt", rs1, rs2, rd)
+                #print(x)
+                #print("slt")
             elif (funct3 == "101"):
                 # srl
-                executeRajasekhar("srl", rs1, rs2, rd)
-                print(x)
-                print("srl")
+                execute("srl", rs1, rs2, rd, " ", PC)
+                #executeRajasekhar("srl", rs1, rs2, rd)
+                #print(x)
+                #print("srl")
             elif (funct3 == "100"):
                 # xor
-                executeManan("xor", rs1, rs2, rd)
-                print("xor")
+                execute("xor", rs1, rs2, rd, " ", PC)
+                #executeManan("xor", rs1, rs2, rd)
+                #print("xor")
             else:
                 print("Error")
         elif (funct7 == "0100000"):
             if (funct3 == "000"):
                 # sub
-                executeRajasekhar("sub", rs1, rs2, rd)
-                print(x)
-                print("sub")
+                execute("sub", rs1, rs2, rd, " ", PC)
+                #executeRajasekhar("sub", rs1, rs2, rd)
+                #print(x)
+                #print("sub")
             elif (funct3 == "101"):
                 # sra
-                executeRajasekhar("sra", rs1, rs2, rd)
-                print(x)
-                print("sra")
+                execute("sra", rs1, rs2, rd, " ", PC)
+                #executeRajasekhar("sra", rs1, rs2, rd)
+                #print(x)
+                #print("sra")
             else:
                 print("Error")
         elif (funct7 == "0000001"):
             if (funct3 == "000"):
                 # mul
-                executeManan("mul", rs1, rs2, rd)
+                execute("mul", rs1, rs2, rd, " ", PC)
+                #executeManan("mul", rs1, rs2, rd)
                 print("mul")
             elif (funct3 == "100"):
                 # div
-                executeManan("div", rs1, rs2, rd)
-                print("div")
+                execute("div", rs1, rs2, rd, " ", PC)
+                #executeManan("div", rs1, rs2, rd)
+                #print("div")
             elif (funct3 == "110"):
                 # rem
-                executeManan("rem", rs1, rs2, rd)
-                print("rem")
+                execute("rem", rs1, rs2, rd, " ", PC)
+                #executeManan("rem", rs1, rs2, rd)
+                #print("rem")
             else:
                 print("Error")
         else:
@@ -367,18 +493,19 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
     if (opcode == "0000011"):
         if (funct3 == "000"):
             # lb
-            print("lb")
-            Memoryread("lb",rs1,rd,imm)
+            #print("lb")
+            execute("lb",rs1," ",rd,imm,PC)
             PC += 4
         elif (funct3 == "001"):
             # lh
-            print("lh")
-            Memoryread("lh", rs1, rd, imm)
+            #print("lh")
+            #Memoryread("lh", rs1, rd, imm)
+            execute("lh", rs1, " ", rd, imm, PC)
             PC += 4
         elif (funct3 == "010"):
             # lw
-            print("lw")
-            Memoryread("lw", rs1, rd, imm)
+            #print("lw")
+            execute("lw", rs1, " ", rd, imm, PC)
             PC += 4
         else:
             print("Error")
@@ -439,94 +566,7 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
     return pc
 
 
-def MemoryStore(string, rs1, rs2, imm):
-    rs1 = int(rs1, 2)
-    rs2 = int(rs2, 2)
-    if (imm[0:1] == '1'):
-        check = str(imm)
-        check = check[::-1]
-        imm = findnegative(check)
-    else:
-        imm = int(imm, 2)
-    dataa = hex(x[rs2])[2:].zfill(8)
-    print(dataa)
-    if (string == "sw"):
-        if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
-            memory[x[rs1] + imm] = dataa[6:]
-            memory[x[rs1] + imm + 1] = dataa[4:6]
-            memory[x[rs1] + imm + 2] = dataa[2:4]
-            memory[x[rs1] + imm + 3] = dataa[0:2]
-    elif (string == "sh"):
-        if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = dataa[6:]
-            memory[x[rs1] + imm + 1] = dataa[4:6]
-    elif (string == "sb"):
-        if (x[rs1] + imm >= 268435456):
-            memory[x[rs1] + imm] = dataa[6:]
-
-
-def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
-    length = len(string)
-    #print(length)
-    neg = -1 #intialize neg with -1
-    sum = 0
-    i = 0 #counter
-    while i <= length-1:
-        if(string[i] == '0'):
-            sum += -pow(2, i)
-        i = i + 1
-    neg = neg + sum
-    return neg
-
-
-
-def Memoryread(string,rs1,rd,imm): #Pratima Singh 2018CEB1021
-    rs1 = int(rs1, 2)
-    rd = int(rd, 2)
-    #print(imm[0:1]) to check the sign bit
-    check = imm
-    if(imm[0:1] == '1'): #imm is a negative number, since sign bit is 1
-        check = str(check)
-        check = check[::-1] #reversing the string
-        #print(t)
-        t1 = findnegative(check)
-        #print(t1)
-        imm = t1
-    else: imm = int(imm ,2) #sign bit is 0
-    print("rs1 :", rs1, "rd :", rd, " imm :", imm)
-    temp1 = x[rs1] + imm
-    if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
-        if(string == "lw") :
-            if (temp1 >= 268435456): #data segment starts with address 268435456 or 0x10000000
-                if temp1 in memory:
-                    temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
-                    print(temp2)
-                    x[rd] = int(temp2,16)
-                else: print("\n  memory location not found")
-            else: print("\n Invalid offset")
-        elif string == "lh":
-            if temp1 >= 268435456: #data segment starts with address 268435456 or 0x10000000
-                if temp1 in memory:
-                    temp2 = memory[temp1 + 3] + memory[temp1 + 2]
-                    x[rd] = int(temp2, 16)
-
-                else: print("\n  memory location not found")
-            else: print("\n Invalid offset")
-        elif string == "lb":
-            if temp1>= 268435456: #data segment starts with address 268435456 or 0x10000000
-                if temp1 in memory:
-                    temp2 = memory[temp1 + 3]
-                    x[rd] = int(temp2, 16)
-                else: print("\n  memory location not found")
-            else: print("\n Invalid offset")
-        else: print("\nError")
-
-        print("Registers :")
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
-
-
-def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
+def S_Format(m_c,PC):  # PRAVEEN KUMAR 2019CSB1108
 
     func3 = m_c[17:20]  # funct3
     rs1 = m_c[12:17]  # source register1
@@ -555,21 +595,19 @@ def S_Format(m_c):  # PRAVEEN KUMAR 2019CSB1108
     if (func3 == '000'):
 
         # Execution of store_byte(sb)
-        print("sb")
-        MemoryStore("sb", rs1, rs2, imm)
-
+        #print("sb")
+        execute("sb",rs1,rs2," ",imm,PC)
 
     elif (func3 == '001'):
 
         # Execution of store_halfword(sh)
-        print("sh")
-        MemoryStore("sh", rs1, rs2, imm)
-
+        #print("sh")
+        execute("sh", rs1, rs2, " ", imm, PC)
 
     elif (func3 == '010'):
         # Execution of store_word(sw)
-        print("sw")
-        MemoryStore("sw", rs1, rs2, imm)
+        #print("sw")
+        execute("sw", rs1, rs2, " ", imm, PC)
     else:
         print("ERROR")
 
@@ -581,12 +619,13 @@ def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
     opcode = machinecode[25:32]  # opcode is enough to distinguish u and uj format instructions
     if (opcode == "0010111"):
         # auipc
-        print("auipc")
-        executePratima("auipc", rd, imm, PC)
+        #print("auipc")
+        execute("auipc"," "," ",rd,imm,PC)
+
     elif (opcode == "0110111"):
         # lui
-        print("lui")
-        executePratima("lui", rd, imm, PC)
+        #print("lui")
+        execute("lui", " ", " ", rd, imm, PC)
     else:
         print("Error")
 
@@ -602,46 +641,16 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     rd = machinecode[20:25]
     if (opcode == "1101111"):
         # jal
-        print(pc)
-        pc = executePraveen1("jal", rd, imm, pc)
-        print("jal", pc)
+        #print(pc)
+        pc=execute("jal"," "," ",rd,imm,pc)
+        #print("jal", pc)
     else:
         print("Error")
 
     return pc
 
 
-# fetching
-file = open('machinecd.mc', 'r')
-PC = 0
-datasegOrnot = 0
-for line in file:
-    if (line == "\n"):
-        datasegOrnot = 1
-        continue
-    if (datasegOrnot == 1):  # fetching memory from data segment
-        dataArray = line.split(' ')
-        daata = dataArray[1][2:4]
-        memory[int(dataArray[0], 16)] = daata
-        continue
-file.close()
-
-Instruct={}
-last_PC=0
-file = open('machinecd.mc', 'r')
-for line in file:
-    if (line == "\n"):
-        break
-    inputsArray = line.split(' ')
-    tempc = int(inputsArray[0][2:],16)
-    binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
-    Instruct[tempc] = binaryno
-    last_PC = tempc
-file.close()
-    # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
-    #print("Instruction in binary: ", binaryno)
-while (PC<=last_PC):
-    binaryno=Instruct[PC]
+def decode(binaryno,PC):
     opcode = binaryno[25:32]
     # print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
@@ -651,10 +660,10 @@ while (PC<=last_PC):
     U_oper = ["0110111", "0010111"]
     UJ_oper = ["1101111"]
 
-    #address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
-    #address_in_decimal = int(address_in_binary, 2)
+    # address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
+    # address_in_decimal = int(address_in_binary, 2)
 
-    #if PC == address_in_decimal:
+    # if PC == address_in_decimal:
     if opcode in R_oper:
         # decode
 
@@ -687,6 +696,46 @@ while (PC<=last_PC):
     else:
         print("Error")
         PC += 4
+    return PC
+
+def fetch():
+# fetching
+    file = open('machinecd.mc', 'r')
+    PC = 0
+    datasegOrnot = 0
+    for line in file:
+        if (line == "\n"):
+            datasegOrnot = 1
+            continue
+        if (datasegOrnot == 1):  # fetching memory from data segment
+            dataArray = line.split(' ')
+            daata = dataArray[1][2:4]
+            memory[int(dataArray[0], 16)] = daata
+            continue
+    file.close()
+
+    Instruct={}
+    last_PC=0
+    file = open('machinecd.mc', 'r')
+    for line in file:
+        if (line == "\n"):
+            break
+        inputsArray = line.split(' ')
+        tempc = int(inputsArray[0][2:],16)
+        binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
+        Instruct[tempc] = binaryno
+        last_PC = tempc
+    file.close()
+        # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
+        #print("Instruction in binary: ", binaryno)
+    while (PC<=last_PC):
+        binaryno=Instruct[PC]
+        PC=decode(binaryno,PC)
+
+
+
+
+
 
 print(memory)  # printing memory key is address and value is data
 
@@ -724,4 +773,15 @@ def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
 
     return str
 
-
+def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
+    length = len(string)
+    #print(length)
+    neg = -1 #intialize neg with -1
+    sum = 0
+    i = 0 #counter
+    while i <= length-1:
+        if(string[i] == '0'):
+            sum += -pow(2, i)
+        i = i + 1
+    neg = neg + sum
+    return neg
