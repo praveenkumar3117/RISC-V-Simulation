@@ -16,6 +16,18 @@ def printregister():
     for i in range(0,32):
         print("x[",i,"]=",x[i])
 
+def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
+    length = len(string)
+    #print(length)
+    neg = -1 #intialize neg with -1
+    sum = 0
+    i = 0 #counter
+    while i <= length-1:
+        if(string[i] == '0'):
+            sum += -pow(2, i)
+        i = i + 1
+    neg = neg + sum
+    return neg
 
 def execute(string, rs1, rs2, rd, imm, PC):
     # string is referring to the the operation we are going to do
@@ -249,16 +261,23 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
 
 def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
     rd = int(rd, 2)
+    
     if (imm[0:1] == '1'):
         check = str(imm)
+      
         check = check[::-1]
         imm = findnegative(check)
+        
     else:
         imm = int(imm, 2)
+        
+    
     imm = imm << 1
+   
     if (string == 'jal'):
         temp = pc
         pc = pc + imm
+        
         jot = temp + 4
         WriteBack(rd, jot)
     return pc
@@ -334,7 +353,7 @@ def executeRead(string,rs1,rd,imm):
         imm = t1
     else:
         imm = int(imm, 2)  # sign bit is 0
-    print("rs1 :", rs1, "rd :", rd, " imm :", imm)
+    
     temp1 = x[rs1] + imm    #calculating address
     Memoryread(string,temp1, rd, imm)
 
@@ -492,7 +511,7 @@ def R_Format(binaryInstruction,PC):  # MUSKAN GUPTA 2019CSB1100
                 # mul
                 execute("mul", rs1, rs2, rd, " ", PC)
                 #executeManan("mul", rs1, rs2, rd)
-                print("mul")
+                
             elif (funct3 == "100"):
                 # div
                 execute("div", rs1, rs2, rd, " ", PC)
@@ -665,8 +684,9 @@ def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
 def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     # jal
     opcode = machinecode[25:32]
-    imm = machinecode[0] + machinecode[11:20] + machinecode[20] + machinecode[1:11]
-    # imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
+    imm =machinecode[0]+machinecode[12:20]+machinecode[11]+machinecode[1:11]
+    #11111101100111111111000011101111
+    #imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
     #print(int(imm, 2))
     rd = machinecode[20:25]
     if (opcode == "1101111"):
@@ -684,7 +704,7 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
 
 def fetch():
 # fetching
-    file = open('machinecd.mc', 'r')
+    file = open('Fact.mc', 'r')
     PC = 0
     datasegOrnot = 0
     for line in file:
@@ -700,7 +720,7 @@ def fetch():
 
     Instruct={}
     last_PC=0
-    file = open('machinecd.mc', 'r')
+    file = open('Fact.mc', 'r')
     for line in file:
         if (line == "\n"):
             break
@@ -712,16 +732,21 @@ def fetch():
     file.close()
         # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
         #print("Instruction in binary: ", binaryno)
+    
     while (PC<=last_PC):
+       
         binaryno=Instruct[PC]
         PC=decode(binaryno,PC)
+        
+       
 
 
 fetch()
 printregister()
+print("\n\n")
 
 
-print(memory)  # printing memory key is address and value is data
+print("MEMORY byte by byte, data is stored in hexa , address in decimal:\n\n",memory)  # printing memory key is address and value is data
 
 
 # function to convert any -ve number into 32 bit twos compliment binary number
@@ -757,16 +782,4 @@ def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
 
     return str
 
-def findnegative(string): #Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
-    length = len(string)
-    #print(length)
-    neg = -1 #intialize neg with -1
-    sum = 0
-    i = 0 #counter
-    while i <= length-1:
-        if(string[i] == '0'):
-            sum += -pow(2, i)
-        i = i + 1
-    neg = neg + sum
-    return neg
 
