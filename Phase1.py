@@ -11,7 +11,8 @@ memory = {}
 
 
 def WriteBack(rd, content):
-    x[rd] = content
+    if rd != 0:
+        x[rd] = content
 
 
 def printregister():
@@ -360,6 +361,7 @@ def executeRead(string, rs1, rd, imm):
     else:
         imm = int(imm, 2)  # sign bit is 0
 
+
     temp1 = x[rs1] + imm  # calculating address
     Memoryread(string, temp1, rd, imm)
 
@@ -369,13 +371,17 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
         if (string == "lw"):
             if (temp1 >= 268435456):  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
-                    #temp2 = memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
+                    # temp2 = memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                     # print(temp2)
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
                 else:
-                    print("\n  memory location not found")
+                    memory[temp1] = "00"
+                    memory[temp1+1] = "00"
+                    memory[temp1+2] = "00"
+                    memory[temp1+3] = "00"
+                    Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
         elif string == "lh":
@@ -385,7 +391,11 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
                 else:
-                    print("\n  memory location not found")
+                    memory[temp1] = "00"
+                    memory[temp1 + 1] = "00"
+                    memory[temp1 + 2] = "00"
+                    memory[temp1 + 3] = "00"
+                    Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
         elif string == "lb":
@@ -395,7 +405,11 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
                 else:
-                    print("\n  memory location not found")
+                    memory[temp1] = "00"
+                    memory[temp1 + 1] = "00"
+                    memory[temp1 + 2] = "00"
+                    memory[temp1 + 3] = "00"
+                    Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
         else:
@@ -745,8 +759,11 @@ def fetch():
     file.close()
     # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
     # print("Instruction in binary: ", binaryno)
-    
+
     while (PC <= last_PC):
+        #print(PC)
+        #print(memory)
+        #printregister()
         binaryno = Instruct[PC]
         PC = decode(binaryno, PC)
 
