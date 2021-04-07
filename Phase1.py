@@ -363,6 +363,7 @@ def executeRead(string, rs1, rd, imm):
 
 
     temp1 = x[rs1] + imm  # calculating address
+    #print("rs1 ",x[rs1]," imm ",imm)
     Memoryread(string, temp1, rd, imm)
 
 
@@ -384,6 +385,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
                     Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
+                print(temp1)
         elif string == "lh":
             if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
@@ -398,6 +400,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
                     Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
+                print(temp1)
         elif string == "lb":
             if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
@@ -412,6 +415,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
                     Memoryread(string, temp1, rd, imm)
             else:
                 print("\n Invalid offset")
+                print(temp1)
         else:
             print("\nError")
 
