@@ -1,3 +1,4 @@
+import sys
 x = []  # Registers
 x.append(0)
 for i in range(1, 32):
@@ -24,7 +25,6 @@ def printregister():
 
 def findnegative(string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
     length = len(string)
-    # print(length)
     neg = -1  # intialize neg with -1
     sum = 0
     i = 0  # counter
@@ -169,7 +169,6 @@ def executeMuskan(string, rs1, rs2, rd):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] + x[rs2]
         print("Execute :", string, x[rs1], "and", x[rs2])
         print("MEMORY:No memory  operation")
@@ -181,7 +180,6 @@ def executeMuskan(string, rs1, rs2, rd):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] & x[rs2]
         print("Execute :", string, x[rs1], "and", x[rs2])
         print("MEMORY:No memory  operation")
@@ -193,7 +191,6 @@ def executeMuskan(string, rs1, rs2, rd):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] | x[rs2]
         print("Execute :", string, x[rs1], "and", x[rs2])
         print("MEMORY:No memory  operation")
@@ -205,7 +202,6 @@ def executeMuskan(string, rs1, rs2, rd):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
         rd = int(rd, 2)
-        # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] << x[rs2]
         print("Execute :", string, x[rs1], "and", x[rs2])
         print("MEMORY:No memory  operation")
@@ -251,7 +247,7 @@ def executePratima(string, rd, imm, PC):
     else:
         imm = int(imm, 2)
     rd = int(rd, 2)
-    # print("imm = ", imm, " rd = ", rd)
+    
     if string == "lui":  # executing lui
         if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
             temp = 0 | imm
@@ -328,7 +324,6 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         imm = int(imm, 2)
 
     if (string == "addi"):
-        # print("Operation is addi")
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] + imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
@@ -337,7 +332,6 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
                 WriteBack(rd, s)
 
     elif (string == "andi"):
-        # print("Operation is andi")
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] & imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
@@ -346,7 +340,7 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
                 WriteBack(rd, s)
 
     elif (string == "ori"):
-        # print("Operation is ori")
+        
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] | imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
@@ -488,7 +482,6 @@ def executeStore(string, rs1, rs2, imm):
     else:
         imm = int(imm, 2)
     dataa = hex(x[rs2])[2:].zfill(8)
-    # print(dataa)
     if (string == "sw"):
         if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
             address = x[rs1] + imm  # calculating address
@@ -524,21 +517,21 @@ def MemoryStore(string, dataa, address):
 def executeRead(string, rs1, rd, imm):
     rs1 = int(rs1, 2)
     rd = int(rd, 2)
-    # print(imm[0:1]) to check the sign bit
+    
     check = imm
     if (imm[0:1] == '1'):  # imm is a negative number, since sign bit is 1
         check = str(check)
         check = check[::-1]  # reversing the string
-        # print(t)
+        
         t1 = findnegative(check)
-        # print(t1)
+        
         imm = t1
     else:
         imm = int(imm, 2)  # sign bit is 0
 
     temp1 = x[rs1] + imm  # calculating address
     print("Execute : calculating effective address by adding", x[rs1], "and", imm)
-    # print("rs1 ",x[rs1]," imm ",imm)
+    
     Memoryread(string, temp1, rd, imm)
 
 
@@ -548,9 +541,8 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
             if (temp1 >= 268435456):  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
                     print("Memory: accessed memory location at", temp1)
-                    # temp2 = memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
-                    # print(temp2)
+                    
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
                 else:
@@ -603,7 +595,6 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
 def decode(binaryno, PC):
     opcode = binaryno[25:32]
 
-    # print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
     I_oper = ["0010011", "0000011", "1100111"]
     S_oper = ["0100011"]
@@ -611,10 +602,8 @@ def decode(binaryno, PC):
     U_oper = ["0110111", "0010111"]
     UJ_oper = ["1101111"]
 
-    # address_in_binary = bin(int(inputsArray[0][2:], 16))[2:].zfill(32)
-    # address_in_decimal = int(address_in_binary, 2)
-
-    # if PC == address_in_decimal:
+    
+   
     if opcode in R_oper:
         # decode
 
@@ -663,82 +652,65 @@ def R_Format(binaryInstruction, PC):  # MUSKAN GUPTA 2019CSB1100
     funct3 = binaryInstruction[17:20]
     rd = binaryInstruction[20:25]
     opcode = binaryInstruction[25:32]
-    # print("opcode: ",opcode," funct7:",funct7," rs2 ",rs2," rs1",rs1," funct3",funct3," rd ",rd)
+    
     if (opcode == "0110011"):
         if (funct7 == "0000000"):
             if (funct3 == "000"):
                 # add
                 execute("add", rs1, rs2, rd, " ", PC)  # " " is don't care for imm
 
-                # print("add")
+                
             elif (funct3 == "111"):
                 # and
                 execute("and", rs1, rs2, rd, " ", PC)
-                # print(x)
-                # print("and")
+                
             elif (funct3 == "110"):
                 # or
                 execute("or", rs1, rs2, rd, " ", PC)
-
-                # print(x)
-                # add, and, or, sll,
-                # print("or")
+                
             elif (funct3 == "001"):
                 # sll
                 execute("sll", rs1, rs2, rd, " ", PC)
 
-                # print(x)
-                # print("sll")
+             
             elif (funct3 == "010"):
                 # slt
                 execute("slt", rs1, rs2, rd, " ", PC)
-                # executeRajasekhar("slt", rs1, rs2, rd)
-                # print(x)
-                # print("slt")
+                
             elif (funct3 == "101"):
                 # srl
                 execute("srl", rs1, rs2, rd, " ", PC)
-                # executeRajasekhar("srl", rs1, rs2, rd)
-                # print(x)
-                # print("srl")
+                
             elif (funct3 == "100"):
                 # xor
                 execute("xor", rs1, rs2, rd, " ", PC)
-                # executeManan("xor", rs1, rs2, rd)
-                # print("xor")
+                
             else:
                 print("Error")
         elif (funct7 == "0100000"):
             if (funct3 == "000"):
                 # sub
                 execute("sub", rs1, rs2, rd, " ", PC)
-                # executeRajasekhar("sub", rs1, rs2, rd)
-                # print(x)
-                # print("sub")
+                
             elif (funct3 == "101"):
                 # sra
                 execute("sra", rs1, rs2, rd, " ", PC)
-                # executeRajasekhar("sra", rs1, rs2, rd)
-                # print(x)
-                # print("sra")
+                
             else:
                 print("Error")
         elif (funct7 == "0000001"):
             if (funct3 == "000"):
                 # mul
                 execute("mul", rs1, rs2, rd, " ", PC)
-                # executeManan("mul", rs1, rs2, rd)
-
+                
             elif (funct3 == "100"):
                 # div
                 execute("div", rs1, rs2, rd, " ", PC)
-                # executeManan("div", rs1, rs2, rd)
-                # print("div")
+                
             elif (funct3 == "110"):
                 # rem
                 execute("rem", rs1, rs2, rd, " ", PC)
-                # executeManan("rem", rs1, rs2, rd)
-                # print("rem")
+                
             else:
                 print("Error")
         else:
@@ -759,18 +731,18 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
     if (opcode == "0000011"):
         if (funct3 == "000"):
             # lb
-            # print("lb")
+           
             execute("lb", rs1, " ", rd, imm, PC)
             PC += 4
         elif (funct3 == "001"):
             # lh
-            # print("lh")
-            # Memoryread("lh", rs1, rd, imm)
+            
+           
             execute("lh", rs1, " ", rd, imm, PC)
             PC += 4
         elif (funct3 == "010"):
             # lw
-            # print("lw")
+            
             execute("lw", rs1, " ", rd, imm, PC)
             PC += 4
         else:
@@ -780,17 +752,17 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
         if (funct3 == "000"):
             # addi
             execute("addi", rs1, " ", rd, imm, PC)
-            # print("addi")
+            
             PC += 4
         elif (funct3 == "111"):
             # andi
             execute("andi", rs1, " ", rd, imm, PC)
-            # print("andi")
+            
             PC += 4
         elif (funct3 == "110"):
             # ori
             execute("ori", rs1, " ", rd, imm, PC)
-            # print("ori")
+            
             PC += 4
         else:
             print("Error")
@@ -799,7 +771,7 @@ def I_Format(binaryInstruction, PC):  # Pratima_Singh
         if (funct3 == "000"):
             # jalr
             PC = execute("jalr", rs1, " ", rd, imm, PC)
-            # print("jalr")
+            
         else:
             print("Error")
             PC += 4
@@ -813,18 +785,18 @@ def sb_format(binary, pc):  # MANAN SINGHAL 2019CSB1099
     rs1 = binary[12:17]
     rs2 = binary[7:12]
     imm = binary[0] + binary[24] + binary[1:7] + binary[20:24]
-    # print("Opcode:" + sb_opcode, ", funct3:", funct3, ", rs2:", rs2, ", rs1:", rs1, ", imm:", imm)
+   
     if funct3 == '000':
-        # print("beq")
+        
         pc = execute("beq", rs1, rs2, " ", imm, pc)
     elif funct3 == '001':
-        # print("bne")
+        
         pc = execute("bne", rs1, rs2, " ", imm, pc)
     elif funct3 == '101':
-        # print("bge")
+       
         pc = execute("bge", rs1, rs2, " ", imm, pc)
     elif funct3 == '100':
-        # print("blt")
+        
         pc = execute("blt", rs1, rs2, " ", imm, pc)
     else:
         print("Error")
@@ -838,10 +810,7 @@ def S_Format(m_c, PC):  # PRAVEEN KUMAR 2019CSB1108
     rs1 = m_c[12:17]  # source register1
     rs2 = m_c[7:12]  # source register2
     imm = m_c[0:7] + m_c[20:25]  # offset added to base adress
-    # print("funct3:", func3)
-    # print("rs1:",rs1)
-    # print("rs2:",rs2)
-    # print("immediate:",imm)
+    
     Sr1 = 0  # for decimal value of source register1
     Sr2 = 0  # for decimal value of source register2
     for i in range(0, 5):
@@ -849,30 +818,29 @@ def S_Format(m_c, PC):  # PRAVEEN KUMAR 2019CSB1108
             Sr1 = Sr1 + pow(2, 4 - i)
         if (rs2[i] == '1'):
             Sr2 = Sr2 + pow(2, 4 - i)
-    # print("Decimal Value of rs1:",Sr1)
-    # print("Decimal Value of rs2:",Sr2)
+    
     Offset = 0
     for i in range(0, 12):
         if (imm[i] == '1'):
             Offset = Offset + pow(2, 11 - i)
 
-    # print("Decimal Value of offset:",Offset)
+    
 
     if (func3 == '000'):
 
         # Execution of store_byte(sb)
-        # print("sb")
+        
         execute("sb", rs1, rs2, " ", imm, PC)
 
     elif (func3 == '001'):
 
         # Execution of store_halfword(sh)
-        # print("sh")
+      
         execute("sh", rs1, rs2, " ", imm, PC)
 
     elif (func3 == '010'):
         # Execution of store_word(sw)
-        # print("sw")
+        
         execute("sw", rs1, rs2, " ", imm, PC)
     else:
         print("ERROR")
@@ -885,12 +853,12 @@ def U_Format(machinecode, PC):  # RAJASEKHAR 2019CSB1105
     opcode = machinecode[25:32]  # opcode is enough to distinguish u and uj format instructions
     if (opcode == "0010111"):
         # auipc
-        # print("auipc")
+       
         execute("auipc", " ", " ", rd, imm, PC)
 
     elif (opcode == "0110111"):
         # lui
-        # print("lui")
+       
         execute("lui", " ", " ", rd, imm, PC)
     else:
         print("Error")
@@ -902,25 +870,24 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     # jal
     opcode = machinecode[25:32]
     imm = machinecode[0] + machinecode[12:20] + machinecode[11] + machinecode[1:11]
-    # print(imm,opcode)
-    # 11111101100111111111000011101111
-    # imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
-    # print(int(imm, 2))
+    
     rd = machinecode[20:25]
     if (opcode == "1101111"):
         # jal
-        # print(pc)
+       
         pc = execute("jal", " ", " ", rd, imm, pc)
-        # print("jal", pc)
+       
     else:
         print("Error")
 
     return pc
 
 
+
+
 def fetch(Instruct):
     # fetching
-    file = open('machinecd.mc', 'r')
+    file = open(sys.argv[1], 'r')
     PC = 0
     clock = 0
 
@@ -936,9 +903,8 @@ def fetch(Instruct):
             continue
     file.close()
 
-    #Instruct = {}
     last_PC = 0
-    file = open('machinecd.mc', 'r')
+    file = open(sys.argv[1], 'r')
     for line in file:
         if (line == "\n"):
             break
@@ -948,20 +914,16 @@ def fetch(Instruct):
         Instruct[tempc] = binaryno
         last_PC = tempc
 
-        # print(inputsArray[1], end=" ")
-        # print("at address :", inputsArray[0])
-
+        
     file.close()
-    # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
-    # print("Instruction in binary: ", )
-
+   
     while (PC <= last_PC):
         clock = clock + 1
-        # printregister()
+       
         binaryno = Instruct[PC]
-        # print(binaryno)
+        
         if (binaryno == "11111111111111111111111111111111"):
-            # print(binaryno)
+            
             break
         temp = binaryno
         temp = int(temp, 2)
@@ -974,11 +936,12 @@ def fetch(Instruct):
 
 
 Instruct = {}
-Instruct = fetch(Instruct)
+Instruct = fetch(Instruct)       #Simulator starting point 
+
 printregister()
 print("\n\n")
 
-new_file = open("machinecd.mc", "w")
+new_file = open(sys.argv[1], "w")
 
 for line in Instruct:
     new_file.write(str(hex(line)))
