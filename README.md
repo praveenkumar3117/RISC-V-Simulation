@@ -1,6 +1,9 @@
 1) First of all, unzip all the files.
-2) To run use command $python3 Phase1.py "Your_mc_file.mc"      #Example $python3 Phase1.py Fact.mc
-
+2) To run use command $python3 Phase1.py "Your_mc_file.mc"      #Example $python3 Phase1.py fact.mc
+3) fact.mc is the machine code file for factorial program.
+4) fibo.mc is the machine code file for fibonacci program.
+5) bubblesort.mc is the machine code file for bubble sort program.
+6) Phase1.py consists of function simulator code for phase1.
 NOTE: 0xFFFFFFFF is the termination instruction, after that no further operations.
 
 
