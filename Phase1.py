@@ -36,29 +36,115 @@ def findnegative(string):  # Pratima_Singh 2018CEB1021 function to get the sign 
 
 def execute(string, rs1, rs2, rd, imm, PC):
     # string is referring to the the operation we are going to do
+
     if (string == "add" or string == "and" or string == "or" or string == "sll"):
         executeMuskan(string, rs1, rs2, rd)
+        print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
+              ",destination register : ", int(rd,2), end=" \n",sep=" ")
     elif (string == "xor" or string == "mul" or string == "div" or string == "rem"):
         executeManan(string, rs1, rs2, rd)
+
+        print("Decode-> operation:", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
+              ",destination register : ",int(rd,2), end=" \n", sep=" ")
+
+
     elif (string == "slt" or string == "srl" or string == "sub" or string == "sra"):
         executeRajasekhar(string, rs1, rs2, rd)
+
+        print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
+              ",destination register : ", int(rd,2), end=" \n", sep=" ")
+
     elif (string == "addi" or string == "andi" or string == "ori"):
         executePraveen(string, rd, rs1, imm)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode -> operation :", string, ",source register 1:", int(rs1,2), ",Immediate:", imm,
+              ",destination register : ", int(rd,2), end=" \n", sep=" ")
+
+
     elif (string == "lui" or string == "auipc"):
         executePratima(string, rd, imm, PC)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode -> operation :", string, ",Immediate:", imm,
+              ",destination register : ", int(rd,2), end=" \n", sep=" ")
+
     elif (string == "bge" or string == "blt"):
         PC = executeManan1(string, rs1, rs2, imm, PC)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",Source register 2:",  int(rs2,2),
+              ",Immediate: ", imm, end=" \n", sep=" ")
+
     elif (string == "beq" or string == "bne"):
         PC = executeRajasekhar1(string, rs1, rs2, imm, PC)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",Source register 2:", int(rs2,2),
+              ",Immediate: ", imm, end=" \n", sep=" ")
+
+
     elif (string == "jal"):
         PC = executePraveen1(string, rd, imm, PC)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode:-> operation: ", string, ",destinaton register:" ,int(rd,2), ",Immediate: ", imm, end=" \n", sep=" ")
+
+
     elif (string == "jalr"):
         PC = executePraveen2(string, rs1, rd, imm, PC)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode-> operation: ", string,",Source register 1:",int(rs1,2), ",destinaton register:"
+        ,int(rd,2),",Immediate: ", imm, end = " \n", sep = " ")
+
     elif (string == "sw" or string == "sh" or string == "sb"):
         executeStore(string, rs1, rs2, imm)
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode-> operation: ", string, ",source register 1:", int(rs1,2), ",Source register 2:", int(rs2,2),",Immediate: ", imm, end=" \n", sep=" ")
+
     elif (string == "lw" or string == "lh" or string == "lb"):
         executeRead(string, rs1, rd, imm)
-    return PC
+        if (imm[0:1] == '1'):
+            check = str(imm)
+            check = check[::-1]
+            imm = findnegative(check)
+        else:
+            imm = int(imm, 2)
+        print("Decode-> operation: ", string, ",Source register 1:", int(rs1,2),
+        ",destinaton register:",int(rd,2), ",Immediate: ", imm, end = " \n", sep = " ")
+
+
+        return PC
 
 
 # executing functions
@@ -69,6 +155,7 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] + x[rs2]
+        print("Execute :",string, rs1,"and",rs2)
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -79,6 +166,7 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] & x[rs2]
+        print("Execute :", string, rs1, "and", rs2)
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -89,6 +177,7 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] | x[rs2]
+        print("Execute :", string, rs1, "and", rs2)
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -99,6 +188,7 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] << x[rs2]
+        print("Execute :", string, rs1, "and", rs2)
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -110,14 +200,17 @@ def executeManan(string, rs1, rs2, rd):
     if string == 'xor':
         output = x[rs1] ^ x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            print("Execute :", string, rs1, "and", rs2)
             WriteBack(rd, output)
     elif string == 'mul':
         output = x[rs1] * x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            print("Execute :", string, rs1, "and", rs2)
             WriteBack(rd, output)
     elif string == "div":
         output = x[rs1] // x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            print("Execute :", string, rs1, "and", rs2)
             WriteBack(rd, output)
     elif string == "rem":
         output = x[rs1] % x[rs2]
@@ -424,6 +517,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
 
 def decode(binaryno, PC):
     opcode = binaryno[25:32]
+
     # print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
     I_oper = ["0010011", "0000011", "1100111"]
@@ -760,16 +854,28 @@ def fetch():
         binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
         Instruct[tempc] = binaryno
         last_PC = tempc
+
+        #print(inputsArray[1], end=" ")
+        #print("at address :", inputsArray[0])
+
     file.close()
     # binaryno = bin(int(line[2:], 16))[2:].zfill(32)
-    # print("Instruction in binary: ", binaryno)
+    # print("Instruction in binary: ", )
 
     while (PC <= last_PC):
         #print(PC)
         #print(memory)
         #printregister()
         binaryno = Instruct[PC]
+        #print(binaryno)
+        if (binaryno == "11111111111111111111111111111111"):
+            #print(binaryno)
+            break
+        temp = binaryno
+        temp = int(temp,2)
+        print("Fetch instruction : ", hex(temp), "at address :", hex(PC), end=" \n", sep=" ")
         PC = decode(binaryno, PC)
+
 
 
 fetch()
