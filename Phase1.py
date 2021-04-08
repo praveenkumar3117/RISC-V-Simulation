@@ -13,7 +13,8 @@ memory = {}
 def WriteBack(rd, content):
     if rd != 0:
         x[rd] = content
-
+        print("WRITEBACK: write",content," to x[", rd, "]")
+    print("\n")
 
 def printregister():
     for i in range(0, 32):
@@ -38,113 +39,127 @@ def execute(string, rs1, rs2, rd, imm, PC):
     # string is referring to the the operation we are going to do
 
     if (string == "add" or string == "and" or string == "or" or string == "sll"):
-        executeMuskan(string, rs1, rs2, rd)
+        
         print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
               ",destination register : ", int(rd,2), end=" \n",sep=" ")
+        executeMuskan(string, rs1, rs2, rd)
     elif (string == "xor" or string == "mul" or string == "div" or string == "rem"):
-        executeManan(string, rs1, rs2, rd)
+        
 
         print("Decode-> operation:", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
               ",destination register : ",int(rd,2), end=" \n", sep=" ")
+        executeManan(string, rs1, rs2, rd)
 
 
     elif (string == "slt" or string == "srl" or string == "sub" or string == "sra"):
-        executeRajasekhar(string, rs1, rs2, rd)
+        
 
         print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",source register 2:", int(rs2,2),
               ",destination register : ", int(rd,2), end=" \n", sep=" ")
+        executeRajasekhar(string, rs1, rs2, rd)
 
     elif (string == "addi" or string == "andi" or string == "ori"):
-        executePraveen(string, rd, rs1, imm)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
-        print("Decode -> operation :", string, ",source register 1:", int(rs1,2), ",Immediate:", imm,
+            temp = int(temp, 2)
+        print("Decode -> operation :", string, ",source register 1:", int(rs1,2), ",Immediate:", temp,
               ",destination register : ", int(rd,2), end=" \n", sep=" ")
+        executePraveen(string, rd, rs1, imm)
 
 
     elif (string == "lui" or string == "auipc"):
-        executePratima(string, rd, imm, PC)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
-        print("Decode -> operation :", string, ",Immediate:", imm,
+            temp = int(temp, 2)
+        print("Decode -> operation :", string, ",Immediate:", temp,
               ",destination register : ", int(rd,2), end=" \n", sep=" ")
+        executePratima(string, rd, imm, PC)
 
     elif (string == "bge" or string == "blt"):
-        PC = executeManan1(string, rs1, rs2, imm, PC)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
+            temp = int(temp, 2)
         print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",Source register 2:",  int(rs2,2),
-              ",Immediate: ", imm, end=" \n", sep=" ")
+              ",Immediate: ", temp, end=" \n", sep=" ")
+        PC = executeManan1(string, rs1, rs2, imm, PC)
 
     elif (string == "beq" or string == "bne"):
-        PC = executeRajasekhar1(string, rs1, rs2, imm, PC)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
+            temp = int(temp, 2)
         print("Decode-> operation :", string, ",source register 1:", int(rs1,2), ",Source register 2:", int(rs2,2),
-              ",Immediate: ", imm, end=" \n", sep=" ")
+              ",Immediate: ", temp, end=" \n", sep=" ")
+        PC = executeRajasekhar1(string, rs1, rs2, imm, PC)
 
 
     elif (string == "jal"):
-        PC = executePraveen1(string, rd, imm, PC)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
-        print("Decode:-> operation: ", string, ",destinaton register:" ,int(rd,2), ",Immediate: ", imm, end=" \n", sep=" ")
-
+            temp = int(temp, 2)
+        print("Decode:-> operation: ", string, ",destinaton register:" ,int(rd,2), ",Immediate: ", temp, end=" \n", sep=" ")
+        PC = executePraveen1(string, rd, imm, PC)
 
     elif (string == "jalr"):
-        PC = executePraveen2(string, rs1, rd, imm, PC)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
+            temp = int(temp, 2)
         print("Decode-> operation: ", string,",Source register 1:",int(rs1,2), ",destinaton register:"
-        ,int(rd,2),",Immediate: ", imm, end = " \n", sep = " ")
-
+        ,int(rd,2),",Immediate: ", temp, end = " \n", sep = " ")
+        PC = executePraveen2(string, rs1, rd, imm, PC)
     elif (string == "sw" or string == "sh" or string == "sb"):
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
+            check = check[::-1]
+            temp = findnegative(check)
+        else:
+            temp = int(temp, 2)
+        print("Decode-> operation: ", string, ",source register 1:", int(rs1,2), ",Source register 2:", int(rs2,2),",Immediate: ", temp, end=" \n", sep=" ")
         executeStore(string, rs1, rs2, imm)
-        if (imm[0:1] == '1'):
-            check = str(imm)
-            check = check[::-1]
-            imm = findnegative(check)
-        else:
-            imm = int(imm, 2)
-        print("Decode-> operation: ", string, ",source register 1:", int(rs1,2), ",Source register 2:", int(rs2,2),",Immediate: ", imm, end=" \n", sep=" ")
-
     elif (string == "lw" or string == "lh" or string == "lb"):
-        executeRead(string, rs1, rd, imm)
-        if (imm[0:1] == '1'):
-            check = str(imm)
+        
+        temp = imm
+        if (temp[0:1] == '1'):
+            check = str(temp)
             check = check[::-1]
-            imm = findnegative(check)
+            temp = findnegative(check)
         else:
-            imm = int(imm, 2)
+            temp = int(temp, 2)
         print("Decode-> operation: ", string, ",Source register 1:", int(rs1,2),
-        ",destinaton register:",int(rd,2), ",Immediate: ", imm, end = " \n", sep = " ")
+        ",destinaton register:",int(rd,2), ",Immediate: ", temp, end = " \n", sep = " ")
+        executeRead(string, rs1, rd, imm)
 
-
-        return PC
+    return PC
 
 
 # executing functions
@@ -155,7 +170,8 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] + x[rs2]
-        print("Execute :",string, rs1,"and",rs2)
+        print("Execute :",string, x[rs1],"and",x[rs2])
+        print("MEMORY:No memory  operation")
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -166,7 +182,8 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] & x[rs2]
-        print("Execute :", string, rs1, "and", rs2)
+        print("Execute :", string, x[rs1],"and",x[rs2])
+        print("MEMORY:No memory  operation")
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -177,7 +194,8 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] | x[rs2]
-        print("Execute :", string, rs1, "and", rs2)
+        print("Execute :", string,x[rs1],"and",x[rs2])
+        print("MEMORY:No memory  operation")
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -188,7 +206,8 @@ def executeMuskan(string, rs1, rs2, rd):
         rd = int(rd, 2)
         # print("rs1= ", rs1, " rs2= ", rs2, " rd= ", rd)
         s = x[rs1] << x[rs2]
-        print("Execute :", string, rs1, "and", rs2)
+        print("Execute :", string, x[rs1],"and",x[rs2])
+        print("MEMORY:No memory  operation")
         if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
             WriteBack(rd, s)
 
@@ -200,21 +219,26 @@ def executeManan(string, rs1, rs2, rd):
     if string == 'xor':
         output = x[rs1] ^ x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            print("Execute :", string, rs1, "and", rs2)
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, output)
     elif string == 'mul':
         output = x[rs1] * x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            print("Execute :", string, rs1, "and", rs2)
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, output)
     elif string == "div":
         output = x[rs1] // x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-            print("Execute :", string, rs1, "and", rs2)
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, output)
     elif string == "rem":
         output = x[rs1] % x[rs2]
         if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, output)
 
 
@@ -232,6 +256,8 @@ def executePratima(string, rd, imm, PC):
             temp = 0 | imm
             temp = temp << 12
             if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                print("Execute :", string, x[rd], "and", imm)
+                print("MEMORY:No memory  operation")
                 WriteBack(rd, temp)
     elif string == "auipc":  # executing auipc
         if (imm <= pow(2, 19) - 1 and imm >= -pow(2, 19)):  # checking range of imm
@@ -239,6 +265,8 @@ def executePratima(string, rd, imm, PC):
             temp = temp << 12
             temp = temp + PC
             if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                print("Execute :", string, x[rd], "and", imm)
+                print("MEMORY:No memory  operation")
                 WriteBack(rd, temp)
     else:
         print("Error")
@@ -253,27 +281,37 @@ def executeRajasekhar(string, rs1, rs2, rd):
     if (string == "slt"):
         if (x[rs1] < x[rs2]):
             jot = 1
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, jot)
         else:
             jot = 0
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, jot)
     elif (string == "sra"):
         result = x[rs1] >> x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, result)
     elif (string == "srl"):
         result = x[rs1] >> x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, result)
     elif (string == "sub"):
         result = x[rs1] - x[rs2]
         lowerlimit = -1 * (1 << 31)
         upperlimit = (1 << 31) - 1
         if (lowerlimit <= result and result <= upperlimit):
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
             WriteBack(rd, result)
 
 
@@ -293,6 +331,8 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] + imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                print("Execute :", string, x[rs1],"and",imm)
+                print("MEMORY:No memory  operation")
                 WriteBack(rd, s)
 
     elif (string == "andi"):
@@ -300,6 +340,8 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] & imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                print("Execute :", string, x[rs1],"and",imm)
+                print("MEMORY:No memory  operation")
                 WriteBack(rd, s)
 
     elif (string == "ori"):
@@ -307,6 +349,8 @@ def executePraveen(string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #add
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             s = x[rs1] | imm
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
+                print("Execute :", string, x[rs1],"and",imm)
+                print("MEMORY:No memory  operation")
                 WriteBack(rd, s)
 
 
@@ -322,13 +366,25 @@ def executeManan1(string, rs1, rs2, imm, pc):
     imm = imm << 1
     if string == "bge":
         if x[rs1] >= x[rs2]:
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + imm
         else:
+            print("Execute :No execute")
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + 4
     elif string == 'blt':
         if x[rs1] < x[rs2]:
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + imm
         else:
+            print("Execute :No execute")
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + 4
 
     return pc
@@ -346,13 +402,25 @@ def executeRajasekhar1(string, rs1, rs2, imm, pc):
     imm = imm << 1
     if (string == 'beq'):
         if (x[rs1] == x[rs2]):
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + imm
         else:
+            print("Execute :No execute")
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + 4
     elif (string == 'bne'):
         if (x[rs1] != x[rs2]):
+            print("Execute :", string, x[rs1],"and",x[rs2])
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + imm
         else:
+            print("Execute :No execute")
+            print("MEMORY:No memory  operation")
+            print("WRITEBACK: no writeback \n")
             pc = pc + 4
 
     return pc
@@ -377,8 +445,12 @@ def executePraveen1(string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  f
         pc = pc + imm
 
         jot = temp + 4
+        print("Execute :", string, x[rd],"and",imm)
+        print("MEMORY:No memory  operation")
         if rd != 0:
             WriteBack(rd, jot)
+        else:
+            print("WRITEBACK: no writeback \n")
     return pc
 
 
@@ -394,9 +466,13 @@ def executePraveen2(string, rs1, rd, imm, pc):  # Praveen Kumar 2019CSB1108    j
     if (string == 'jalr'):
         temp = pc
         pc = x[rs1] + imm
+        print("Execute :", string, x[rs1],"and",imm)
+        print("MEMORY:No memory  operation")
         if (rd != 0):
             jot = temp + 4
             WriteBack(rd, jot)
+        else:
+            print("WRITEBACK: no writeback \n")
 
     return pc
 
@@ -415,18 +491,22 @@ def executeStore(string, rs1, rs2, imm):
     if (string == "sw"):
         if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
             address = x[rs1] + imm  # calculating address
+            print("Execute : calculating effective address by adding",x[rs1], "and",imm )    
             MemoryStore("sw", dataa, address)
     elif (string == "sh"):
         if (x[rs1] + imm >= 268435456):
             address = x[rs1] + imm
+            print("Execute : calculating effective address by adding",x[rs1], "and",imm )
             MemoryStore("sh", dataa, address)
     elif (string == "sb"):
         if (x[rs1] + imm >= 268435456):
             address = x[rs1] + imm
+            print("Execute : calculating effective address by adding",x[rs1], "and",imm )
             MemoryStore("sb", dataa, address)
 
 
 def MemoryStore(string, dataa, address):
+    print("Memory: accessed memory location at",address)
     if (string == "sw"):
         memory[address] = dataa[6:]
         memory[address + 1] = dataa[4:6]
@@ -437,7 +517,7 @@ def MemoryStore(string, dataa, address):
         memory[address + 1] = dataa[4:6]
     elif (string == "sb"):
         memory[address] = dataa[6:]
-
+    print("WRITEBACK: no writeback \n")
 
 def executeRead(string, rs1, rd, imm):
     rs1 = int(rs1, 2)
@@ -456,6 +536,7 @@ def executeRead(string, rs1, rd, imm):
 
 
     temp1 = x[rs1] + imm  # calculating address
+    print("Execute : calculating effective address by adding",x[rs1], "and",imm )
     #print("rs1 ",x[rs1]," imm ",imm)
     Memoryread(string, temp1, rd, imm)
 
@@ -465,6 +546,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
         if (string == "lw"):
             if (temp1 >= 268435456):  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
+                    print("Memory: accessed memory location at",temp1)
                     # temp2 = memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                     # print(temp2)
@@ -482,6 +564,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
         elif string == "lh":
             if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
+                    print("Memory: accessed memory location at",temp1)
                     temp2 = memory[temp1 + 3] + memory[temp1 + 2]
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
@@ -497,6 +580,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
         elif string == "lb":
             if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                 if temp1 in memory:
+                    print("Memory: accessed memory location at",temp1)
                     temp2 = memory[temp1 + 3]
                     jot = int(temp2, 16)
                     WriteBack(rd, jot)
@@ -518,7 +602,7 @@ def Memoryread(string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
 def decode(binaryno, PC):
     opcode = binaryno[25:32]
 
-    # print("opcode in the instruction ",opcode)
+    #print("opcode in the instruction ",opcode)
     R_oper = ["0110011"]
     I_oper = ["0010011", "0000011", "1100111"]
     S_oper = ["0100011"]
@@ -537,25 +621,30 @@ def decode(binaryno, PC):
         PC += 4
     elif opcode in I_oper:
         # decode
+        
         PC = I_Format(binaryno, PC)
 
 
     elif opcode in S_oper:
         S_Format(binaryno, PC)
         PC += 4
+        
         # decode
 
     elif opcode in SB_oper:
         # decode
+        
         PC = sb_format(binaryno, PC)
 
     elif opcode in U_oper:
         # decode
+        
         U_Format(binaryno, PC)
         PC += 4
 
     elif opcode in UJ_oper:
         # decode
+       
         PC = UJ_Format(binaryno, PC)
 
 
@@ -812,6 +901,7 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     # jal
     opcode = machinecode[25:32]
     imm = machinecode[0] + machinecode[12:20] + machinecode[11] + machinecode[1:11]
+    #print(imm,opcode)
     # 11111101100111111111000011101111
     # imm=machinecode[0]+machinecode[10:20]+machinecode[9]+machinecode[1:9]
     # print(int(imm, 2))
@@ -827,10 +917,11 @@ def UJ_Format(machinecode, pc):  # RAJASEKHAR 2019CSB1105
     return pc
 
 
-def fetch():
+def fetch(clock):
     # fetching
     file = open('machinecd.mc', 'r')
     PC = 0
+    
     datasegOrnot = 0
     for line in file:
         if (line == "\n"):
@@ -863,8 +954,7 @@ def fetch():
     # print("Instruction in binary: ", )
 
     while (PC <= last_PC):
-        #print(PC)
-        #print(memory)
+        clock=clock+1
         #printregister()
         binaryno = Instruct[PC]
         #print(binaryno)
@@ -875,46 +965,19 @@ def fetch():
         temp = int(temp,2)
         print("Fetch instruction : ", hex(temp), "at address :", hex(PC), end=" \n", sep=" ")
         PC = decode(binaryno, PC)
+        print("clock =",clock)
+        print("\n\n")
+        
+    return clock
+       
 
 
+clock = 0
 
-fetch()
+clock=fetch(clock)
 printregister()
 print("\n\n")
 
 print("MEMORY byte by byte, data is stored in hexa , address in decimal:\n\n",
       memory)  # printing memory key is address and value is data
 
-
-# function to convert any -ve number into 32 bit twos compliment binary number
-def findTwoscomplement(str):  # Rajasekhar 2019CSB1105
-    # note: argument for this function is 32bit binary str of positive number
-    # to convert any integer into 32bit binary number. use '{:032b}'.format(n) where n is the number
-    n = len(str)
-
-    i = n - 1
-    while (i >= 0):
-        if (str[i] == '1'):
-            break
-
-        i -= 1
-
-    if (i == -1):
-        return '1' + str
-
-    k = i - 1
-    while (k >= 0):
-
-        # Just flip the values
-        if (str[k] == '1'):
-            str = list(str)
-            str[k] = '0'
-            str = ''.join(str)
-        else:
-            str = list(str)
-            str[k] = '1'
-            str = ''.join(str)
-
-        k -= 1
-
-    return str
