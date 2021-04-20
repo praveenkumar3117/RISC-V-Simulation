@@ -987,6 +987,5 @@ while (nonp.PC <= last_PC):
     nonp.execute()
     nonp.Memory(nonp.operation, nonp.dataa, nonp.rd, nonp.imm, nonp.address)
     nonp.WriteBack(nonp.rd,nonp.jot)
-    print("PC=",nonp.PC)
 print(x)
 print(memory)
