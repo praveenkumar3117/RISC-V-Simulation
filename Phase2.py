@@ -10,7 +10,7 @@ for i in range(1, 32):
 memory = {}
 
 
-class pipelining:
+class five_steps:
     def __init__(self):
         self.PC = 0x0
         # self.IR = 0
@@ -29,7 +29,7 @@ class pipelining:
         self.rs2 = ''
         self.rd = ''
         self.imm = ''
-        self.jot = ''
+        self.jot = 0
         ####### END     #########
 
         ############ MEMORY   ###########
@@ -45,11 +45,12 @@ class pipelining:
     def fetch(self, binaryCode):
         self.IF = binaryCode
         self.PC_temp = self.PC
+        print("FETCH:Fetch instruction " + hex(int(self.IF, 2))[2:].zfill(8) + " from address " + hex(self.PC)[2:].zfill(8))
         self.PC += 4
-        print("FETCH:Fetch instruction " + self.IF + " from address " + str(self.PC - 4))
+
 
     def decode(self, binaryInstruction):
-        opcode = binaryno[25:32]
+        opcode = binaryInstruction[25:32]
 
         R_oper = ["0110011"]
         I_oper = ["0010011", "0000011", "1100111"]
@@ -860,11 +861,13 @@ class pipelining:
             imm = int(imm, 2)  # sign bit is 0
 
         temp1 = x[rs1] + imm  # calculating address
+        self.address=temp1
         print("Execute : calculating effective address by adding", x[rs1], "and", imm)
-
-        self.Memoryread(self, string, temp1, rd, imm)
+        self.imm=imm
+        #self.Memoryread(self, string, temp1, rd, imm)
 
     def Memoryread(self, string, temp1, rd, imm):  # Pratima Singh 2018CEB1021
+        #print("imm=",imm)
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             if (string == "lw"):
                 if (temp1 >= 268435456):  # data segment starts with address 268435456 or 0x10000000
@@ -920,8 +923,16 @@ class pipelining:
                     print(temp1)
             else:
                 print("\nError")
+    def Memory(self,string,dataa,rd,imm,address):
+        if(string=="lb" or string=="lw" or string=="lh"):
+            self.Memoryread(string, address, rd, imm)
+        elif(string=="sb" or string=="sw" or string=="sh"):
+            self.MemoryStore(string, dataa, address)
 
     def WriteBack(self, rd, content):
+        if(len(rd)==0):
+            return
+        rd=int(rd,2)
         if rd != 0:
             x[rd] = content
             print("WRITEBACK: write", content, " to x[", rd, "]")
@@ -966,3 +977,16 @@ for line in file:
     Instruct[tempc] = binaryno
     last_PC = tempc
 file.close()
+
+
+nonp=five_steps()
+nonp.PC=0
+while (nonp.PC <= last_PC):
+    nonp.fetch(Instruct[nonp.PC])
+    nonp.decode(nonp.IF)
+    nonp.execute()
+    nonp.Memory(nonp.operation, nonp.dataa, nonp.rd, nonp.imm, nonp.address)
+    nonp.WriteBack(nonp.rd,nonp.jot)
+    print("PC=",nonp.PC)
+print(x)
+print(memory)
