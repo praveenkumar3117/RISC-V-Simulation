@@ -16,7 +16,7 @@ class five_steps:
         # self.IR = 0
         self.PC_temp = self.PC
         self.clock = 0
-        # self.Cycles = 0
+        self.cycle= 0
         self.IF = ''
         # self.ID = {}
         # self.IE = {}
@@ -79,7 +79,7 @@ class five_steps:
                     if (funct3 == "000"):
 
                         self.operation = "add"
-
+			 print("Decode-> operation :",self.operation,",source register 1:",int(self.rs1, 2),",source register 2:",int(self.rs2, 2),",destination register:",int(self.rd, 2),end=" \n", sep=" ")
                         # add
                         # execute("add", rs1, rs2, rd, " ", PC)  # " " is don't care for imm
 
@@ -87,18 +87,30 @@ class five_steps:
                     elif (funct3 == "111"):
 
                         self.operation = "and"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # and
                         # execute("and", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "110"):
 
                         self.operation = "or"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # or
                         # execute("or", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "001"):
 
                         self.operation = "sll"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sll
                         # execute("sll", rs1, rs2, rd, " ", PC)
 
@@ -106,18 +118,30 @@ class five_steps:
                     elif (funct3 == "010"):
 
                         self.operation = "slt"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # slt
                         # execute("slt", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "101"):
 
                         self.operation = "srl"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # srl
                         # execute("srl", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "100"):
 
                         self.operation = "xor"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # xor
                         # execute("xor", rs1, rs2, rd, " ", PC)
 
@@ -127,12 +151,20 @@ class five_steps:
                     if (funct3 == "000"):
 
                         self.operation = "sub"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sub
                         # execute("sub", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "101"):
 
                         self.operation = "sra"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sra
                         # execute("sra", rs1, rs2, rd, " ", PC)
 
@@ -142,16 +174,28 @@ class five_steps:
                     if (funct3 == "000"):
 
                         self.operation = "mul"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # mul
                         # execute("mul", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "100"):
                         self.operation = "div"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # div
                         # execute("div", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "110"):
                         self.operation = "rem"
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",source register 2:",
+                  int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # rem
                         # execute("rem", rs1, rs2, rd, " ", PC)
 
@@ -179,11 +223,15 @@ class five_steps:
                     # lb
 
                     self.operation = "lb"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # execute("lb", rs1, " ", rd, imm, PC)
                     # PC += 4
                 elif (funct3 == "001"):
 
                     self.operation = "lh"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # lh
 
                     # execute("lh", rs1, " ", rd, imm, PC)
@@ -191,6 +239,8 @@ class five_steps:
                 elif (funct3 == "010"):
 
                     self.operation = "lw"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # lw
 
                     # execute("lw", rs1, " ", rd, imm, PC)
@@ -202,6 +252,8 @@ class five_steps:
                 if (funct3 == "000"):
 
                     self.operation = "addi"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # addi
                     # execute("addi", rs1, " ", rd, imm, PC)
 
@@ -209,6 +261,8 @@ class five_steps:
                 elif (funct3 == "111"):
 
                     self.operation = "andi"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # andi
                     # execute("andi", rs1, " ", rd, imm, PC)
 
@@ -216,6 +270,8 @@ class five_steps:
                 elif (funct3 == "110"):
                     # ori
                     self.operation = "ori"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # execute("ori", rs1, " ", rd, imm, PC)
 
                 else:
@@ -224,6 +280,8 @@ class five_steps:
                 if (funct3 == "000"):
 
                     self.operation = "jalr"
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # jalr
                     # PC = execute("jalr", rs1, " ", rd, imm, PC)
 
@@ -257,6 +315,10 @@ class five_steps:
             if (func3 == '000'):
 
                 self.operation = "sb"
+                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # Execution of store_byte(sb)
 
                 # execute("sb", rs1, rs2, " ", imm, PC)
@@ -264,6 +326,10 @@ class five_steps:
             elif (func3 == '001'):
 
                 self.operation = "sh"
+                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # Execution of store_halfword(sh)
 
                 # execute("sh", rs1, rs2, " ", imm, PC)
@@ -271,6 +337,10 @@ class five_steps:
             elif (func3 == '010'):
 
                 self.operation = "sw"
+                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # Execution of store_word(sw)
 
                 # execute("sw", rs1, rs2, " ", imm, PC)
@@ -290,18 +360,34 @@ class five_steps:
             if funct3 == '000':
 
                 self.operation = "beq"
+                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # pc = execute("beq", rs1, rs2, " ", imm, pc)
             elif funct3 == '001':
 
                 self.operation = "bne"
+                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # pc = execute("bne", rs1, rs2, " ", imm, pc)
             elif funct3 == '101':
 
                 self.operation = "bge"
+                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # pc = execute("bge", rs1, rs2, " ", imm, pc)
             elif funct3 == '100':
 
                 self.operation = "blt"
+                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  ",Source register 2:",
+                  int(self.rs2, 2),
+                  ",Immediate: ", temp, end=" \n", sep=" ")
                 # pc = execute("blt", rs1, rs2, " ", imm, pc)
             else:
                 print("Error")
@@ -320,12 +406,16 @@ class five_steps:
             if (opcode == "0010111"):
                 # auipc
                 self.operation = "auipc"
+                print("Decode -> operation :", self.operation, ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                 # execute("auipc", " ", " ", rd, imm, PC)
 
             elif (opcode == "0110111"):
                 # lui
 
                 self.operation = "lui"
+                print("Decode -> operation :", self.operation, ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                 # execute("lui", " ", " ", rd, imm, PC)
             else:
                 print("Error")
@@ -343,6 +433,8 @@ class five_steps:
                 # jal
 
                 self.operation = "jal"
+                print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
+                  temp, end=" \n", sep=" ")
                 # pc = execute("jal", " ", " ", rd, imm, pc)
 
             else:
@@ -355,25 +447,25 @@ class five_steps:
 
         if (self.operation == "add" or self.operation == "and" or self.operation == "or" or self.operation == "sll"):
 
-            print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+            #print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                  #",source register 2:",
+                  #int(self.rs2, 2),
+                  #",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
             self.executeMuskan(self.operation, self.rs1, self.rs2, self.rd)
         elif (self.operation == "xor" or self.operation == "mul" or self.operation == "div" or self.operation == "rem"):
 
-            print("Decode-> operation:", self.operation, ",source register 1:", int(self.rs1, 2), ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+            #print("Decode-> operation:", self.operation, ",source register 1:", int(self.rs1, 2), ",source register 2:",
+                  '''int(self.rs2, 2),
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
             self.executeManan(self.operation, self.rs1, self.rs2, self.rd)
 
 
         elif (self.operation == "slt" or self.operation == "srl" or self.operation == "sub" or self.operation == "sra"):
 
-            print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+            '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                   ",source register 2:",
                   int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
             self.executeRajasekhar(self.operation, self.rs1, self.rs2, self.rd)
 
         elif (self.operation == "addi" or self.operation == "andi" or self.operation == "ori"):
@@ -384,8 +476,8 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+            '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
             self.executePraveen(self.operation, self.rd, self.rs1, self.imm)
 
 
@@ -398,8 +490,8 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode -> operation :", self.operation, ",Immediate:", temp,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+            '''print("Decode -> operation :", self.operation, ",Immediate:", temp,
+                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
             self.executePratima(self.operation, self.rd, self.imm, self.PC_temp)
 
         elif (self.operation == "bge" or self.operation == "blt"):
@@ -411,10 +503,10 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+            '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                   ",Source register 2:",
                   int(self.rs2, 2),
-                  ",Immediate: ", temp, end=" \n", sep=" ")
+                  ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executeManan1(self.operation, self.rs1, self.rs2, self.imm, self.PC_temp)
 
         elif (self.operation == "beq" or self.operation == "bne"):
@@ -426,10 +518,10 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+            '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                   ",Source register 2:",
                   int(self.rs2, 2),
-                  ",Immediate: ", temp, end=" \n", sep=" ")
+                  ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executeRajasekhar1(self.operation, self.rs1, self.rs2, self.imm, self.PC_temp)
 
 
@@ -442,8 +534,8 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
-                  temp, end=" \n", sep=" ")
+            '''print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
+                  temp, end=" \n", sep=" ")'''
             self.executePraveen1(self.operation, self.rd, self.imm, self.PC_temp)
 
         elif (self.operation == "jalr"):
@@ -455,9 +547,9 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode-> operation: ", self.operation, ",Source register 1:", int(self.rs1, 2),
+            '''print("Decode-> operation: ", self.operation, ",Source register 1:", int(self.rs1, 2),
                   ",destinaton register:"
-                  , int(self.rd, 2), ",Immediate: ", temp, end=" \n", sep=" ")
+                  , int(self.rd, 2), ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executePraveen2(self.operation, self.rs1, self.rd, self.imm, self.PC_temp)
         elif (self.operation == "sw" or self.operation == "sh" or self.operation == "sb"):
 
@@ -468,10 +560,10 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+            '''print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
                   ",Source register 2:",
                   int(self.rs2, 2),
-                  ",Immediate: ", temp, end=" \n", sep=" ")
+                  ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executeStore(self.operation, self.rs1, self.rs2, self.imm)
         elif (self.operation == "lw" or self.operation == "lh" or self.operation == "lb"):
 
@@ -482,8 +574,8 @@ class five_steps:
                 temp = self.findnegative(check)
             else:
                 temp = int(temp, 2)
-            print("Decode-> operation: ", self.operation, ",Source register 1:", int(self.rs1, 2),
-                  ",destinaton register:", int(self.rd, 2), ",Immediate: ", temp, end=" \n", sep=" ")
+            '''print("Decode-> operation: ", self.operation, ",Source register 1:", int(self.rs1, 2),
+                  ",destinaton register:", int(self.rd, 2), ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executeRead(self.operation, self.rs1, self.rd, self.imm)
 
     def executeMuskan(self, string, rs1, rs2, rd):
@@ -989,10 +1081,9 @@ for line in file:
 file.close()
 
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
-knob2 = int(
-    input("Enter the value of Knob2(0/1):0 if pipeline is expected to work with stalling and 1 for vice-versa\n"))
-knob3 = int(input(
-    "Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle and 1 for choosing pipelining\n"))
+if(knob1==1):
+	knob2 = int(input("Enter the value of Knob2(0/1):0 if pipeline is expected to work with stalling and 1 for vice-versa\n"))
+knob3 = int(input("Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle \n"))
 knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number."))
 knob5 = int(input(""))
@@ -1037,6 +1128,36 @@ if (knob1 == 0):
     print(x)
     print(memory)
 elif (knob1 == 1):
-    # pipelining=five_steps()
-    # pipelining.PC=0
-    pass
+    pipelining=five_steps()
+    pipelining.PC=0
+    while (pipelining.PC <= last_PC):
+    	
+     	if(pipelining.cycle==0):
+     		pipelining.fetch(Instruct[pipelining.PC])
+     		pipelining.cycle+=1
+     	elif(pipelining.cycle==1):
+     		pipelining.decode(pipelining.IF)
+     		pipelining.fetch(Instruct[pipelining.PC])
+     		pipelining.cycle+=1
+     	elif(pipelining.cycle==2):
+     		pipelining.execute()
+     		pipelining.decode(pipelining.IF)
+     		pipelining.fetch(Instruct[pipelining.PC])
+     		pipelining.cycle+=1
+     	elif(pipelining.cycle==3):
+     		pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm,pipelining.address)
+     		pipelining.execute()
+     		pipelining.decode(pipelining.IF)
+     		pipelining.fetch(Instruct[pipelining.PC])
+     		pipelining.cycle+=1
+     	elif(pipelining.cycle>=4):
+     		pipelining.WriteBack(pipelining.rd, pipelining.jot)
+     		
+     		pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm,pipelining.address)
+     		pipelining.execute()
+     		pipelining.decode(pipelining.IF)
+     		pipelining.fetch(Instruct[pipelining.PC])
+     		pipelining.cycle+=1
+     	print(pipelining.PC)
+     	 
+    
