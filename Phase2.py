@@ -16,7 +16,7 @@ class five_steps:
         # self.IR = 0
         self.PC_temp = self.PC
         self.clock = 0
-        self.cycle= 0
+        self.cycle = 0
         self.IF = ''
         # self.ID = {}
         # self.IE = {}
@@ -31,11 +31,19 @@ class five_steps:
         self.imm = ''
         self.jot = 0
         ####### END     #########
-
+        self.jot1=0
+        self.jot2=0
+        self.rd1=0
+        self.rd2=0
+        self.jt=[]
+        self.rdd=[]
         ############ MEMORY   ###########
         self.string = ''
         self.dataa = ''
         self.address = ''
+
+        self.dataa1 = ''
+        self.address1 = ''
         ####### END     #########
 
         # self.stall_one = False
@@ -78,7 +86,9 @@ class five_steps:
                 if (funct7 == "0000000"):
                     if (funct3 == "000"):
                         self.operation = "add"
-                        print("Decode-> operation :",self.operation,",source register 1:",int(self.rs1, 2),",source register 2:",int(self.rs2, 2),",destination register:",int(self.rd, 2),end=" \n", sep=" ")
+                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                              ",source register 2:", int(self.rs2, 2), ",destination register:", int(self.rd, 2),
+                              end=" \n", sep=" ")
                         # add
                         # execute("add", rs1, rs2, rd, " ", PC)  # " " is don't care for imm
 
@@ -87,9 +97,9 @@ class five_steps:
 
                         self.operation = "and"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # and
                         # execute("and", rs1, rs2, rd, " ", PC)
 
@@ -97,9 +107,9 @@ class five_steps:
 
                         self.operation = "or"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # or
                         # execute("or", rs1, rs2, rd, " ", PC)
 
@@ -107,9 +117,9 @@ class five_steps:
 
                         self.operation = "sll"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sll
                         # execute("sll", rs1, rs2, rd, " ", PC)
 
@@ -118,9 +128,9 @@ class five_steps:
 
                         self.operation = "slt"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # slt
                         # execute("slt", rs1, rs2, rd, " ", PC)
 
@@ -128,9 +138,9 @@ class five_steps:
 
                         self.operation = "srl"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # srl
                         # execute("srl", rs1, rs2, rd, " ", PC)
 
@@ -138,9 +148,9 @@ class five_steps:
 
                         self.operation = "xor"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # xor
                         # execute("xor", rs1, rs2, rd, " ", PC)
 
@@ -151,9 +161,9 @@ class five_steps:
 
                         self.operation = "sub"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sub
                         # execute("sub", rs1, rs2, rd, " ", PC)
 
@@ -161,9 +171,9 @@ class five_steps:
 
                         self.operation = "sra"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # sra
                         # execute("sra", rs1, rs2, rd, " ", PC)
 
@@ -174,27 +184,27 @@ class five_steps:
 
                         self.operation = "mul"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # mul
                         # execute("mul", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "100"):
                         self.operation = "div"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # div
                         # execute("div", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "110"):
                         self.operation = "rem"
                         print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",source register 2:",
-                  int(self.rs2, 2),
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",source register 2:",
+                              int(self.rs2, 2),
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                         # rem
                         # execute("rem", rs1, rs2, rd, " ", PC)
 
@@ -222,15 +232,17 @@ class five_steps:
                     # lb
 
                     self.operation = "lb"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # execute("lb", rs1, " ", rd, imm, PC)
                     # PC += 4
                 elif (funct3 == "001"):
 
                     self.operation = "lh"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # lh
 
                     # execute("lh", rs1, " ", rd, imm, PC)
@@ -238,8 +250,9 @@ class five_steps:
                 elif (funct3 == "010"):
 
                     self.operation = "lw"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # lw
 
                     # execute("lw", rs1, " ", rd, imm, PC)
@@ -251,8 +264,9 @@ class five_steps:
                 if (funct3 == "000"):
 
                     self.operation = "addi"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # addi
                     # execute("addi", rs1, " ", rd, imm, PC)
 
@@ -260,8 +274,9 @@ class five_steps:
                 elif (funct3 == "111"):
 
                     self.operation = "andi"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # andi
                     # execute("andi", rs1, " ", rd, imm, PC)
 
@@ -269,8 +284,9 @@ class five_steps:
                 elif (funct3 == "110"):
                     # ori
                     self.operation = "ori"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # execute("ori", rs1, " ", rd, imm, PC)
 
                 else:
@@ -279,8 +295,9 @@ class five_steps:
                 if (funct3 == "000"):
 
                     self.operation = "jalr"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2), ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                          ",Immediate:", imm,
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                     # jalr
                     # PC = execute("jalr", rs1, " ", rd, imm, PC)
 
@@ -315,9 +332,9 @@ class five_steps:
 
                 self.operation = "sb"
                 print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # Execution of store_byte(sb)
 
                 # execute("sb", rs1, rs2, " ", imm, PC)
@@ -326,9 +343,9 @@ class five_steps:
 
                 self.operation = "sh"
                 print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # Execution of store_halfword(sh)
 
                 # execute("sh", rs1, rs2, " ", imm, PC)
@@ -337,9 +354,9 @@ class five_steps:
 
                 self.operation = "sw"
                 print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # Execution of store_word(sw)
 
                 # execute("sw", rs1, rs2, " ", imm, PC)
@@ -360,33 +377,33 @@ class five_steps:
 
                 self.operation = "beq"
                 print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # pc = execute("beq", rs1, rs2, " ", imm, pc)
             elif funct3 == '001':
 
                 self.operation = "bne"
                 print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # pc = execute("bne", rs1, rs2, " ", imm, pc)
             elif funct3 == '101':
 
                 self.operation = "bge"
                 print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # pc = execute("bge", rs1, rs2, " ", imm, pc)
             elif funct3 == '100':
 
                 self.operation = "blt"
                 print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  ",Source register 2:",
-                  int(self.rs2, 2),
-                  ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Source register 2:",
+                      int(self.rs2, 2),
+                      ",Immediate: ", imm, end=" \n", sep=" ")
                 # pc = execute("blt", rs1, rs2, " ", imm, pc)
             else:
                 print("Error")
@@ -406,7 +423,7 @@ class five_steps:
                 # auipc
                 self.operation = "auipc"
                 print("Decode -> operation :", self.operation, ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                 # execute("auipc", " ", " ", rd, imm, PC)
 
             elif (opcode == "0110111"):
@@ -414,7 +431,7 @@ class five_steps:
 
                 self.operation = "lui"
                 print("Decode -> operation :", self.operation, ",Immediate:", imm,
-                  ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
                 # execute("lui", " ", " ", rd, imm, PC)
             else:
                 print("Error")
@@ -433,7 +450,7 @@ class five_steps:
 
                 self.operation = "jal"
                 print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
-                  imm, end=" \n", sep=" ")
+                      imm, end=" \n", sep=" ")
                 # pc = execute("jal", " ", " ", rd, imm, pc)
 
             else:
@@ -446,14 +463,13 @@ class five_steps:
 
         if (self.operation == "add" or self.operation == "and" or self.operation == "or" or self.operation == "sll"):
 
-            #print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
-                  #",source register 2:",
-                  #int(self.rs2, 2),
-                  #",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+            # print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+            # ",source register 2:",
+            # int(self.rs2, 2),
+            # ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
             self.executeMuskan(self.operation, self.rs1, self.rs2, self.rd)
         elif (self.operation == "xor" or self.operation == "mul" or self.operation == "div" or self.operation == "rem"):
 
-            
             self.executeManan(self.operation, self.rs1, self.rs2, self.rd)
 
 
@@ -561,6 +577,7 @@ class five_steps:
                   ",Source register 2:",
                   int(self.rs2, 2),
                   ",Immediate: ", temp, end=" \n", sep=" ")'''
+            #print("executed store\n")
             self.executeStore(self.operation, self.rs1, self.rs2, self.imm)
         elif (self.operation == "lw" or self.operation == "lh" or self.operation == "lb"):
 
@@ -582,7 +599,7 @@ class five_steps:
             rd = int(rd, 2)
             s = x[rs1] + x[rs2]
             print("Execute :", string, x[rs1], "and", x[rs2])
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
                 # WriteBack(rd, s)
@@ -594,7 +611,7 @@ class five_steps:
             rd = int(rd, 2)
             s = x[rs1] & x[rs2]
             print("Execute :", string, x[rs1], "and", x[rs2])
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
                 # WriteBack(rd, s)
@@ -606,7 +623,7 @@ class five_steps:
             rd = int(rd, 2)
             s = x[rs1] | x[rs2]
             print("Execute :", string, x[rs1], "and", x[rs2])
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
                 # WriteBack(rd, s)
@@ -618,7 +635,7 @@ class five_steps:
             rd = int(rd, 2)
             s = x[rs1] << x[rs2]
             print("Execute :", string, x[rs1], "and", x[rs2])
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
                 # WriteBack(rd, s)
@@ -631,28 +648,28 @@ class five_steps:
             output = x[rs1] ^ x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == 'mul':
             output = x[rs1] * x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "div":
             output = x[rs1] // x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "rem":
             output = x[rs1] % x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
 
@@ -671,7 +688,7 @@ class five_steps:
                 temp = temp << 12
                 if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                     print("Execute :", string, x[rd], "and", imm)
-                    #print("MEMORY:No memory  operation")
+                    # print("MEMORY:No memory  operation")
                     self.jot = temp
                     # WriteBack(rd, temp)
         elif string == "auipc":  # executing auipc
@@ -681,7 +698,7 @@ class five_steps:
                 temp = temp + PC
                 if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                     print("Execute :", string, x[rd], "and", imm)
-                    #print("MEMORY:No memory  operation")
+                    # print("MEMORY:No memory  operation")
                     self.jot = temp
                     # WriteBack(rd, temp)
         else:
@@ -697,13 +714,13 @@ class five_steps:
             if (x[rs1] < x[rs2]):
                 jot = 1
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
             else:
                 jot = 0
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
         elif (string == "sra"):
@@ -712,7 +729,7 @@ class five_steps:
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "srl"):
@@ -721,7 +738,7 @@ class five_steps:
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "sub"):
@@ -730,7 +747,7 @@ class five_steps:
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
+                # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
 
@@ -750,17 +767,17 @@ class five_steps:
                 s = x[rs1] + imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                     print("Execute :", string, x[rs1], "and", imm)
-                    #print("MEMORY:No memory  operation")
-                    
+                    # print("MEMORY:No memory  operation")
+
                     self.jot = s
-                    #WriteBack(rd, s)
+                    # WriteBack(rd, s)
 
         elif (string == "andi"):
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
                 s = x[rs1] & imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                     print("Execute :", string, x[rs1], "and", imm)
-                    #print("MEMORY:No memory  operation")
+                    # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
 
@@ -770,7 +787,7 @@ class five_steps:
                 s = x[rs1] | imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                     print("Execute :", string, x[rs1], "and", imm)
-                    #print("MEMORY:No memory  operation")
+                    # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
 
@@ -787,24 +804,24 @@ class five_steps:
         if string == "bge":
             if x[rs1] >= x[rs2]:
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
                 print("Execute :No execute")
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif string == 'blt':
             if x[rs1] < x[rs2]:
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
                 print("Execute :No execute")
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
         self.PC = pc
@@ -822,24 +839,24 @@ class five_steps:
         if (string == 'beq'):
             if (x[rs1] == x[rs2]):
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
                 print("Execute :No execute")
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif (string == 'bne'):
             if (x[rs1] != x[rs2]):
                 print("Execute :", string, x[rs1], "and", x[rs2])
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
                 print("Execute :No execute")
-                #print("MEMORY:No memory  operation")
-                #print("WRITEBACK: no writeback \n")
+                # print("MEMORY:No memory  operation")
+                # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
         self.PC = pc
@@ -864,12 +881,12 @@ class five_steps:
 
             jot = temp + 4
             print("Execute :", string, x[rd], "and", imm)
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if rd != 0:
                 self.jot = jot
                 # WriteBack(rd, jot)
-            #else:
-                #print("WRITEBACK: no writeback \n")
+            # else:
+            # print("WRITEBACK: no writeback \n")
 
         self.PC = pc
 
@@ -886,13 +903,13 @@ class five_steps:
             temp = pc
             pc = x[rs1] + imm
             print("Execute :", string, x[rs1], "and", imm)
-            #print("MEMORY:No memory  operation")
+            # print("MEMORY:No memory  operation")
             if (rd != 0):
                 jot = temp + 4
                 self.jot = jot
                 # WriteBack(rd, jot)
-            #else:
-                #print("WRITEBACK: no writeback \n")
+            # else:
+            # print("WRITEBACK: no writeback \n")
 
         self.PC = pc
 
@@ -906,6 +923,9 @@ class five_steps:
         else:
             imm = int(imm, 2)
         dataa = hex(x[rs2])[2:].zfill(8)
+        print("dataa: ",dataa)
+
+
         self.dataa = dataa
         if (string == "sw"):
             if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
@@ -932,6 +952,7 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
+            print("datak: ",dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -1009,7 +1030,7 @@ class five_steps:
                         temp2 = memory[temp1 + 3]
                         jot = int(temp2, 16)
                         self.jot = jot
-                        #WriteBack(rd, jot)
+                        # WriteBack(rd, jot)
                     else:
                         memory[temp1] = "00"
                         memory[temp1 + 1] = "00"
@@ -1027,9 +1048,10 @@ class five_steps:
             self.Memoryread(string, address, rd, imm)
         elif (string == "sb" or string == "sw" or string == "sh"):
             self.MemoryStore(string, dataa, address)
-
+        else:
+            print("NO memory operation")
     def WriteBack(self, rd, content):
-        print(content)
+        print(content,rd)
         if (len(rd) == 0):
             return
         rd = int(rd, 2)
@@ -1080,9 +1102,11 @@ for line in file:
 file.close()
 
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
-if(knob1==1):
-	knob2 = int(input("Enter the value of Knob2(0/1):0 if pipeline is expected to work with stalling and 1 for vice-versa\n"))
-knob3 = int(input("Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle \n"))
+if (knob1 == 1):
+    knob2 = int(
+        input("Enter the value of Knob2(0/1):0 if pipeline is expected to work with stalling and 1 for vice-versa\n"))
+knob3 = int(input(
+    "Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle \n"))
 knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number."))
 knob5 = int(input(""))
@@ -1127,39 +1151,106 @@ if (knob1 == 0):
     print(x)
     print(memory)
 elif (knob1 == 1):
-    pipelining=five_steps()
-    pipelining.PC=0
+    pipelining = five_steps()
+    pipelining.PC = 0
     while (pipelining.PC <= last_PC):
-    	
-     	if(pipelining.cycle==0):
-     		pipelining.fetch(Instruct[pipelining.PC])
-     		pipelining.cycle+=1
-     	elif(pipelining.cycle==1):
-     		pipelining.decode(pipelining.IF)
-     		pipelining.fetch(Instruct[pipelining.PC])
-     		pipelining.cycle+=1
-     	elif(pipelining.cycle==2):
-     		pipelining.execute()
-     		pipelining.decode(pipelining.IF)
-     		pipelining.fetch(Instruct[pipelining.PC])
-     		pipelining.cycle+=1
-     	elif(pipelining.cycle==3):
-     		pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm,pipelining.address)
-     		pipelining.execute()
-     		pipelining.decode(pipelining.IF)
-     		pipelining.fetch(Instruct[pipelining.PC])
-     		pipelining.cycle+=1
-     	elif(pipelining.cycle>=4):
-            print("value of  pipelining jot is",pipelining.jot) 
-            pipelining.WriteBack(pipelining.rd, pipelining.jot)
-            pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm,pipelining.address)
-            pipelining.execute()
+
+        if (pipelining.cycle == 0):
+            pipelining.fetch(Instruct[pipelining.PC])
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 1):
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
-            pipelining.cycle+=1
-     	print(pipelining.PC)
-         
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
-     	 
-    
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 2):
+            pipelining.execute()
+            pipelining.jt.append(pipelining.jot)
+            pipelining.rdd.append(pipelining.rd)
+            #pipelining.jot1=pipelining.jot
+            #pipelining.rd1=pipelining.rd
+            pipelining.decode(pipelining.IF)
+            pipelining.fetch(Instruct[pipelining.PC])
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 3):
+            pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+            pipelining.execute()
+            pipelining.jt.append(pipelining.jot)
+            pipelining.rdd.append(pipelining.rd)
+            pipelining.decode(pipelining.IF)
+            pipelining.fetch(Instruct[pipelining.PC])
+            pipelining.cycle += 1
+        elif (pipelining.cycle >= 4):
+            print("value of  pipelining jot is", pipelining.jot)
+            print("lists\n")
+            print(pipelining.rdd)
+            print(pipelining.jt)
+            pipelining.rd1=pipelining.rdd[0]
+            pipelining.jot1=pipelining.jt[0]
+            pipelining.rdd.pop(0)
+            pipelining.jt.pop(0)
+            pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
+            #pipelining.jot1 = pipelining.jot
+            #pipelining.rd1 = pipelining.rd
+            pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+            pipelining.execute()
+            pipelining.jt.append(pipelining.jot)
+            pipelining.rdd.append(pipelining.rd)
+            pipelining.decode(pipelining.IF)
+            pipelining.fetch(Instruct[pipelining.PC])
+            pipelining.cycle += 1
+
+        for i in range(0, 32):
+            print("x[", i, "]=", x[i])
+
+
+            #print(pipelining.PC)
+    pipelining.rd1 = pipelining.rdd[0]
+    pipelining.jot1 = pipelining.jt[0]
+    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
+    pipelining.rdd.pop(0)
+    pipelining.jt.pop(0)
+    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+    pipelining.execute()
+    pipelining.jt.append(pipelining.jot)
+    pipelining.rdd.append(pipelining.rd)
+    pipelining.decode(pipelining.IF)
+    pipelining.cycle += 1
+
+    pipelining.rd1 = pipelining.rdd[0]
+    pipelining.jot1 = pipelining.jt[0]
+    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
+    pipelining.rdd.pop(0)
+    pipelining.jt.pop(0)
+    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+    pipelining.execute()
+    pipelining.jt.append(pipelining.jot)
+    pipelining.rdd.append(pipelining.rd)
+    #pipelining.decode(pipelining.IF)
+    pipelining.cycle += 1
+
+    pipelining.rd1 = pipelining.rdd[0]
+    pipelining.jot1 = pipelining.jt[0]
+    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
+    pipelining.rdd.pop(0)
+    pipelining.jt.pop(0)
+    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+    #pipelining.execute()
+    '''pipelining.jt.append(pipelining.jot)
+    pipelining.rdd.append(pipelining.rd)
+    pipelining.decode(pipelining.IF)'''
+    pipelining.cycle += 1
+
+    pipelining.rd1 = pipelining.rdd[0]
+    pipelining.jot1 = pipelining.jt[0]
+    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
+    pipelining.rdd.pop(0)
+    pipelining.jt.pop(0)
+    pipelining.cycle += 1
+
+
+
+print(memory)
+
+
+
+
