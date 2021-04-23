@@ -31,21 +31,25 @@ class five_steps:
         self.imm = ''
         self.jot = 0
         ####### END     #########
-        self.jot1=0
-        self.jot2=0
-        self.rd1=0
-        self.rd2=0
-        self.jt=[]
-        self.rdd=[]
-        ############ MEMORY   ###########
+        #self.jot1=0
+        #self.jot2=0
+        #self.rd1=0
+        #self.rd2=0
+        #self.jt=[]
+        #self.rdd=[]
+        ############ MEMORY   ###########   pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1
         self.string = ''
         self.dataa = ''
-        self.address = ''
+        self.address = -1
 
+        self.operation1=''
         self.dataa1 = ''
-        self.address1 = ''
-        ####### END     #########
-
+        self.rd1=''
+        self.imm1 = ''
+        self.address1 = -1
+        ####### END     #########writeback  pipelining.rd1, pipelining.jot1
+        self.rd2=''
+        self.jot2 = 0
         # self.stall_one = False
         # self.stall_two = False
         self.total_cycles = 0
@@ -591,6 +595,12 @@ class five_steps:
             '''print("Decode-> operation: ", self.operation, ",Source register 1:", int(self.rs1, 2),
                   ",destinaton register:", int(self.rd, 2), ",Immediate: ", temp, end=" \n", sep=" ")'''
             self.executeRead(self.operation, self.rs1, self.rd, self.imm)
+        #pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1
+        self.operation1=self.operation
+        self.dataa1=self.dataa
+        self.rd1=self.rd
+        self.imm1=self.imm
+        self.address1=self.address
 
     def executeMuskan(self, string, rs1, rs2, rd):
         if (string == "add"):  # executing add
@@ -924,30 +934,33 @@ class five_steps:
             imm = int(imm, 2)
         dataa = hex(x[rs2])[2:].zfill(8)
         print("dataa: ",dataa)
+        print("rs1 ",rs1)
+        print("imm ",imm)
 
 
         self.dataa = dataa
         if (string == "sw"):
             if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
-                address = x[rs1] + imm  # calculating address
+                adds = x[rs1] + imm  # calculating address
                 print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sw"
-                self.address = address
+                self.address = adds
                 # self.MemoryStore("sw", dataa, address)
         elif (string == "sh"):
             if (x[rs1] + imm >= 268435456):
-                address = x[rs1] + imm
+                adds = x[rs1] + imm
                 print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sh"
-                self.address = address
+                self.address = adds
                 # self.MemoryStore("sh", dataa, address)
         elif (string == "sb"):
             if (x[rs1] + imm >= 268435456):
-                address = x[rs1] + imm
+                adds = x[rs1] + imm
                 print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sb"
-                self.address = address
+                self.address = adds
                 # self.MemoryStore("sb", dataa, address)
+
 
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
@@ -1048,8 +1061,12 @@ class five_steps:
             self.Memoryread(string, address, rd, imm)
         elif (string == "sb" or string == "sw" or string == "sh"):
             self.MemoryStore(string, dataa, address)
+        # writeback  pipelining.rd1, pipelining.jot1
         else:
             print("NO memory operation")
+        self.rd2 = rd
+        self.jot2 = self.jot
+
     def WriteBack(self, rd, content):
         print(content,rd)
         if (len(rd) == 0):
@@ -1154,7 +1171,6 @@ elif (knob1 == 1):
     pipelining = five_steps()
     pipelining.PC = 0
     while (pipelining.PC <= last_PC):
-
         if (pipelining.cycle == 0):
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
@@ -1164,92 +1180,62 @@ elif (knob1 == 1):
             pipelining.cycle += 1
         elif (pipelining.cycle == 2):
             pipelining.execute()
-            pipelining.jt.append(pipelining.jot)
-            pipelining.rdd.append(pipelining.rd)
-            #pipelining.jot1=pipelining.jot
-            #pipelining.rd1=pipelining.rd
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
         elif (pipelining.cycle == 3):
-            pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
             pipelining.execute()
-            pipelining.jt.append(pipelining.jot)
-            pipelining.rdd.append(pipelining.rd)
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
         elif (pipelining.cycle >= 4):
-            print("value of  pipelining jot is", pipelining.jot)
-            print("lists\n")
-            print(pipelining.rdd)
-            print(pipelining.jt)
-            pipelining.rd1=pipelining.rdd[0]
-            pipelining.jot1=pipelining.jt[0]
-            pipelining.rdd.pop(0)
-            pipelining.jt.pop(0)
-            pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
-            #pipelining.jot1 = pipelining.jot
-            #pipelining.rd1 = pipelining.rd
-            pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
             pipelining.execute()
-            pipelining.jt.append(pipelining.jot)
-            pipelining.rdd.append(pipelining.rd)
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
-
+        print("cycle no. ",pipelining.cycle)
         for i in range(0, 32):
             print("x[", i, "]=", x[i])
 
 
-            #print(pipelining.PC)
-    pipelining.rd1 = pipelining.rdd[0]
-    pipelining.jot1 = pipelining.jt[0]
-    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
-    pipelining.rdd.pop(0)
-    pipelining.jt.pop(0)
-    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
     pipelining.execute()
-    pipelining.jt.append(pipelining.jot)
-    pipelining.rdd.append(pipelining.rd)
     pipelining.decode(pipelining.IF)
     pipelining.cycle += 1
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
+    print("cycle no. ", pipelining.cycle)
 
-    pipelining.rd1 = pipelining.rdd[0]
-    pipelining.jot1 = pipelining.jt[0]
-    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
-    pipelining.rdd.pop(0)
-    pipelining.jt.pop(0)
-    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
+
+
+    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
     pipelining.execute()
-    pipelining.jt.append(pipelining.jot)
-    pipelining.rdd.append(pipelining.rd)
-    #pipelining.decode(pipelining.IF)
     pipelining.cycle += 1
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
+    print("cycle no. ", pipelining.cycle)
 
-    pipelining.rd1 = pipelining.rdd[0]
-    pipelining.jot1 = pipelining.jt[0]
-    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
-    pipelining.rdd.pop(0)
-    pipelining.jt.pop(0)
-    pipelining.Memory(pipelining.operation, pipelining.dataa, pipelining.rd, pipelining.imm, pipelining.address)
-    #pipelining.execute()
-    '''pipelining.jt.append(pipelining.jot)
-    pipelining.rdd.append(pipelining.rd)
-    pipelining.decode(pipelining.IF)'''
+
+    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
     pipelining.cycle += 1
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
+    print("cycle no. ", pipelining.cycle)
 
-    pipelining.rd1 = pipelining.rdd[0]
-    pipelining.jot1 = pipelining.jt[0]
-    pipelining.WriteBack(pipelining.rd1, pipelining.jot1)
-    pipelining.rdd.pop(0)
-    pipelining.jt.pop(0)
+    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
     pipelining.cycle += 1
+    for i in range(0, 32):
+        print("x[", i, "]=", x[i])
+    print("cycle no. ", pipelining.cycle)
 
 
-
-print(memory)
+    print(memory)
 
 
 
