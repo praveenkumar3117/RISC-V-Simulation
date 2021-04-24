@@ -27,7 +27,13 @@ class five_steps:
         self.operation = ''
         self.rs1 = ''
         self.rs2 = ''
+        #self.rs1a = []
+        #self.rs2a = []
+        #self.rs1b = []
+        #self.rs2b = ''
         self.rd = ''
+        self.rd_array=[]
+        self.count = 0
         self.imm = ''
         self.jot = 0
         ####### END     #########
@@ -1118,6 +1124,11 @@ for line in file:
     last_PC = tempc
 file.close()
 
+a=[]
+a.append(1)
+a.append(2)
+print(a)
+
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
 if (knob1 == 1):
     knob2 = int(
@@ -1176,60 +1187,119 @@ elif (knob1 == 1):
             pipelining.cycle += 1
         elif (pipelining.cycle == 1):
             pipelining.decode(pipelining.IF)
+            pipelining.rd_array.append(pipelining.rd)
+            pipelining.count += 1
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
         elif (pipelining.cycle == 2):
             pipelining.execute()
             pipelining.decode(pipelining.IF)
+            pipelining.rd_array.append(pipelining.rd)
+            pipelining.count += 1
             pipelining.fetch(Instruct[pipelining.PC])
             pipelining.cycle += 1
         elif (pipelining.cycle == 3):
             pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
-            pipelining.execute()
-            pipelining.decode(pipelining.IF)
-            pipelining.fetch(Instruct[pipelining.PC])
-            pipelining.cycle += 1
+            if (pipelining.rd_array[pipelining.count-2] == pipelining.rs1 or
+                    pipelining.rd_array[pipelining.count-2] == pipelining.rs2):
+                print("Stalling")
+                pipelining.cycle += 2
+            else:
+                print("Stalling", pipelining.rd_array[pipelining.count-2], pipelining.rs1, pipelining.rs2)
+                pipelining.execute()
+                pipelining.decode(pipelining.IF)
+                pipelining.rd_array.append(pipelining.rd)
+                pipelining.count += 1
+                pipelining.fetch(Instruct[pipelining.PC])
+                pipelining.cycle += 1
+            '''if (pipelining.rd == pipelining.rs1a[0] or pipelining.rd == pipelining.rs1a[1] or
+                    pipelining.rd == pipelining.rs2a[0] or pipelining.rd == pipelining.rs2a[1]):
+                print("Stalling")
+            else:
+                pipelining.execute()
+                pipelining.decode(pipelining.IF)
+                pipelining.fetch(Instruct[pipelining.PC])'''
         elif (pipelining.cycle >= 4):
             pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
             pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
-            pipelining.execute()
+            if (pipelining.rd_array[pipelining.count-2] == pipelining.rs1 or
+                    pipelining.rd_array[pipelining.count-2] == pipelining.rs2):
+                print("Stalling>4 1.0")
+                pipelining.cycle += 2
+            elif (pipelining.rd_array[pipelining.count-3] == pipelining.rs1 or
+                    pipelining.rd_array[pipelining.count-3] == pipelining.rs2):
+                print("Stalling>4 2.0")
+                pipelining.rd_array.pop(0)
+                pipelining.cycle += 1
+            else:
+                pipelining.execute()
+                pipelining.decode(pipelining.IF)
+                pipelining.rd_array.append(pipelining.rd)
+                pipelining.count += 1
+                pipelining.fetch(Instruct[pipelining.PC])
+                pipelining.cycle += 1
+            '''pipelining.execute()
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
-            pipelining.cycle += 1
+            pipelining.cycle += 1'''
         print("cycle no. ",pipelining.cycle)
-        for i in range(0, 32):
-            print("x[", i, "]=", x[i])
-
-
-    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
-    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
-    pipelining.execute()
-    pipelining.decode(pipelining.IF)
-    pipelining.cycle += 1
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
-    print("cycle no. ", pipelining.cycle)
-
-
+        #for i in range(0, 32):
+        #    print("x[", i, "]=", x[i])
 
     pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
     pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
-    pipelining.execute()
-    pipelining.cycle += 1
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
-    print("cycle no. ", pipelining.cycle)
+    '''if (pipelining.rd1 == pipelining.rs1a[1] or pipelining.rd1 == pipelining.rs2a[1] or pipelining.rd1 == pipelining.rs1a[2] or
+            pipelining.rd1 == pipelining.rs2a[2]):
 
+        #print("Stalling1.0")
 
-    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
-    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
-    pipelining.cycle += 1
-    for i in range(0, 32):
-        print("x[", i, "]=", x[i])
-    print("cycle no. ", pipelining.cycle)
+        pipelining.cycle += 2
 
-    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
-    pipelining.cycle += 1
+        pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+        pipelining.execute()
+        pipelining.decode(pipelining.IF)
+        pipelining.rs1a.append(pipelining.rs1)
+        pipelining.rs2a.append(pipelining.rs2)
+        pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+        if (pipelining.rd1 == pipelining.rs1a[1] or pipelining.rd1 == pipelining.rs2a[1] or pipelining.rd1 == pipelining.rs1a[2]
+                or pipelining.rd1 == pipelining.rs2a[2]):
+            print("Stalling1.0.1")
+            pipelining.cycle += 2
+            pipelining.execute()
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+        else:
+            pipelining.execute()
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.cycle += 1
+
+        pipelining.cycle += 1
+    else:
+        pipelining.execute()
+        pipelining.decode(pipelining.IF)
+        pipelining.rs1a.append(pipelining.rs1)
+        pipelining.rs2a.append(pipelining.rs2)
+        pipelining.cycle += 1
+        pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+        pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+        if (pipelining.rd1 == pipelining.rs1a[1] or pipelining.rd1 == pipelining.rs2a[1] or pipelining.rd1 == pipelining.rs1a[2]
+                or pipelining.rd1 == pipelining.rs2a[2]):
+            print("Stalling1.2.1")
+            pipelining.cycle += 2
+            pipelining.execute()
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+        else:
+            pipelining.execute()
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1, pipelining.address1)
+            pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            pipelining.cycle += 1'''
+
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
     print("cycle no. ", pipelining.cycle)
