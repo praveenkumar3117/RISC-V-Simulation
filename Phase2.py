@@ -1205,27 +1205,20 @@ elif (knob1 == 1):
                 print("Stalling")
                 pipelining.rd_array2.append(pipelining.rd_array1[0])
                 pipelining.rd_array1.pop(0)
-                pipelining.cycle += 1
+                pipelining.cycle += 2
             else:
                 #print("Stalling", pipelining.rd_array[pipelining.count-2], pipelining.rs1, pipelining.rs2)
                 pipelining.execute()
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)
+                pipelining.rd_array1.pop(0)
                 #pipelining.count += 1
                 pipelining.fetch(Instruct[pipelining.PC])
                 pipelining.cycle += 1
-            '''if (pipelining.rd == pipelining.rs1a[0] or pipelining.rd == pipelining.rs1a[1] or
-                    pipelining.rd == pipelining.rs2a[0] or pipelining.rd == pipelining.rs2a[1]):
-                print("Stalling")
-            else:
-                pipelining.execute()
-                pipelining.decode(pipelining.IF)
-                pipelining.fetch(Instruct[pipelining.PC])'''
-
         elif (pipelining.cycle >= 4):
+
             if(pipelining.PC == last_PC+16):
                 pipelining.PC+=4
-
             pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
             if(pipelining.PC <= last_PC+12):
                 pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,pipelining.address1)
@@ -1233,11 +1226,35 @@ elif (knob1 == 1):
                     pipelining.PC+=4
 
             if(len(pipelining.rd_array2)==0 or len(pipelining.rd_array2)==1):
-                if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                    print("Stalling>4 1.0")
-                    pipelining.rd_array2.append(pipelining.rd_array1[0])
-                    pipelining.rd_array1.pop(0)
-                    pipelining.cycle += 1
+                if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 2):
+                    if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
+                        print("Stalling>4 1.0")
+                        pipelining.rd_array2.append(pipelining.rd_array1[0])
+                        pipelining.rd_array1.pop(0)
+                        pipelining.cycle += 1
+                    else:
+                        if (len(pipelining.rd_array1) == 2):
+                            pipelining.rd_array2.append(pipelining.rd_array1[0])
+                            pipelining.rd_array1.pop(0)
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
+
+                        if (pipelining.PC <= last_PC + 8):
+                            pipelining.execute()
+                            if (pipelining.PC == last_PC + 8):
+                                pipelining.PC += 4
+
+                        if (pipelining.PC <= last_PC + 4):
+                            pipelining.decode(pipelining.IF)
+                            pipelining.rd_array1.append(pipelining.rd)
+                            pipelining.count += 1
+                            if (pipelining.PC == last_PC + 4):
+                                pipelining.PC += 4
+
+                        if (pipelining.PC <= last_PC):
+                            pipelining.fetch(Instruct[pipelining.PC])
+
+                        pipelining.cycle += 1
                 else:
                     if (len(pipelining.rd_array1) == 2):
                         pipelining.rd_array2.append(pipelining.rd_array1[0])
@@ -1262,40 +1279,70 @@ elif (knob1 == 1):
 
                     pipelining.cycle += 1
             else:
-                if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                    print("Stalling>4 1.0.1")
-                    pipelining.rd_array2.append(pipelining.rd_array1[0])
-                    pipelining.rd_array1.pop(0)
-                    pipelining.cycle += 1
-                elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                    print("Stalling>4 2.0.1")
-                    pipelining.rd_array2.pop(0)
-                    pipelining.cycle += 1
-                else:
-                    if(len(pipelining.rd_array1)==2):
+                if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 2):
+                    if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
+                        print("Stalling>4 1.0.1")
                         pipelining.rd_array2.append(pipelining.rd_array1[0])
                         pipelining.rd_array1.pop(0)
-
-                    if(len(pipelining.rd_array2)==2):
+                        pipelining.cycle += 1
+                    elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
+                        print("Stalling>4 2.0.1")
                         pipelining.rd_array2.pop(0)
+                        pipelining.cycle += 1
+                    else:
+                        if (len(pipelining.rd_array1) == 2):
+                            pipelining.rd_array2.append(pipelining.rd_array1[0])
+                            pipelining.rd_array1.pop(0)
 
-                    if (pipelining.PC <= last_PC + 8):
-                        pipelining.execute()
-                        if (pipelining.PC == last_PC + 8):
-                            pipelining.PC += 4
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
 
-                    if(pipelining.PC <= last_PC+4):
-                        pipelining.decode(pipelining.IF)
-                        pipelining.rd_array1.append(pipelining.rd)
-                        pipelining.count += 1
-                        if (pipelining.PC == last_PC + 4):
-                            pipelining.PC += 4
+                        if (pipelining.PC <= last_PC + 8):
+                            pipelining.execute()
+                            if (pipelining.PC == last_PC + 8):
+                                pipelining.PC += 4
 
-                    if(pipelining.PC<=last_PC):
-                        pipelining.fetch(Instruct[pipelining.PC])
+                        if (pipelining.PC <= last_PC + 4):
+                            pipelining.decode(pipelining.IF)
+                            pipelining.rd_array1.append(pipelining.rd)
+                            pipelining.count += 1
+                            if (pipelining.PC == last_PC + 4):
+                                pipelining.PC += 4
 
+                        if (pipelining.PC <= last_PC):
+                            pipelining.fetch(Instruct[pipelining.PC])
 
-                    pipelining.cycle += 1
+                        pipelining.cycle += 1
+                else:
+                    if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
+                        print("Stalling>4 2.0.1")
+                        pipelining.rd_array2.pop(0)
+                        pipelining.cycle += 1
+                    else:
+                        if (len(pipelining.rd_array1) == 2):
+                            pipelining.rd_array2.append(pipelining.rd_array1[0])
+                            pipelining.rd_array1.pop(0)
+
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
+
+                        if (pipelining.PC <= last_PC + 8):
+                            pipelining.execute()
+                            if (pipelining.PC == last_PC + 8):
+                                pipelining.PC += 4
+
+                        if (pipelining.PC <= last_PC + 4):
+                            pipelining.decode(pipelining.IF)
+                            pipelining.rd_array1.append(pipelining.rd)
+                            pipelining.count += 1
+                            if (pipelining.PC == last_PC + 4):
+                                pipelining.PC += 4
+
+                        if (pipelining.PC <= last_PC):
+                            pipelining.fetch(Instruct[pipelining.PC])
+
+                        pipelining.cycle += 1
+
             '''pipelining.execute()
             pipelining.decode(pipelining.IF)
             pipelining.fetch(Instruct[pipelining.PC])
