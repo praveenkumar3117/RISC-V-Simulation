@@ -1111,7 +1111,7 @@ class five_steps:
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
                         print("Memory: accessed memory location at", temp1)
-                        temp2 = memory[temp1 + 3] + memory[temp1 + 2]
+                        temp2 = memory[temp1 + 1] + memory[temp1]
                         jot = int(temp2, 16)
                         self.jot = jot
                         # WriteBack(rd, jot)
@@ -1128,7 +1128,7 @@ class five_steps:
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
                         print("Memory: accessed memory location at", temp1)
-                        temp2 = memory[temp1 + 3]
+                        temp2 = memory[temp1]
                         jot = int(temp2, 16)
                         self.jot = jot
                         # WriteBack(rd, jot)
@@ -1796,6 +1796,9 @@ elif (knob1 == 1):
                 # for i in range(0, 32):
                 #    print("x[", i, "]=", x[i])
                 # print("cycle no. ", pipelining.cycle)
+            '''print("memory: ",memory)
+            for i in range(0, 32):
+                print("x[", i, "]=", x[i])'''
             print("cycle no. ", pipelining.cycle)
             print("\n")
             # for i in range(0, 32):
