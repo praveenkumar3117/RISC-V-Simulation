@@ -647,6 +647,7 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
+            
             if (self.rs1_bool == False):
                 self.rs1_a = x[rs1]
             if (self.rs2_bool == False):
@@ -665,8 +666,16 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
-            s = x[rs1] | x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            
+            if (self.rs1_bool == False):
+                self.rs1_a = x[rs1]
+            if (self.rs2_bool == False):
+                self.rs2_a = x[rs2]
+
+            s = self.rs1_a | self.rs2_a
+
+            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -677,8 +686,14 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
-            s = x[rs1] << x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            
+            if (self.rs1_bool == False):
+                self.rs1_a = x[rs1]
+            if (self.rs2_bool == False):
+                self.rs2_a = x[rs2]
+                
+            s = self.rs1_a << self.rs2_a
+            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -688,31 +703,37 @@ class five_steps:
         rd = int(rd, 2)
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
+        
         if string == 'xor':
-            output = x[rs1] ^ x[rs2]
+            output = self.rs1_a ^ self.rs2_a
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == 'mul':
-            output = x[rs1] * x[rs2]
+            output = self.rs1_a * self.rs2_a
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "div":
-            output = x[rs1] // x[rs2]
+            output = self.rs1_a // self.rs2_a
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "rem":
-            output = x[rs1] % x[rs2]
+            output = self.rs1_a % self.rs2_a
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
@@ -753,44 +774,49 @@ class five_steps:
         rd = int(rd, 2)
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
 
         if (string == "slt"):
-            if (x[rs1] < x[rs2]):
+            if (self.rs1_a < self.rs2_a):
                 jot = 1
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
             else:
                 jot = 0
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
         elif (string == "sra"):
-            result = x[rs1] >> x[rs2]
+            result = self.rs1_a >> self.rs2_a
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "srl"):
-            result = x[rs1] >> x[rs2]
+            result = self.rs1_a >> self.rs2_a
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "sub"):
-            result = x[rs1] - x[rs2]
+            result = self.rs1_a - self.rs2_a
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
@@ -798,6 +824,10 @@ class five_steps:
     def executePraveen(self, string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
         rs1 = int(rs1, 2)
         rd = int(rd, 2)
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+            
         # print(imm)
         if (imm[0:1] == '1'):
             check = str(imm)
@@ -808,9 +838,9 @@ class five_steps:
 
         if (string == "addi"):
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
-                s = x[rs1] + imm
+                s = self.rs1_a + imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    print("Execute :", string, self.rs1_a, "and", imm)
                     # print("MEMORY:No memory  operation")
 
                     self.jot = s
@@ -818,9 +848,9 @@ class five_steps:
 
         elif (string == "andi"):
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
-                s = x[rs1] & imm
+                s = self.rs1_a & imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    print("Execute :", string, self.rs1_a, "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
@@ -828,9 +858,9 @@ class five_steps:
         elif (string == "ori"):
 
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
-                s = x[rs1] | imm
+                s = self.rs1_a | imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    print("Execute :", string, self.rs1_a, "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
@@ -845,9 +875,15 @@ class five_steps:
         else:
             imm = int(imm, 2)
         imm = imm << 1
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
+            
         if string == "bge":
-            if x[rs1] >= x[rs2]:
-                print("Execute :", string, x[rs1], "and", x[rs2])
+            if self.rs1_a >= self.rs2_a:
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -857,8 +893,8 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif string == 'blt':
-            if x[rs1] < x[rs2]:
-                print("Execute :", string, x[rs1], "and", x[rs2])
+            if self.rs1_a < self.rs2_a:
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -880,9 +916,15 @@ class five_steps:
         else:
             imm = int(imm, 2)
         imm = imm << 1
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
+            
         if (string == 'beq'):
-            if (x[rs1] == x[rs2]):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+            if (self.rs1_a == self.rs2_a):
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -892,8 +934,8 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif (string == 'bne'):
-            if (x[rs1] != x[rs2]):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+            if (self.rs1_a != self.rs2_a):
+                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -943,10 +985,16 @@ class five_steps:
             imm = self.findnegative(check)
         else:
             imm = int(imm, 2)
+            
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
+            
         if (string == 'jalr'):
             temp = pc
-            pc = x[rs1] + imm
-            print("Execute :", string, x[rs1], "and", imm)
+            pc = self.rs1_a + imm
+            print("Execute :", string, self.rs1_a, "and", imm)
             # print("MEMORY:No memory  operation")
             if (rd != 0):
                 jot = temp + 4
@@ -960,36 +1008,42 @@ class five_steps:
     def executeStore(self, string, rs1, rs2, imm):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
+        if (self.rs2_bool == False):
+            self.rs2_a = x[rs2]
+            
         if (imm[0:1] == '1'):
             check = str(imm)
             check = check[::-1]
             imm = self.findnegative(check)
         else:
             imm = int(imm, 2)
-        dataa = hex(x[rs2])[2:].zfill(8)
+        dataa = hex(self.rs2_a)[2:].zfill(8)
         #print("dataa: ", dataa)
         #print("rs1 ", rs1)
         #print("imm ", imm)
 
         self.dataa = dataa
         if (string == "sw"):
-            if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
-                adds = x[rs1] + imm  # calculating address
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+            if (self.rs1_a + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
+                adds = self.rs1_a + imm  # calculating address
+                print("Execute : calculating effective address by adding", self.rs1_a, "and", imm)
                 self.string = "sw"
                 self.address = adds
                 # self.MemoryStore("sw", dataa, address)
         elif (string == "sh"):
-            if (x[rs1] + imm >= 268435456):
-                adds = x[rs1] + imm
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+            if (self.rs1_a + imm >= 268435456):
+                adds = self.rs1_a + imm
+                print("Execute : calculating effective address by adding", self.rs1_a, "and", imm)
                 self.string = "sh"
                 self.address = adds
                 # self.MemoryStore("sh", dataa, address)
         elif (string == "sb"):
-            if (x[rs1] + imm >= 268435456):
-                adds = x[rs1] + imm
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+            if (self.rs1_a + imm >= 268435456):
+                adds = self.rs1_a + imm
+                print("Execute : calculating effective address by adding", self.rs1_a, "and", imm)
                 self.string = "sb"
                 self.address = adds
                 # self.MemoryStore("sb", dataa, address)
@@ -1012,6 +1066,9 @@ class five_steps:
     def executeRead(self, string, rs1, rd, imm):
         rs1 = int(rs1, 2)
         rd = int(rd, 2)
+        
+        if (self.rs1_bool == False):
+            self.rs1_a = x[rs1]
 
         check = imm
         if (imm[0:1] == '1'):  # imm is a negative number, since sign bit is 1
@@ -1024,9 +1081,9 @@ class five_steps:
         else:
             imm = int(imm, 2)  # sign bit is 0
 
-        temp1 = x[rs1] + imm  # calculating address
+        temp1 = self.rs1_a + imm  # calculating address
         self.address = temp1
-        print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+        print("Execute : calculating effective address by adding", self.rs1_a, "and", imm)
         self.imm = imm
         # self.Memoryread(self, string, temp1, rd, imm)
 
