@@ -632,11 +632,11 @@ class five_steps:
             if (self.rs1_bool == False):
                 self.rs1_a = x[rs1]
             if (self.rs2_bool == False):
-                self.rs2_a = x[rs2]
+                self.rs2_b = x[rs2]
 
-            s = self.rs1_a + self.rs2_a
+            s = self.rs1_a + self.rs2_b
 
-            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            print("Execute :", string, self.rs1_a, "and", self.rs2_b)
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -647,15 +647,15 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
-            
+
             if (self.rs1_bool == False):
                 self.rs1_a = x[rs1]
             if (self.rs2_bool == False):
-                self.rs2_a = x[rs2]
+                self.rs2_b = x[rs2]
 
-            s = self.rs1_a & self.rs2_a
+            s = self.rs1_a & self.rs2_b
 
-            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            print("Execute :", string, self.rs1_a, "and", self.rs2_b)
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -666,16 +666,16 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
-            
+
             if (self.rs1_bool == False):
                 self.rs1_a = x[rs1]
             if (self.rs2_bool == False):
-                self.rs2_a = x[rs2]
+                self.rs2_b = x[rs2]
 
-            s = self.rs1_a | self.rs2_a
+            s = self.rs1_a | self.rs2_b
 
-            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
-            
+            print("Execute :", string, self.rs1_a, "and", self.rs2_b)
+
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -686,54 +686,54 @@ class five_steps:
             rs1 = int(rs1, 2)
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
-            
+
             if (self.rs1_bool == False):
                 self.rs1_a = x[rs1]
             if (self.rs2_bool == False):
-                self.rs2_a = x[rs2]
-                
-            s = self.rs1_a << self.rs2_a
-            print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                self.rs2_b = x[rs2]
+
+            s = self.rs1_a << self.rs2_b
+            print("Execute :", string, self.rs1_a, "and", self.rs2_b)
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
                 # WriteBack(rd, s)
 
-    def executeManan(self, string, rs1, rs2, rd, a, b):
+    def executeManan(self, string, rs1, rs2, rd):
         rd = int(rd, 2)
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
         if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
-        
+            self.rs2_b = x[rs2]
+
         if string == 'xor':
-            output = self.rs1_a ^ self.rs2_a
+            output = self.rs1_a ^ self.rs2_b
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == 'mul':
-            output = self.rs1_a * self.rs2_a
+            output = self.rs1_a * self.rs2_b
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "div":
-            output = self.rs1_a // self.rs2_a
+            output = self.rs1_a // self.rs2_b
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "rem":
-            output = self.rs1_a % self.rs2_a
+            output = self.rs1_a % self.rs2_b
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
@@ -774,49 +774,49 @@ class five_steps:
         rd = int(rd, 2)
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
         if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
+            self.rs2_b = x[rs2]
 
         if (string == "slt"):
-            if (self.rs1_a < self.rs2_a):
+            if (self.rs1_a < self.rs2_b):
                 jot = 1
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
             else:
                 jot = 0
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
         elif (string == "sra"):
-            result = self.rs1_a >> self.rs2_a
+            result = self.rs1_a >> self.rs2_b
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "srl"):
-            result = self.rs1_a >> self.rs2_a
+            result = self.rs1_a >> self.rs2_b
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
         elif (string == "sub"):
-            result = self.rs1_a - self.rs2_a
+            result = self.rs1_a - self.rs2_b
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
@@ -824,10 +824,10 @@ class five_steps:
     def executePraveen(self, string, rd, rs1, imm):  # PRAVEEN KUMAR 2019CSb1108      #addi,andi,ori
         rs1 = int(rs1, 2)
         rd = int(rd, 2)
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
-            
+
         # print(imm)
         if (imm[0:1] == '1'):
             check = str(imm)
@@ -875,15 +875,15 @@ class five_steps:
         else:
             imm = int(imm, 2)
         imm = imm << 1
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
         if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
-            
+            self.rs2_b = x[rs2]
+
         if string == "bge":
-            if self.rs1_a >= self.rs2_a:
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            if self.rs1_a >= self.rs2_b:
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -893,8 +893,8 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif string == 'blt':
-            if self.rs1_a < self.rs2_a:
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            if self.rs1_a < self.rs2_b:
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -916,15 +916,15 @@ class five_steps:
         else:
             imm = int(imm, 2)
         imm = imm << 1
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
         if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
-            
+            self.rs2_b = x[rs2]
+
         if (string == 'beq'):
-            if (self.rs1_a == self.rs2_a):
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            if (self.rs1_a == self.rs2_b):
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -934,8 +934,8 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif (string == 'bne'):
-            if (self.rs1_a != self.rs2_a):
-                print("Execute :", string, self.rs1_a, "and", self.rs2_a)
+            if (self.rs1_a != self.rs2_b):
+                print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -985,12 +985,10 @@ class five_steps:
             imm = self.findnegative(check)
         else:
             imm = int(imm, 2)
-            
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
-        if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
-            
+
         if (string == 'jalr'):
             temp = pc
             pc = self.rs1_a + imm
@@ -1008,12 +1006,12 @@ class five_steps:
     def executeStore(self, string, rs1, rs2, imm):
         rs1 = int(rs1, 2)
         rs2 = int(rs2, 2)
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
         if (self.rs2_bool == False):
-            self.rs2_a = x[rs2]
-            
+            self.rs2_b = x[rs2]
+
         if (imm[0:1] == '1'):
             check = str(imm)
             check = check[::-1]
@@ -1021,9 +1019,9 @@ class five_steps:
         else:
             imm = int(imm, 2)
         dataa = hex(self.rs2_a)[2:].zfill(8)
-        #print("dataa: ", dataa)
-        #print("rs1 ", rs1)
-        #print("imm ", imm)
+        # print("dataa: ", dataa)
+        # print("rs1 ", rs1)
+        # print("imm ", imm)
 
         self.dataa = dataa
         if (string == "sw"):
@@ -1051,7 +1049,7 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
-            #print("datak: ", dataa)
+            # print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -1061,12 +1059,12 @@ class five_steps:
             memory[address + 1] = dataa[4:6]
         elif (string == "sb"):
             memory[address] = dataa[6:]
-        #print("WRITEBACK: no writeback \n")
+        # print("WRITEBACK: no writeback \n")
 
     def executeRead(self, string, rs1, rd, imm):
         rs1 = int(rs1, 2)
         rd = int(rd, 2)
-        
+
         if (self.rs1_bool == False):
             self.rs1_a = x[rs1]
 
@@ -1157,7 +1155,7 @@ class five_steps:
         self.jot2 = self.jot
 
     def WriteBack(self, rd, content):
-        #print(content, rd)
+        # print(content, rd)
         if (len(rd) == 0):
             print("WRITEBACK: no writeback ")
             return
@@ -1165,7 +1163,7 @@ class five_steps:
         if rd != 0:
             x[rd] = content
             print("WRITEBACK: write", content, " to x[", rd, "]")
-        #print("\n")
+        # print("\n")
 
     def findnegative(self,
                      string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
@@ -1188,13 +1186,15 @@ class five_steps:
         self.previous_memory_address = self.address1
 
     def check_already_called_memory(self):
-        print("asbfhasvhfashfvhjsavfjvshfsaf1.1.1.1.1.", self.previous_memory_imm, self.previous_memory_address, self.address1)
+        print("asbfhasvhfashfvhjsavfjvshfsaf1.1.1.1.1.", self.previous_memory_imm, self.previous_memory_address,
+              self.address1)
         if (self.previous_memory_operation == self.operation1 and self.previous_memory_rd == self.rd1 and
                 self.previous_memory_imm == self.imm1 and self.previous_memory_dataa == self.dataa1 and
                 self.previous_memory_address == self.address1):
             return 1
         else:
-            print("asbfhasvhfashfvhjsavfjvshfsaf", self.previous_memory_imm, self.previous_memory_address, self.address1)
+            print("asbfhasvhfashfvhjsavfjvshfsaf", self.previous_memory_imm, self.previous_memory_address,
+                  self.address1)
             return 0
 
     def save_last_called_writeback(self):
@@ -1212,7 +1212,7 @@ class five_steps:
         self.previous_writeback_content = 0
 
 
-file = open('machinecd_stalling_case1.mc', 'r')
+file = open('machinecd.mc', 'r')
 datasegOrnot = 0
 Instruct = {}
 for line in file:
@@ -1227,7 +1227,7 @@ for line in file:
 file.close()
 
 last_PC = 0
-file = open('machinecd_stalling_case1.mc', 'r')
+file = open('machinecd.mc', 'r')
 for line in file:
     if (line == "\n"):
         break
@@ -1267,9 +1267,11 @@ if (knob1 == 0):
     while (non_pipelining.PC <= last_PC):
         non_pipelining.fetch(Instruct[non_pipelining.PC])
         non_pipelining.decode(non_pipelining.IF)
-        if (non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
+        if (
+                non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
             nDataTransfer += 1
-        elif (non_pipelining.operation == "beq" or non_pipelining.operation == "bge" or non_pipelining.operation == "bne" or non_pipelining.operation == "blt" or non_pipelining.operation == "jal" or non_pipelining.operation == "jalr"):
+        elif (
+                non_pipelining.operation == "beq" or non_pipelining.operation == "bge" or non_pipelining.operation == "bne" or non_pipelining.operation == "blt" or non_pipelining.operation == "jal" or non_pipelining.operation == "jalr"):
             nCtrlInstr += 1
         else:
             nALU += 1
@@ -1377,7 +1379,8 @@ elif (knob1 == 1):
                         pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1, pipelining.rd_array2)
+                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1,
+                                  pipelining.rd_array2)
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
@@ -1411,14 +1414,16 @@ elif (knob1 == 1):
                 elif (len(pipelining.rd_array2) == 1):
                     if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2, pipelining.rd_array1, pipelining.rd_array2)
+                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2,
+                                  pipelining.rd_array1, pipelining.rd_array2)
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
                             pipelining.rd_array1.pop(0)
                             pipelining.cycle += 1
                         elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0asfhsajfghsfajasf.1.1.0", pipelining.rs1, pipelining.rs2, pipelining.rd_array2, pipelining.rd_array1)
+                            print("Stalling>4 2.0asfhsajfghsfajasf.1.1.0", pipelining.rs1, pipelining.rs2,
+                                  pipelining.rd_array2, pipelining.rd_array1)
                             pipelining.rd_array2.pop(0)
                             pipelining.cycle += 1
                         else:
@@ -1447,7 +1452,8 @@ elif (knob1 == 1):
                             pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0], pipelining.rd_array2[0])
+                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0],
+                                  pipelining.rd_array2[0])
                             pipelining.rd_array2.pop(0)
                             pipelining.cycle += 1
                         else:
@@ -1480,7 +1486,6 @@ elif (knob1 == 1):
             # for i in range(0, 32):
             #    print("x[", i, "]=", x[i])
 
-
         for i in range(0, 32):
             print("x[", i, "]=", x[i])
         print("cycle no. ", pipelining.cycle)
@@ -1510,9 +1515,17 @@ elif (knob1 == 1):
                                   pipelining.address1)
                 if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
                     print("DF at cycle:", pipelining.cycle)
-                    x[int(pipelining.rd_array1[0], 2)]=pipelining.jot   #for buffer
-                    #pipelining.jot=pipelining.jot2
+                    # x[int(pipelining.rd_array1[0], 2)]=pipelining.jot   #for buffer
+                    if (pipelining.rd_array1[0] == pipelining.rs1):
+                        pipelining.rs1_bool = True
+                        pipelining.rs1_a = pipelining.jot
+                    if (pipelining.rd_array1[0] == pipelining.rs2):
+                        pipelining.rs2_bool = True
+                        pipelining.rs2_b = pipelining.jot
+                    # pipelining.jot=pipelining.jot2
                 pipelining.execute()
+                pipelining.rs1_bool = False
+                pipelining.rs2_bool = False
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
                 pipelining.rd_array1.pop(0)  # No use of rd of instruction1
@@ -1520,7 +1533,8 @@ elif (knob1 == 1):
                 pipelining.cycle += 1
             elif (pipelining.cycle >= 4):
 
-                print ("Manabsfjvafvasbas :::::::::::::::::::::::::::::::::::::::", pipelining.rd_array1, pipelining.rd_array2)
+                print("Manabsfjvafvasbas :::::::::::::::::::::::::::::::::::::::", pipelining.rd_array1,
+                      pipelining.rd_array2)
                 if (len(pipelining.rd_array2) == 2):
                     pipelining.rd_array2.pop(0)
                 if (len(pipelining.rd_array1) == 3):
@@ -1540,7 +1554,7 @@ elif (knob1 == 1):
                     if (pipelining.check_already_called_memory() == 0):
                         pipelining.save_last_called_memory()
                         pipelining.clear_already_called_writeback()
-                        print("Writeback Alreadyasbfgafhjsavfhavfhjsa Called")
+                        #print("Writeback Alreadyasbfgafhjsavfhavfhjsa Called")
                         pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
                                           pipelining.address1)
                     if (pipelining.PC == last_PC + 12):
@@ -1573,16 +1587,28 @@ elif (knob1 == 1):
                         pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("DF>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.jot, pipelining.rd_array1[0],
+                            print("DF>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.jot,
+                                  pipelining.rd_array1[0],
                                   pipelining.rd_array2)
 
-                            x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
+                            # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
+                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                                pipelining.rs1_bool = True
+                                pipelining.rs1_a = pipelining.jot
+                            if (pipelining.rd_array1[0] == pipelining.rs2):
+                                pipelining.rs2_bool = True
+                                pipelining.rs2_b = pipelining.jot
+
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
                             pipelining.rd_array1.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
+
+                                pipelining.rs1_bool = False
+                                pipelining.rs2_bool = False
+
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
 
@@ -1625,13 +1651,24 @@ elif (knob1 == 1):
                             print("DF1->2nd waala>4 1.0 at cycle:", pipelining.cycle, "Jot:", pipelining.jot,
                                   pipelining.rd_array1)
 
-                            x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
+                            # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
+
+                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                                pipelining.rs1_bool = True
+                                pipelining.rs1_a = pipelining.jot
+                            if (pipelining.rd_array1[0] == pipelining.rs2):
+                                pipelining.rs2_bool = True
+                                pipelining.rs2_b = pipelining.jot
+
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
                             pipelining.rd_array1.pop(0)
                             if (pipelining.PC <= last_PC + 8):
+
                                 pipelining.execute()
+                                pipelining.rs1_bool = False
+                                pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
 
@@ -1647,10 +1684,20 @@ elif (knob1 == 1):
                             pipelining.cycle += 1
                         elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
                             print("DF2->1st 2.0.1.1.0", pipelining.cycle, pipelining.jot, pipelining.rd_array2[0])
-                            x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
+                            # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
+
+                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                                pipelining.rs1_bool = True
+                                pipelining.rs1_a = pipelining.jot
+                            if (pipelining.rd_array1[0] == pipelining.rs2):
+                                pipelining.rs2_bool = True
+                                pipelining.rs2_b = pipelining.jot
+
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
+                                pipelining.rs1_bool = False
+                                pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
 
@@ -1662,7 +1709,6 @@ elif (knob1 == 1):
 
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
-
 
                             pipelining.cycle += 1
                         else:
@@ -1691,13 +1737,24 @@ elif (knob1 == 1):
                             pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling2->2     >4 2.0.1.2", pipelining.cycle, pipelining.jot, pipelining.rd_array2[0])
-                            #print("WRITEBACK1.0: write", content, " to x[", rd, "]")
-                            x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
-                            #x[9] = 448
+                            print("Stalling2->2     >4 2.0.1.2", pipelining.cycle, pipelining.jot,
+                                  pipelining.rd_array2[0])
+                            # print("WRITEBACK1.0: write", content, " to x[", rd, "]")
+                            # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
+                            # x[9] = 448
+
+                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                                pipelining.rs1_bool = True
+                                pipelining.rs1_a = pipelining.jot
+                            if (pipelining.rd_array1[0] == pipelining.rs2):
+                                pipelining.rs2_bool = True
+                                pipelining.rs2_b = pipelining.jot
+
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
+                                pipelining.rs1_bool = False
+                                pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
 
@@ -1735,9 +1792,9 @@ elif (knob1 == 1):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
                             pipelining.cycle += 1
-                #for i in range(0, 32):
+                # for i in range(0, 32):
                 #    print("x[", i, "]=", x[i])
-                #print("cycle no. ", pipelining.cycle)
+                # print("cycle no. ", pipelining.cycle)
             print("cycle no. ", pipelining.cycle)
             print("\n")
             # for i in range(0, 32):
