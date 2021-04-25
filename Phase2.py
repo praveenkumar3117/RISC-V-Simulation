@@ -60,7 +60,7 @@ class five_steps:
         # self.stall_two = False
         self.total_cycles = 0
         self.rs1_a = 0
-        self.rs2_a = 0
+        self.rs2_b = 0
         self.rs1_bool = False
         self.rs2_bool = False
 
@@ -1018,7 +1018,7 @@ class five_steps:
             imm = self.findnegative(check)
         else:
             imm = int(imm, 2)
-        dataa = hex(self.rs2_a)[2:].zfill(8)
+        dataa = hex(self.rs2_b)[2:].zfill(8)
         # print("dataa: ", dataa)
         # print("rs1 ", rs1)
         # print("imm ", imm)
@@ -1049,7 +1049,8 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
-            # print("datak: ", dataa)
+
+            #print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -1515,8 +1516,8 @@ elif (knob1 == 1):
                                   pipelining.address1)
                 if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
                     print("DF at cycle:", pipelining.cycle)
-                    # x[int(pipelining.rd_array1[0], 2)]=pipelining.jot   #for buffer
-                    if (pipelining.rd_array1[0] == pipelining.rs1):
+                    # x[int(pipelining.rd_array1[0], 2)]=pipelining.jot
+                    if (pipelining.rd_array1[0] == pipelining.rs1):    #data_forwarding
                         pipelining.rs1_bool = True
                         pipelining.rs1_a = pipelining.jot
                     if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1524,7 +1525,7 @@ elif (knob1 == 1):
                         pipelining.rs2_b = pipelining.jot
                     # pipelining.jot=pipelining.jot2
                 pipelining.execute()
-                pipelining.rs1_bool = False
+                pipelining.rs1_bool = False             #data_forwarding boolean var
                 pipelining.rs2_bool = False
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
@@ -1592,7 +1593,7 @@ elif (knob1 == 1):
                                   pipelining.rd_array2)
 
                             # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
-                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                            if (pipelining.rd_array1[0] == pipelining.rs1):          #data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1606,7 +1607,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
 
-                                pipelining.rs1_bool = False
+                                pipelining.rs1_bool = False            #data_forwarding boolean var
                                 pipelining.rs2_bool = False
 
                                 if (pipelining.PC == last_PC + 8):
@@ -1653,7 +1654,7 @@ elif (knob1 == 1):
 
                             # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
 
-                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                            if (pipelining.rd_array1[0] == pipelining.rs1):     #data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1667,7 +1668,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC + 8):
 
                                 pipelining.execute()
-                                pipelining.rs1_bool = False
+                                pipelining.rs1_bool = False             #data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
@@ -1686,7 +1687,7 @@ elif (knob1 == 1):
                             print("DF2->1st 2.0.1.1.0", pipelining.cycle, pipelining.jot, pipelining.rd_array2[0])
                             # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
 
-                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                            if (pipelining.rd_array1[0] == pipelining.rs1):         #data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1696,7 +1697,7 @@ elif (knob1 == 1):
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
-                                pipelining.rs1_bool = False
+                                pipelining.rs1_bool = False         #data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
@@ -1743,7 +1744,7 @@ elif (knob1 == 1):
                             # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
                             # x[9] = 448
 
-                            if (pipelining.rd_array1[0] == pipelining.rs1):
+                            if (pipelining.rd_array1[0] == pipelining.rs1):         #data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1753,7 +1754,7 @@ elif (knob1 == 1):
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
-                                pipelining.rs1_bool = False
+                                pipelining.rs1_bool = False                 #data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
