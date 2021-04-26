@@ -1,3 +1,5 @@
+import sys
+
 x = []  # Registers
 x.append(0)
 for i in range(1, 32):
@@ -934,7 +936,7 @@ class five_steps:
 
         self.PC_jumped_count = imm
         self.PC_changed_in_sb_format = pc
-        #self.PC = pc
+        self.PC = pc
 
     def executeRajasekhar1(self, string, rs1, rs2, imm, pc):
         rs1 = int(rs1, 2)
@@ -982,7 +984,7 @@ class five_steps:
         print("Empty IF1.0.1:", self.PC)
         self.PC_changed_in_sb_format = pc
         print("Empty IF1.0.1:", self.PC_changed_in_sb_format)
-        #self.PC = pc
+        self.PC = pc
 
     def executePraveen1(self, string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
         rd = int(rd, 2)
@@ -1488,7 +1490,7 @@ class five_steps:
 
         self.cycle += 1
 
-file = open('simplecase.mc', 'r')
+file = open(sys.argv[1], 'r')
 datasegOrnot = 0
 Instruct = {}
 for line in file:
@@ -1503,7 +1505,7 @@ for line in file:
 file.close()
 
 last_PC = 0
-file = open('simplecase.mc', 'r')
+file = open(sys.argv[1], 'r')
 for line in file:
     if (line == "\n"):
         break
@@ -2096,3 +2098,21 @@ elif (knob1 == 1):
     print("Number of Branch mispredictions:",pipelining.mispredictions)
     print("Number of stalls due to data hazards:",pipelining.DH_stalls)
     print("Number of stalls due to control hazards:",pipelining.CH_stalls)
+
+new_file = open(sys.argv[1], "w")
+
+for line in Instruct:
+    new_file.write(str(hex(line)))
+    new_file.write(" 0x")
+    a = hex(int(Instruct[line], 2))[2:].zfill(8)
+    new_file.write(str(a))
+    new_file.write("\n")
+
+new_file.write("\n")
+for line in memory:
+    new_file.write(str(hex(line)))
+    new_file.write(" 0x")
+    new_file.write(memory[line])
+    new_file.write("\n")
+
+new_file.close()
