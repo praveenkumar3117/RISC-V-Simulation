@@ -64,6 +64,8 @@ class five_steps:
         self.rs2_b = 0
         self.rs1_bool = False
         self.rs2_bool = False
+        
+        self.stalling1=False
 
         #####  Previous called memory   #####
         self.previous_memory_operation = ''
@@ -79,6 +81,21 @@ class five_steps:
         self.PC_changed_in_sb_format = self.PC
         self.PC_jumped_count = self.PC
         self.check_sb_format_execution = False
+        
+        #####  stats to be printed at the end of simulation  #####
+        self.ninstructions=0  #total no.of instructions executed
+        self.cpi=0
+        self.DT_instructions=0
+        self.ALU_instructions=0
+        self.control_instructions=0
+        self.stalls =0
+        self.data_hazards=0
+        self.control_hazards=0
+        self.mispredictions=0
+        self.DH_stalls=0        #stalls due to data hazards
+        self.CH_stalls=0        #stalls due to control hazards
+        
+        
 
     def fetch(self, binaryCode):
         self.IF = binaryCode
@@ -917,6 +934,7 @@ class five_steps:
 
         self.PC_jumped_count = imm
         self.PC_changed_in_sb_format = pc
+        #self.PC = pc
 
     def executeRajasekhar1(self, string, rs1, rs2, imm, pc):
         rs1 = int(rs1, 2)
@@ -964,6 +982,7 @@ class five_steps:
         print("Empty IF1.0.1:", self.PC)
         self.PC_changed_in_sb_format = pc
         print("Empty IF1.0.1:", self.PC_changed_in_sb_format)
+        #self.PC = pc
 
     def executePraveen1(self, string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
         rd = int(rd, 2)
@@ -1232,12 +1251,22 @@ class five_steps:
             self.rd_array2.pop(0)
         self.rd_array1.pop(0)
         self.cycle += 1
+        self.stalls +=1
+        self.data_hazards +=1
+        self.DH_stalls +=1
+        self.stalling1=True
 
     def stalling_case2(self):
         self.rd_array2.pop(0)
         self.cycle += 1
+        self.stalls+=1
+        if(self.stalling1 == False):
+            self.data_hazards +=1
+        self.stalling1 = False
+        self.DH_stalls +=1
 
     def stalling_case3(self):
+        self.stalling1 = False
         if (len(self.rd_array1) == 2):
             self.rd_array2.append(self.rd_array1[0])
             if (len(self.rd_array2) == 2):
@@ -1261,6 +1290,16 @@ class five_steps:
 
         if (self.PC <= last_PC + 4):
             self.decode(self.IF)
+            if (
+                    self.operation == "lb" or self.operation == "lh" or self.operation == "lw" or self.operation == "sb" or self.operation == "sh" or self.operation == "sw"):
+                self.DT_instructions +=1
+                
+            elif (
+                self.operation == "beq" or self.operation == "bge" or self.operation == "bne" or self.operation == "blt" or self.operation == "jal" or self.operation == "jalr"):
+                self.control_instructions +=1
+            else:
+                self.ALU_instructions +=1
+                
             self.rd_array1.append(self.rd)
             if (self.PC == last_PC + 4):
                 self.PC += 4
@@ -1282,9 +1321,11 @@ class five_steps:
         if (self.rd_array1[0] == self.rs1):  # data_forwarding
             self.rs1_bool = True
             self.rs1_a = pipelining.jot
+            self.data_hazards +=1
         if (self.rd_array1[0] == pipelining.rs2):
             self.rs2_bool = True
             self.rs2_b = self.jot
+            self.data_hazards +=1
 
         self.rd_array2.append(self.rd_array1[0])
         if (len(self.rd_array2) == 2):
@@ -1310,6 +1351,16 @@ class five_steps:
 
         if (self.PC <= last_PC + 4):
             self.decode(self.IF)
+            if (
+                    self.operation == "lb" or self.operation == "lh" or self.operation == "lw" or self.operation == "sb" or self.operation == "sh" or self.operation == "sw"):
+                self.DT_instructions +=1
+                
+            elif (
+                self.operation == "beq" or self.operation == "bge" or self.operation == "bne" or self.operation == "blt" or self.operation == "jal" or self.operation == "jalr"):
+                self.control_instructions +=1
+            else:
+                self.ALU_instructions +=1
+                
             self.rd_array1.append(self.rd)
             if (self.PC == last_PC + 4):
                 self.PC += 4
@@ -1331,9 +1382,11 @@ class five_steps:
         if (self.rd_array1[0] == self.rs1):  # data_forwarding
             self.rs1_bool = True
             self.rs1_a = self.jot
+            self.data_hazards +=1
         if (self.rd_array1[0] == self.rs2):
             self.rs2_bool = True
             self.rs2_b = self.jot
+            self.data_hazards +=1
 
         self.rd_array2.pop(0)
         if (self.PC <= last_PC + 8):
@@ -1355,6 +1408,16 @@ class five_steps:
 
         if (self.PC <= last_PC + 4):
             self.decode(self.IF)
+            if (
+                    self.operation == "lb" or self.operation == "lh" or self.operation == "lw" or self.operation == "sb" or self.operation == "sh" or self.operation == "sw"):
+                self.DT_instructions +=1
+                
+            elif (
+                self.operation == "beq" or self.operation == "bge" or self.operation == "bne" or self.operation == "blt" or self.operation == "jal" or self.operation == "jalr"):
+                self.control_instructions +=1
+            else:
+                self.ALU_instructions +=1
+                
             self.rd_array1.append(self.rd)
             if (self.PC == last_PC + 4):
                 self.PC += 4
@@ -1398,6 +1461,16 @@ class five_steps:
 
         if (self.PC <= last_PC + 4):
             self.decode(self.IF)
+            if (
+                    self.operation == "lb" or self.operation == "lh" or self.operation == "lw" or self.operation == "sb" or self.operation == "sh" or self.operation == "sw"):
+                self.DT_instructions +=1
+                
+            elif (
+                self.operation == "beq" or self.operation == "bge" or self.operation == "bne" or self.operation == "blt" or self.operation == "jal" or self.operation == "jalr"):
+                self.control_instructions +=1
+            else:
+                self.ALU_instructions +=1
+                
             self.rd_array1.append(self.rd)
             if (self.PC == last_PC + 4):
                 self.PC += 4
@@ -1415,7 +1488,7 @@ class five_steps:
 
         self.cycle += 1
 
-file = open('machinecd_stalling_case8.mc', 'r')
+file = open('simplecase.mc', 'r')
 datasegOrnot = 0
 Instruct = {}
 for line in file:
@@ -1430,7 +1503,7 @@ for line in file:
 file.close()
 
 last_PC = 0
-file = open('machinecd_stalling_case8.mc', 'r')
+file = open('simplecase.mc', 'r')
 for line in file:
     if (line == "\n"):
         break
@@ -1462,7 +1535,6 @@ input).
 nDataTransfer = 0
 nALU = 0
 nCtrlInstr = 0
-clock = 0
 
 if (knob1 == 0):
     non_pipelining = five_steps()
@@ -1472,24 +1544,49 @@ if (knob1 == 0):
         non_pipelining.decode(non_pipelining.IF)
         if (
                 non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
-            nDataTransfer += 1
+            non_pipelining.DT_instructions +=1
+            
         elif (
                 non_pipelining.operation == "beq" or non_pipelining.operation == "bge" or non_pipelining.operation == "bne" or non_pipelining.operation == "blt" or non_pipelining.operation == "jal" or non_pipelining.operation == "jalr"):
-            nCtrlInstr += 1
+            non_pipelining.control_instructions +=1
         else:
-            nALU += 1
+            non_pipelining.ALU_instructions +=1
         non_pipelining.execute()
         non_pipelining.Memory(non_pipelining.operation, non_pipelining.dataa, non_pipelining.rd, non_pipelining.imm,
                               non_pipelining.address)
         non_pipelining.WriteBack(non_pipelining.rd, non_pipelining.jot)
         if (knob3 == 1):
             for i in range(32):
-                print("x[", i, "]=", x[i], end=" ,")
-        clock += 1
+                print("x[", i, "]=", x[i])
+        non_pipelining.cycle += 1
+        non_pipelining.ninstructions +=1
+        print("\n")
+    
+    non_pipelining.cpi= non_pipelining.cycle/non_pipelining.ninstructions
+    non_pipelining.stalls = 0
+    non_pipelining.data_hazards = 0
+    non_pipelining.control_hazards = 0
+    non_pipelining.mispredictions = 0
+    non_pipelining.DH_stalls = 0
+    non_pipelining.CH_stalls = 0
 
     print("\n")
     print(x)
     print(memory)
+    
+    print("Total number of cycles:",non_pipelining.cycle)
+    print("Total instructions executed:",non_pipelining.ninstructions)
+    print("CPI:",non_pipelining.cpi)
+    print("Number of Data transfer (load and store) instructions executed:",non_pipelining.DT_instructions)
+    print("Number of ALU instructions executed:",non_pipelining.ALU_instructions)
+    print("Number of control instructions executed:",non_pipelining.control_instructions)
+    print("Number of stalls:",non_pipelining.stalls)
+    print("Number of data hazards:",non_pipelining.data_hazards)
+    print("Number of control hazards:",non_pipelining.control_hazards)
+    print("Number of Branch mispredictions:",non_pipelining.mispredictions)
+    print("Number of stalls due to data hazards:",non_pipelining.DH_stalls)
+    print("Number of stalls due to control hazards:",non_pipelining.CH_stalls)
+    
 elif (knob1 == 1):
     if (knob2 == 0):
         pipelining = five_steps()
@@ -1500,12 +1597,34 @@ elif (knob1 == 1):
                 pipelining.cycle += 1
             elif (pipelining.cycle == 1):
                 pipelining.decode(pipelining.IF)
+                
+                if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                    pipelining.DT_instructions +=1
+                
+                elif (
+                pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                    pipelining.control_instructions +=1
+                else:
+                    pipelining.ALU_instructions +=1
+            
                 pipelining.rd_array1.append(pipelining.rd)
                 pipelining.fetch(Instruct[pipelining.PC])
                 pipelining.cycle += 1
             elif (pipelining.cycle == 2):
                 pipelining.execute()
                 pipelining.decode(pipelining.IF)
+                
+                if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                    pipelining.DT_instructions +=1
+                
+                elif (
+                pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                    pipelining.control_instructions +=1
+                else:
+                    pipelining.ALU_instructions +=1
+                    
                 pipelining.rd_array1.append(pipelining.rd)
                 pipelining.fetch(Instruct[pipelining.PC])
                 pipelining.cycle += 1
@@ -1522,6 +1641,17 @@ elif (knob1 == 1):
                 else:
                     pipelining.execute()
                     pipelining.decode(pipelining.IF)
+                    
+                    if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                        pipelining.DT_instructions +=1
+                
+                    elif (
+                        pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                        pipelining.control_instructions +=1
+                    else:
+                        pipelining.ALU_instructions +=1
+                    
                     pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
                     pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                     pipelining.fetch(Instruct[pipelining.PC])
@@ -1543,6 +1673,7 @@ elif (knob1 == 1):
                 if (pipelining.check_already_called_writeback() == 0):
                     pipelining.save_last_called_writeback()
                     pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+                    pipelining.ninstructions +=1
                 else:
                     print("Writeback Already Called")
                 if (pipelining.PC <= last_PC + 12):
@@ -1577,9 +1708,12 @@ elif (knob1 == 1):
                             pipelining.stalling_case2()
                         else:
                             pipelining.stalling_case3()
+                            
 
             print("cycle no. ", pipelining.cycle)
             print("\n")
+        
+        pipelining.cpi= pipelining.cycle/pipelining.ninstructions
             # for i in range(0, 32):
             #    print("x[", i, "]=", x[i])
 
@@ -1588,6 +1722,7 @@ elif (knob1 == 1):
         print("cycle no. ", pipelining.cycle)
 
         print(memory)
+        
     else:
         pipelining = five_steps()
         pipelining.PC = 0
@@ -1597,12 +1732,34 @@ elif (knob1 == 1):
                 pipelining.cycle += 1
             elif (pipelining.cycle == 1):
                 pipelining.decode(pipelining.IF)
+                
+                if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                    pipelining.DT_instructions +=1
+                
+                elif (
+                pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                    pipelining.control_instructions +=1
+                else:
+                    pipelining.ALU_instructions +=1
+                    
                 pipelining.rd_array1.append(pipelining.rd)
                 pipelining.fetch(Instruct[pipelining.PC])
                 pipelining.cycle += 1
             elif (pipelining.cycle == 2):
                 pipelining.execute()
                 pipelining.decode(pipelining.IF)
+                
+                if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                    pipelining.DT_instructions +=1
+                
+                elif (
+                pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                    pipelining.control_instructions +=1
+                else:
+                    pipelining.ALU_instructions +=1
+                    
                 pipelining.rd_array1.append(pipelining.rd)
                 pipelining.fetch(Instruct[pipelining.PC])
                 pipelining.cycle += 1
@@ -1624,6 +1781,17 @@ elif (knob1 == 1):
                 pipelining.rs1_bool = False  # data_forwarding boolean var
                 pipelining.rs2_bool = False
                 pipelining.decode(pipelining.IF)
+                
+                if (
+                    pipelining.operation == "lb" or pipelining.operation == "lh" or pipelining.operation == "lw" or pipelining.operation == "sb" or pipelining.operation == "sh" or pipelining.operation == "sw"):
+                    pipelining.DT_instructions +=1
+                
+                elif (
+                pipelining.operation == "beq" or pipelining.operation == "bge" or pipelining.operation == "bne" or pipelining.operation == "blt" or pipelining.operation == "jal" or pipelining.operation == "jalr"):
+                    pipelining.control_instructions +=1
+                else:
+                    pipelining.ALU_instructions +=1
+                    
                 pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
                 pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                 pipelining.fetch(Instruct[pipelining.PC])
@@ -1645,6 +1813,7 @@ elif (knob1 == 1):
                 if (pipelining.check_already_called_writeback() == 0):
                     pipelining.save_last_called_writeback()
                     pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+                    pipelining.ninstructions +=1
                 else:
                     print("Writeback Already Called")
                 if (pipelining.PC <= last_PC + 12):
@@ -1907,8 +2076,23 @@ elif (knob1 == 1):
             # for i in range(0, 32):
             #    print("x[", i, "]=", x[i])
 
+        pipelining.cpi= pipelining.cycle/pipelining.ninstructions
+        
         for i in range(0, 32):
             print("x[", i, "]=", x[i])
         print("cycle no. ", pipelining.cycle)
 
         print(memory)
+    
+    print("Total number of cycles:",pipelining.cycle)
+    print("Total instructions executed:",pipelining.ninstructions)
+    print("CPI:",pipelining.cpi)
+    print("Number of Data transfer (load and store) instructions executed:",pipelining.DT_instructions)
+    print("Number of ALU instructions executed:",pipelining.ALU_instructions)
+    print("Number of control instructions executed:",pipelining.control_instructions)
+    print("Number of stalls:",pipelining.stalls)
+    print("Number of data hazards:",pipelining.data_hazards)
+    print("Number of control hazards:",pipelining.control_hazards)
+    print("Number of Branch mispredictions:",pipelining.mispredictions)
+    print("Number of stalls due to data hazards:",pipelining.DH_stalls)
+    print("Number of stalls due to control hazards:",pipelining.CH_stalls)
