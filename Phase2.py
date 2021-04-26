@@ -14,7 +14,7 @@ class five_steps:
     def __init__(self):
         self.PC = 0x0
         # self.IR = 0
-        #self.bne_call = False
+        # self.bne_call = False
         self.PC_temp = self.PC
         self.clock = 0
         self.cycle = 0
@@ -77,7 +77,8 @@ class five_steps:
         self.previous_writeback_content = 0
 
         self.PC_changed_in_sb_format = self.PC
-        self.check_stalling_in_sb_format = False
+        self.PC_jumped_count = self.PC
+        self.check_sb_format_execution = False
 
     def fetch(self, binaryCode):
         self.IF = binaryCode
@@ -892,6 +893,7 @@ class five_steps:
         if string == "bge":
             if self.rs1_a >= self.rs2_b:
                 print("Execute :", string, self.rs1_a, "and", self.rs2_b)
+                self.check_sb_format_execution = True
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -903,6 +905,7 @@ class five_steps:
         elif string == 'blt':
             if self.rs1_a < self.rs2_b:
                 print("Execute :", string, self.rs1_a, "and", self.rs2_b)
+                self.check_sb_format_execution = True
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -912,6 +915,7 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
+        self.PC_jumped_count = imm
         self.PC_changed_in_sb_format = pc
 
     def executeRajasekhar1(self, string, rs1, rs2, imm, pc):
@@ -933,6 +937,7 @@ class five_steps:
         if (string == 'beq'):
             if (self.rs1_a == self.rs2_b):
                 print("Execute :", string, self.rs1_a, "and", self.rs2_b)
+                self.check_sb_format_execution = True
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
@@ -944,6 +949,7 @@ class five_steps:
         elif (string == 'bne'):
             if (self.rs1_a != self.rs2_b):
                 print("Execute :", string, self.rs1_a, "and", self.rs2_b)
+                self.check_sb_format_execution = True
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 print("Empty IF1.0.1:", self.PC, pc, imm)
@@ -954,6 +960,7 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
+        self.PC_jumped_count = imm
         print("Empty IF1.0.1:", self.PC)
         self.PC_changed_in_sb_format = pc
         print("Empty IF1.0.1:", self.PC_changed_in_sb_format)
@@ -1061,7 +1068,7 @@ class five_steps:
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
 
-            #print("datak: ", dataa)
+            # print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -1177,7 +1184,8 @@ class five_steps:
             print("WRITEBACK: write", content, " to x[", rd, "]")
         # print("\n")
 
-    def findnegative(self, string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
+    def findnegative(self,
+                     string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
         length = len(string)
         neg = -1  # intialize neg with -1
         sum = 0
@@ -1197,15 +1205,11 @@ class five_steps:
         self.previous_memory_address = self.address1
 
     def check_already_called_memory(self):
-        print("asbfhasvhfashfvhjsavfjvshfsaf1.1.1.1.1.", self.previous_memory_imm, self.previous_memory_address,
-              self.address1)
         if (self.previous_memory_operation == self.operation1 and self.previous_memory_rd == self.rd1 and
                 self.previous_memory_imm == self.imm1 and self.previous_memory_dataa == self.dataa1 and
                 self.previous_memory_address == self.address1):
             return 1
         else:
-            print("asbfhasvhfashfvhjsavfjvshfsaf", self.previous_memory_imm, self.previous_memory_address,
-                  self.address1)
             return 0
 
     def save_last_called_writeback(self):
@@ -1239,20 +1243,18 @@ class five_steps:
             if (len(self.rd_array2) == 2):
                 self.rd_array2.pop(0)
             self.rd_array1.pop(0)
-
         if (len(self.rd_array2) == 2):
             self.rd_array2.pop(0)
 
         if (self.PC <= last_PC + 8):
             self.execute()
-
-            if (self.check_stalling_in_sb_format):
-                self.operation1 = 'not to call memory as well'
+            if (self.check_sb_format_execution):
+                self.operation1 = ''
 
             if (self.operation == "bge" or self.operation == "blt" or self.operation == "beq" or self.operation == "bne"):
-                self.check_stalling_in_sb_format = True
+                self.check_sb_format_execution = self.check_sb_format_execution
             else:
-                self.check_stalling_in_sb_format = False
+                self.check_sb_format_execution = False
 
             if (self.PC == last_PC + 8):
                 self.PC += 4
@@ -1264,20 +1266,156 @@ class five_steps:
                 self.PC += 4
 
         if (self.PC <= last_PC):
-            self.fetch(Instruct[pipelining.PC])
-            if (self.check_stalling_in_sb_format == True):
-                self.operation = ''
-                print("Empty Operation")
-                print("Empty IF1.0:", self.PC_changed_in_sb_format, self.PC)
-                if (self.PC_changed_in_sb_format != self.PC):
-                    print("Empty IF:", self.PC_changed_in_sb_format, self.PC)
-                    self.IF = ''
+            self.fetch(Instruct[self.PC])
+            if (self.check_sb_format_execution == True):
+                if (self.PC_jumped_count == 8):
+                    self.operation = ''
                     self.PC = self.PC_changed_in_sb_format
+                elif (self.PC_jumped_count > 8):
+                    self.operation = ''
+                    self.IF = ''
+                    self.PC = self.PC_changed_in_sb_format - 4
 
         self.cycle += 1
 
+    def data_forwarding_case1(self):
+        if (self.rd_array1[0] == self.rs1):  # data_forwarding
+            self.rs1_bool = True
+            self.rs1_a = pipelining.jot
+        if (self.rd_array1[0] == pipelining.rs2):
+            self.rs2_bool = True
+            self.rs2_b = self.jot
 
-file = open('machinecd.mc', 'r')
+        self.rd_array2.append(self.rd_array1[0])
+        if (len(self.rd_array2) == 2):
+            self.rd_array2.pop(0)
+        self.rd_array1.pop(0)
+
+        if (self.PC <= last_PC + 8):
+            self.execute()
+
+            self.rs1_bool = False  # data_forwarding boolean var
+            self.rs2_bool = False
+
+            if (self.check_sb_format_execution):
+                self.operation1 = ''
+
+            if (self.operation == "bge" or self.operation == "blt" or self.operation == "beq" or self.operation == "bne"):
+                self.check_sb_format_execution = self.check_sb_format_execution
+            else:
+                self.check_sb_format_execution = False
+
+            if (self.PC == last_PC + 8):
+                self.PC += 4
+
+        if (self.PC <= last_PC + 4):
+            self.decode(self.IF)
+            self.rd_array1.append(self.rd)
+            if (self.PC == last_PC + 4):
+                self.PC += 4
+
+        if (self.PC <= last_PC):
+            self.fetch(Instruct[self.PC])
+            if (self.check_sb_format_execution == True):
+                if (self.PC_jumped_count == 8):
+                    self.operation = ''
+                    self.PC = self.PC_changed_in_sb_format
+                elif (self.PC_jumped_count > 8):
+                    self.operation = ''
+                    self.IF = ''
+                    self.PC = self.PC_changed_in_sb_format - 4
+
+        self.cycle += 1
+
+    def data_forwarding_case2(self):
+        if (self.rd_array1[0] == self.rs1):  # data_forwarding
+            self.rs1_bool = True
+            self.rs1_a = self.jot
+        if (self.rd_array1[0] == self.rs2):
+            self.rs2_bool = True
+            self.rs2_b = self.jot
+
+        self.rd_array2.pop(0)
+        if (self.PC <= last_PC + 8):
+            self.execute()
+
+            self.rs1_bool = False  # data_forwarding boolean var
+            self.rs2_bool = False
+
+            if (self.check_sb_format_execution):
+                self.operation1 = ''
+
+            if (self.operation == "bge" or self.operation == "blt" or self.operation == "beq" or self.operation == "bne"):
+                self.check_sb_format_execution = self.check_sb_format_execution
+            else:
+                self.check_sb_format_execution = False
+
+            if (self.PC == last_PC + 8):
+                self.PC += 4
+
+        if (self.PC <= last_PC + 4):
+            self.decode(self.IF)
+            self.rd_array1.append(self.rd)
+            if (self.PC == last_PC + 4):
+                self.PC += 4
+
+        if (self.PC <= last_PC):
+            self.fetch(Instruct[self.PC])
+            if (self.check_sb_format_execution == True):
+                if (self.PC_jumped_count == 8):
+                    self.operation = ''
+                    self.PC = self.PC_changed_in_sb_format
+                elif (self.PC_jumped_count > 8):
+                    self.operation = ''
+                    self.IF = ''
+                    self.PC = self.PC_changed_in_sb_format - 4
+
+        self.cycle += 1
+
+    def data_forwarding_case3(self):
+        if (len(self.rd_array1) == 2):
+            self.rd_array2.append(self.rd_array1[0])
+            if (len(self.rd_array2) == 2):
+                self.rd_array2.pop(0)
+            self.rd_array1.pop(0)
+
+        if (len(self.rd_array2) == 2):
+            self.rd_array2.pop(0)
+
+        if (self.PC <= last_PC + 8):
+            self.execute()
+
+            if (self.check_sb_format_execution):
+                self.operation1 = ''
+
+            if (self.operation == "bge" or self.operation == "blt" or self.operation == "beq" or self.operation == "bne"):
+                self.check_sb_format_execution = self.check_sb_format_execution
+            else:
+                self.check_sb_format_execution = False
+
+            if (self.PC == last_PC + 8):
+                self.PC += 4
+
+        if (self.PC <= last_PC + 4):
+            self.decode(self.IF)
+            self.rd_array1.append(self.rd)
+            if (self.PC == last_PC + 4):
+                self.PC += 4
+
+        if (self.PC <= last_PC):
+            self.fetch(Instruct[self.PC])
+            if (self.check_sb_format_execution == True):
+                if (self.PC_jumped_count == 8):
+                    self.operation = ''
+                    self.PC = self.PC_changed_in_sb_format
+                elif (self.PC_jumped_count > 8):
+                    self.operation = ''
+                    self.IF = ''
+                    self.PC = self.PC_changed_in_sb_format - 4
+
+        self.cycle += 1
+
+file = open('machinecd_stalling_case8.mc', 'r')
 datasegOrnot = 0
 Instruct = {}
 for line in file:
@@ -1292,7 +1430,7 @@ for line in file:
 file.close()
 
 last_PC = 0
-file = open('machinecd.mc', 'r')
+file = open('machinecd_stalling_case8.mc', 'r')
 for line in file:
     if (line == "\n"):
         break
@@ -1408,7 +1546,7 @@ elif (knob1 == 1):
                 else:
                     print("Writeback Already Called")
                 if (pipelining.PC <= last_PC + 12):
-                    if (pipelining.operation1 != 'not to call memory as well'):
+                    if (pipelining.operation1 != ''):
                         if (pipelining.check_already_called_memory() == 0):
                             pipelining.save_last_called_memory()
                             pipelining.clear_already_called_writeback()
@@ -1475,7 +1613,7 @@ elif (knob1 == 1):
                 if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
                     print("DF at cycle:", pipelining.cycle)
                     # x[int(pipelining.rd_array1[0], 2)]=pipelining.jot
-                    if (pipelining.rd_array1[0] == pipelining.rs1):    #data_forwarding
+                    if (pipelining.rd_array1[0] == pipelining.rs1):  # data_forwarding
                         pipelining.rs1_bool = True
                         pipelining.rs1_a = pipelining.jot
                     if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1483,7 +1621,7 @@ elif (knob1 == 1):
                         pipelining.rs2_b = pipelining.jot
                     # pipelining.jot=pipelining.jot2
                 pipelining.execute()
-                pipelining.rs1_bool = False             #data_forwarding boolean var
+                pipelining.rs1_bool = False  # data_forwarding boolean var
                 pipelining.rs2_bool = False
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
@@ -1492,8 +1630,6 @@ elif (knob1 == 1):
                 pipelining.cycle += 1
             elif (pipelining.cycle >= 4):
 
-                print("Manabsfjvafvasbas :::::::::::::::::::::::::::::::::::::::", pipelining.rd_array1,
-                      pipelining.rd_array2)
                 if (len(pipelining.rd_array2) == 2):
                     pipelining.rd_array2.pop(0)
                 if (len(pipelining.rd_array1) == 3):
@@ -1501,6 +1637,8 @@ elif (knob1 == 1):
                     pipelining.rd_array1.pop(0)
                 if (len(pipelining.rd_array2) == 2):
                     pipelining.rd_array2.pop(0)
+                print("Manabsfjvafvasbas :::::::::::::::::::::::::::::::::::::::", pipelining.rd_array1,
+                      pipelining.rd_array2)
 
                 if (pipelining.PC == last_PC + 16):
                     pipelining.PC += 4
@@ -1510,18 +1648,20 @@ elif (knob1 == 1):
                 else:
                     print("Writeback Already Called")
                 if (pipelining.PC <= last_PC + 12):
-                    if (pipelining.check_already_called_memory() == 0):
-                        pipelining.save_last_called_memory()
-                        pipelining.clear_already_called_writeback()
-                        #print("Writeback Alreadyasbfgafhjsavfhavfhjsa Called")
-                        pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
-                                          pipelining.address1)
+                    if (pipelining.operation1 != ''):
+                        if (pipelining.check_already_called_memory() == 0):
+                            pipelining.save_last_called_memory()
+                            pipelining.clear_already_called_writeback()
+                            # print("Writeback Alreadyasbfgafhjsavfhavfhjsa Called")
+                            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
+                                              pipelining.address1)
                     if (pipelining.PC == last_PC + 12):
                         pipelining.PC += 4
 
                 if (len(pipelining.rd_array2) == 0):
                     if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 0):
-                        if (len(pipelining.rd_array1) == 2):
+                        pipelining.data_forwarding_case3()
+                        '''if (len(pipelining.rd_array1) == 2):
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
@@ -1543,7 +1683,7 @@ elif (knob1 == 1):
                         if (pipelining.PC <= last_PC):
                             pipelining.fetch(Instruct[pipelining.PC])
 
-                        pipelining.cycle += 1
+                        pipelining.cycle += 1'''
                     else:
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
                             print("DF>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.jot,
@@ -1551,7 +1691,8 @@ elif (knob1 == 1):
                                   pipelining.rd_array2)
 
                             # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
-                            if (pipelining.rd_array1[0] == pipelining.rs1):          #data_forwarding
+                            pipelining.data_forwarding_case1()
+                            '''if (pipelining.rd_array1[0] == pipelining.rs1):  # data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1565,7 +1706,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
 
-                                pipelining.rs1_bool = False            #data_forwarding boolean var
+                                pipelining.rs1_bool = False  # data_forwarding boolean var
                                 pipelining.rs2_bool = False
 
                                 if (pipelining.PC == last_PC + 8):
@@ -1579,9 +1720,10 @@ elif (knob1 == 1):
 
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                         else:
-                            if (len(pipelining.rd_array1) == 2):
+                            pipelining.data_forwarding_case3()
+                            '''if (len(pipelining.rd_array1) == 2):
                                 pipelining.rd_array2.append(pipelining.rd_array1[0])
                                 if (len(pipelining.rd_array2) == 2):
                                     pipelining.rd_array2.pop(0)
@@ -1603,7 +1745,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                 elif (len(pipelining.rd_array2) == 1):
                     if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
@@ -1611,8 +1753,8 @@ elif (knob1 == 1):
                                   pipelining.rd_array1)
 
                             # x[int(pipelining.rd_array1[0], 2)] = pipelining.jot
-
-                            if (pipelining.rd_array1[0] == pipelining.rs1):     #data_forwarding
+                            pipelining.data_forwarding_case1()
+                            '''if (pipelining.rd_array1[0] == pipelining.rs1):  # data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1626,7 +1768,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC + 8):
 
                                 pipelining.execute()
-                                pipelining.rs1_bool = False             #data_forwarding boolean var
+                                pipelining.rs1_bool = False  # data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
@@ -1640,12 +1782,13 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                         elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
                             print("DF2->1st 2.0.1.1.0", pipelining.cycle, pipelining.jot, pipelining.rd_array2[0])
                             # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
 
-                            if (pipelining.rd_array1[0] == pipelining.rs1):         #data_forwarding
+                            pipelining.data_forwarding_case2()
+                            '''if (pipelining.rd_array1[0] == pipelining.rs1):  # data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1655,7 +1798,7 @@ elif (knob1 == 1):
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
-                                pipelining.rs1_bool = False         #data_forwarding boolean var
+                                pipelining.rs1_bool = False  # data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
@@ -1669,9 +1812,10 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                         else:
-                            if (len(pipelining.rd_array1) == 2):
+                            pipelining.data_forwarding_case3()
+                            '''if (len(pipelining.rd_array1) == 2):
                                 pipelining.rd_array2.append(pipelining.rd_array1[0])
                                 if (len(pipelining.rd_array2) == 2):
                                     pipelining.rd_array2.pop(0)
@@ -1693,7 +1837,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                     else:
                         if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
                             print("Stalling2->2     >4 2.0.1.2", pipelining.cycle, pipelining.jot,
@@ -1701,8 +1845,8 @@ elif (knob1 == 1):
                             # print("WRITEBACK1.0: write", content, " to x[", rd, "]")
                             # x[int(pipelining.rd_array2[0], 2)] = pipelining.jot
                             # x[9] = 448
-
-                            if (pipelining.rd_array1[0] == pipelining.rs1):         #data_forwarding
+                            pipelining.data_forwarding_case2()
+                            '''if (pipelining.rd_array1[0] == pipelining.rs1):  # data_forwarding
                                 pipelining.rs1_bool = True
                                 pipelining.rs1_a = pipelining.jot
                             if (pipelining.rd_array1[0] == pipelining.rs2):
@@ -1712,7 +1856,7 @@ elif (knob1 == 1):
                             pipelining.rd_array2.pop(0)
                             if (pipelining.PC <= last_PC + 8):
                                 pipelining.execute()
-                                pipelining.rs1_bool = False                 #data_forwarding boolean var
+                                pipelining.rs1_bool = False  # data_forwarding boolean var
                                 pipelining.rs2_bool = False
                                 if (pipelining.PC == last_PC + 8):
                                     pipelining.PC += 4
@@ -1725,9 +1869,10 @@ elif (knob1 == 1):
 
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                         else:
-                            if (len(pipelining.rd_array1) == 2):
+                            pipelining.data_forwarding_case3()
+                            '''if (len(pipelining.rd_array1) == 2):
                                 pipelining.rd_array2.append(pipelining.rd_array1[0])
                                 if (len(pipelining.rd_array2) == 2):
                                     pipelining.rd_array2.pop(0)
@@ -1750,7 +1895,7 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
+                            pipelining.cycle += 1'''
                 # for i in range(0, 32):
                 #    print("x[", i, "]=", x[i])
                 # print("cycle no. ", pipelining.cycle)
