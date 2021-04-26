@@ -14,6 +14,7 @@ class five_steps:
     def __init__(self):
         self.PC = 0x0
         # self.IR = 0
+        #self.bne_call = False
         self.PC_temp = self.PC
         self.clock = 0
         self.cycle = 0
@@ -75,6 +76,9 @@ class five_steps:
         self.previous_writeback_rd = ''
         self.previous_writeback_content = 0
 
+        self.PC_changed_in_sb_format = self.PC
+        self.check_stalling_in_sb_format = False
+
     def fetch(self, binaryCode):
         self.IF = binaryCode
         self.PC_temp = self.PC
@@ -84,6 +88,10 @@ class five_steps:
         self.PC += 4
 
     def decode(self, binaryInstruction):
+        if (len(binaryInstruction) == 0):
+            print("Returning")
+            return
+
         opcode = binaryInstruction[25:32]
 
         R_oper = ["0110011"]
@@ -904,7 +912,7 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
-        self.PC = pc
+        self.PC_changed_in_sb_format = pc
 
     def executeRajasekhar1(self, string, rs1, rs2, imm, pc):
         rs1 = int(rs1, 2)
@@ -938,6 +946,7 @@ class five_steps:
                 print("Execute :", string, self.rs1_a, "and", self.rs2_b)
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
+                print("Empty IF1.0.1:", self.PC, pc, imm)
                 pc = pc + imm
             else:
                 print("Execute :No execute")
@@ -945,7 +954,9 @@ class five_steps:
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
 
-        self.PC = pc
+        print("Empty IF1.0.1:", self.PC)
+        self.PC_changed_in_sb_format = pc
+        print("Empty IF1.0.1:", self.PC_changed_in_sb_format)
 
     def executePraveen1(self, string, rd, imm, pc):  # Praveen Kumar 2019CSB1108    jal  function
         rd = int(rd, 2)
@@ -1166,8 +1177,7 @@ class five_steps:
             print("WRITEBACK: write", content, " to x[", rd, "]")
         # print("\n")
 
-    def findnegative(self,
-                     string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
+    def findnegative(self, string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
         length = len(string)
         neg = -1  # intialize neg with -1
         sum = 0
@@ -1211,6 +1221,60 @@ class five_steps:
     def clear_already_called_writeback(self):
         self.previous_writeback_rd = ''
         self.previous_writeback_content = 0
+
+    def stalling_case1(self):
+        self.rd_array2.append(self.rd_array1[0])
+        if (len(self.rd_array2) == 2):
+            self.rd_array2.pop(0)
+        self.rd_array1.pop(0)
+        self.cycle += 1
+
+    def stalling_case2(self):
+        self.rd_array2.pop(0)
+        self.cycle += 1
+
+    def stalling_case3(self):
+        if (len(self.rd_array1) == 2):
+            self.rd_array2.append(self.rd_array1[0])
+            if (len(self.rd_array2) == 2):
+                self.rd_array2.pop(0)
+            self.rd_array1.pop(0)
+
+        if (len(self.rd_array2) == 2):
+            self.rd_array2.pop(0)
+
+        if (self.PC <= last_PC + 8):
+            self.execute()
+
+            if (self.check_stalling_in_sb_format):
+                self.operation1 = 'not to call memory as well'
+
+            if (self.operation == "bge" or self.operation == "blt" or self.operation == "beq" or self.operation == "bne"):
+                self.check_stalling_in_sb_format = True
+            else:
+                self.check_stalling_in_sb_format = False
+
+            if (self.PC == last_PC + 8):
+                self.PC += 4
+
+        if (self.PC <= last_PC + 4):
+            self.decode(self.IF)
+            self.rd_array1.append(self.rd)
+            if (self.PC == last_PC + 4):
+                self.PC += 4
+
+        if (self.PC <= last_PC):
+            self.fetch(Instruct[pipelining.PC])
+            if (self.check_stalling_in_sb_format == True):
+                self.operation = ''
+                print("Empty Operation")
+                print("Empty IF1.0:", self.PC_changed_in_sb_format, self.PC)
+                if (self.PC_changed_in_sb_format != self.PC):
+                    print("Empty IF:", self.PC_changed_in_sb_format, self.PC)
+                    self.IF = ''
+                    self.PC = self.PC_changed_in_sb_format
+
+        self.cycle += 1
 
 
 file = open('machinecd.mc', 'r')
@@ -1344,144 +1408,38 @@ elif (knob1 == 1):
                 else:
                     print("Writeback Already Called")
                 if (pipelining.PC <= last_PC + 12):
-                    if (pipelining.check_already_called_memory() == 0):
-                        pipelining.save_last_called_memory()
-                        pipelining.clear_already_called_writeback()
+                    if (pipelining.operation1 != 'not to call memory as well'):
+                        if (pipelining.check_already_called_memory() == 0):
+                            pipelining.save_last_called_memory()
+                            pipelining.clear_already_called_writeback()
 
-                        pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
-                                          pipelining.address1)
+                            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
+                                              pipelining.address1)
                     if (pipelining.PC == last_PC + 12):
                         pipelining.PC += 4
 
                 if (len(pipelining.rd_array2) == 0):
                     if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 0):
-                        if (len(pipelining.rd_array1) == 2):
-                            pipelining.rd_array2.append(pipelining.rd_array1[0])
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-                            pipelining.rd_array1.pop(0)
-                        if (len(pipelining.rd_array2) == 2):
-                            pipelining.rd_array2.pop(0)
-
-                        if (pipelining.PC <= last_PC + 8):
-                            pipelining.execute()
-                            if (pipelining.PC == last_PC + 8):
-                                pipelining.PC += 4
-
-                        if (pipelining.PC <= last_PC + 4):
-                            pipelining.decode(pipelining.IF)
-                            pipelining.rd_array1.append(pipelining.rd)
-                            if (pipelining.PC == last_PC + 4):
-                                pipelining.PC += 4
-
-                        if (pipelining.PC <= last_PC):
-                            pipelining.fetch(Instruct[pipelining.PC])
-
-                        pipelining.cycle += 1
+                        pipelining.stalling_case3()
                     else:
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1,
-                                  pipelining.rd_array2)
-                            pipelining.rd_array2.append(pipelining.rd_array1[0])
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-                            pipelining.rd_array1.pop(0)
-                            pipelining.cycle += 1
+                            pipelining.stalling_case1()
                         else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
-
-                            pipelining.cycle += 1
-
+                            pipelining.stalling_case3()
                 elif (len(pipelining.rd_array2) == 1):
                     if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2,
-                                  pipelining.rd_array1, pipelining.rd_array2)
-                            pipelining.rd_array2.append(pipelining.rd_array1[0])
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-                            pipelining.rd_array1.pop(0)
-                            pipelining.cycle += 1
+                            pipelining.stalling_case1()
                         elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0asfhsajfghsfajasf.1.1.0", pipelining.rs1, pipelining.rs2,
-                                  pipelining.rd_array2, pipelining.rd_array1)
-                            pipelining.rd_array2.pop(0)
-                            pipelining.cycle += 1
+                            pipelining.stalling_case2()
                         else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
-
-                            pipelining.cycle += 1
+                            pipelining.stalling_case3()
                     else:
                         if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0],
-                                  pipelining.rd_array2[0])
-                            pipelining.rd_array2.pop(0)
-                            pipelining.cycle += 1
+                            pipelining.stalling_case2()
                         else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
+                            pipelining.stalling_case3()
 
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
-
-                            pipelining.cycle += 1
             print("cycle no. ", pipelining.cycle)
             print("\n")
             # for i in range(0, 32):
