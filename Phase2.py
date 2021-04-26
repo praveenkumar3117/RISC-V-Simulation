@@ -2094,10 +2094,10 @@ elif (knob1 == 1):
     print("Number of control instructions executed:",pipelining.control_instructions)
     print("Number of stalls:",pipelining.stalls)
     print("Number of data hazards:",pipelining.data_hazards)
-    print("Number of control hazards:",pipelining.control_hazards)
+    
     print("Number of Branch mispredictions:",pipelining.mispredictions)
     print("Number of stalls due to data hazards:",pipelining.DH_stalls)
-    print("Number of stalls due to control hazards:",pipelining.CH_stalls)
+    
 
 new_file = open(sys.argv[1], "w")
 
