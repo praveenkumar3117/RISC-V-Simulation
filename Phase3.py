@@ -1,4 +1,7 @@
+import math
+
 x = []  # Registers
+
 x.append(0)
 for i in range(1, 32):
     x.append(0)
@@ -950,9 +953,9 @@ class five_steps:
         else:
             imm = int(imm, 2)
         dataa = hex(x[rs2])[2:].zfill(8)
-        #print("dataa: ", dataa)
-        #print("rs1 ", rs1)
-        #print("imm ", imm)
+        # print("dataa: ", dataa)
+        # print("rs1 ", rs1)
+        # print("imm ", imm)
 
         self.dataa = dataa
         if (string == "sw"):
@@ -980,7 +983,7 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
-            #print("datak: ", dataa)
+            # print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -990,7 +993,7 @@ class five_steps:
             memory[address + 1] = dataa[4:6]
         elif (string == "sb"):
             memory[address] = dataa[6:]
-        #print("WRITEBACK: no writeback \n")
+        # print("WRITEBACK: no writeback \n")
 
     def executeRead(self, string, rs1, rd, imm):
         rs1 = int(rs1, 2)
@@ -1083,7 +1086,7 @@ class five_steps:
         self.jot2 = self.jot
 
     def WriteBack(self, rd, content):
-        #print(content, rd)
+        # print(content, rd)
         if (len(rd) == 0):
             print("WRITEBACK: no writeback ")
             return
@@ -1091,7 +1094,7 @@ class five_steps:
         if rd != 0:
             x[rd] = content
             print("WRITEBACK: write", content, " to x[", rd, "]")
-        #print("\n")
+        # print("\n")
 
     def findnegative(self,
                      string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
@@ -1161,7 +1164,7 @@ for line in file:
     Instruct[tempc] = binaryno
     last_PC = tempc
 file.close()
-
+'''
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
 if (knob1 == 1):
     knob2 = int(
@@ -1170,20 +1173,33 @@ knob3 = int(input(
     "Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle \n"))
 knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number.\n"))
-knob5 = int(input(""))
+knob5 = int(input(""))'''
 
-knob6=int(input("Type 1 to implement phase3 and 0 to not ="))
-#variables for phase3
-CacheSize=int(input("Enter CacheSize"))
-CacheBlockSize=int(input("Enter CacheBlock Size"))
-nWaysperSetAssoc=int(input("Enter no. of ways per set of associativity"))
+knob6 = int(input("Type 1 to implement phase3 and 0 to not ="))
+# variables for phase3
+CacheSize = int(input("Enter CacheSize"))
+CacheBlockSize = int(input("Enter CacheBlock Size"))
+nWaysperSetAssoc = int(input("Enter no. of ways per set of associativity"))
 
-data_cache=[]
-tagArr_d=[]
-noOfBlocks_d=CacheSize/CacheBlockSize
-noOfset_d=noOfBlocks_d/nWaysperSetAssoc
+data_cache = []
+tagArr_d = []
+tagArrinstruct_d = []
+instruct_cache = []
+hit = 0
+miss = 0
+access = 0
+noOfBlocks_d = CacheSize / CacheBlockSize
+noOfBlocks_d = int(noOfBlocks_d)
+noOfset_d = noOfBlocks_d / nWaysperSetAssoc
+noOfset_d = int(noOfset_d)
+blockoffset = math.log(CacheBlockSize, 2)  # block size = 16, 4 -> 0,1,2,3
+blockoffset = int(blockoffset)
+indexx = math.log(noOfset_d, 2)
+indexx = int(indexx)
+
+tag = 32 - indexx - blockoffset
 for i in range(noOfset_d):
-    p=[]
+    p = []
     tagArr_d.append(p)
     data_cache.append(p)
 
@@ -1192,8 +1208,34 @@ for i in range(noOfset_d):
         tagArr_d[i].append([])
         data_cache[i].append([])
 
+for i in range(noOfset_d):
+    p = []
+    tagArrinstruct_d.append(p)
+    instruct_cache.append(p)
 
+for i in range(noOfset_d):
+    for j in range(nWaysperSetAssoc):
+        tagArrinstruct_d[i].append([])
+        instruct_cache[i].append([])
 
+for key in Instruct:
+    binarypc = bin(key)[2:].zfill(32)  # 00000000000000000000000000000000000000
+    # binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
+    tagbit = binarypc[0:tag]  # 000000000000
+    indexbit = binarypc[tag:tag + indexx]
+    blockoffsetbit = binarypc[tag + indexx:32]
+    print(binarypc)
+    print(tagbit)
+    print(indexbit)
+    print(blockoffsetbit)
+    print(" ")
+
+    indexbit = int(indexbit, 2)
+    for i in range(0, nWaysperSetAssoc):
+        if (tagArrinstruct_d[indexbit - 1][i] == tagbit):
+            hit = hit + 1
+
+'''
 nDataTransfer = 0
 nALU = 0
 nCtrlInstr = 0
@@ -1421,4 +1463,4 @@ elif (knob1 == 1):
         print("x[", i, "]=", x[i])
     print("cycle no. ", pipelining.cycle)
 
-    print(memory)
+    print(memory)'''
