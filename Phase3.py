@@ -1,5 +1,4 @@
 import math
-
 x = []  # Registers
 
 x.append(0)
@@ -953,9 +952,9 @@ class five_steps:
         else:
             imm = int(imm, 2)
         dataa = hex(x[rs2])[2:].zfill(8)
-        # print("dataa: ", dataa)
-        # print("rs1 ", rs1)
-        # print("imm ", imm)
+        #print("dataa: ", dataa)
+        #print("rs1 ", rs1)
+        #print("imm ", imm)
 
         self.dataa = dataa
         if (string == "sw"):
@@ -983,7 +982,7 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
-            # print("datak: ", dataa)
+            #print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -993,7 +992,7 @@ class five_steps:
             memory[address + 1] = dataa[4:6]
         elif (string == "sb"):
             memory[address] = dataa[6:]
-        # print("WRITEBACK: no writeback \n")
+        #print("WRITEBACK: no writeback \n")
 
     def executeRead(self, string, rs1, rd, imm):
         rs1 = int(rs1, 2)
@@ -1086,7 +1085,7 @@ class five_steps:
         self.jot2 = self.jot
 
     def WriteBack(self, rd, content):
-        # print(content, rd)
+        #print(content, rd)
         if (len(rd) == 0):
             print("WRITEBACK: no writeback ")
             return
@@ -1094,7 +1093,7 @@ class five_steps:
         if rd != 0:
             x[rd] = content
             print("WRITEBACK: write", content, " to x[", rd, "]")
-        # print("\n")
+        #print("\n")
 
     def findnegative(self,
                      string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
@@ -1175,41 +1174,45 @@ knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number.\n"))
 knob5 = int(input(""))'''
 
-knob6 = int(input("Type 1 to implement phase3 and 0 to not ="))
-# variables for phase3
-CacheSize = int(input("Enter CacheSize"))
-CacheBlockSize = int(input("Enter CacheBlock Size"))
-nWaysperSetAssoc = int(input("Enter no. of ways per set of associativity"))
+knob6=int(input("Type 1 to implement phase3 and 0 to not ="))
+#variables for phase3
+CacheSize=int(input("Enter CacheSize"))
+CacheBlockSize=int(input("Enter CacheBlock Size"))
+nWaysperSetAssoc=int(input("Enter no. of ways per set of associativity"))
 
-data_cache = []
-tagArr_d = []
+
 tagArrinstruct_d = []
 instruct_cache = []
-hit = 0
-miss = 0
-access = 0
-noOfBlocks_d = CacheSize / CacheBlockSize
+hit_instruct= 0
+miss_instruct = 0
+data_cache=[]
+tagArrdata_d=[]
+hit_data = 0
+miss_data = 0
+instruct_access = 0
+data_access = 0
+noOfBlocks_d=CacheSize/CacheBlockSize
 noOfBlocks_d = int(noOfBlocks_d)
-noOfset_d = noOfBlocks_d / nWaysperSetAssoc
+noOfset_d=noOfBlocks_d/nWaysperSetAssoc
 noOfset_d = int(noOfset_d)
-blockoffset = math.log(CacheBlockSize, 2)  # block size = 16, 4 -> 0,1,2,3
+blockoffset = math.log(CacheBlockSize,2)# block size = 16, 4 -> 0,1,2,3
 blockoffset = int(blockoffset)
-indexx = math.log(noOfset_d, 2)
+indexx = math.log(noOfset_d,2)
 indexx = int(indexx)
 
-tag = 32 - indexx - blockoffset
-for i in range(noOfset_d):
-    p = []
-    tagArr_d.append(p)
+tag = 32-indexx-blockoffset
+for i in range(noOfset_d): #instruction
+    p=[]
+    tagArrdata_d.append(p)
     data_cache.append(p)
 
 for i in range(noOfset_d):
     for j in range(nWaysperSetAssoc):
-        tagArr_d[i].append([])
+        tagArrdata_d[i].append([])
         data_cache[i].append([])
 
 for i in range(noOfset_d):
-    p = []
+    p=[]
     tagArrinstruct_d.append(p)
     instruct_cache.append(p)
 
@@ -1218,8 +1221,9 @@ for i in range(noOfset_d):
         tagArrinstruct_d[i].append([])
         instruct_cache[i].append([])
 
-for key in Instruct:
-    binarypc = bin(key)[2:].zfill(32)  # 00000000000000000000000000000000000000
+
+def  Cache_for_Instruction(pc):
+    binarypc = bin(pc)[2:].zfill(32)  # 00000000000000000000000000000000000000
     # binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
     tagbit = binarypc[0:tag]  # 000000000000
     indexbit = binarypc[tag:tag + indexx]
@@ -1230,10 +1234,49 @@ for key in Instruct:
     print(blockoffsetbit)
     print(" ")
 
-    indexbit = int(indexbit, 2)
-    for i in range(0, nWaysperSetAssoc):
-        if (tagArrinstruct_d[indexbit - 1][i] == tagbit):
-            hit = hit + 1
+    indexbit = int(indexbit,2)
+    for i in range(0,nWaysperSetAssoc):
+        if(tagArrinstruct_d[indexbit][i] == tagbit):#hit
+            blockaddress=instruct_cache[indexbit][i]
+            #print(blockaddress)
+            #print(actualblockaddress)
+            instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
+            return instruction
+    print("miss")
+    return -1
+
+
+
+def Cache_for_Data(address):
+    binaryaddress = bin(address)[2:].zfill(32)  # 00000000000000000000000000000000000000
+    # binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
+    tagbit = binaryaddress[0:tag]  # 000000000000
+    indexbit = binaryaddress[tag:tag + indexx]
+    blockoffsetbit = binaryaddress[tag + indexx:32]
+    print(binaryaddress)
+    print(tagbit)
+    print(indexbit)
+    print(blockoffsetbit)
+    print(" ")
+    indexbit = int(indexbit,2)
+    for i in range(0,nWaysperSetAssoc):
+        if(tagArrdata_d[indexbit][i] == tagbit):#hit
+            blockaddress=data_cache[indexbit][i]
+            #print(blockaddress)
+            #print(actualblockaddress)
+            instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
+            return instruction
+
+    print("miss")
+    return -1
+mainmemory = [] #array of blocks
+for i in range(noOfBlocks_d):
+    mainmemory.append([])
+    for j in range(CacheBlockSize):
+        mainmemory[i].append([])
+
+
+#def work_for_miss(k):
 
 '''
 nDataTransfer = 0
@@ -1245,7 +1288,12 @@ if (knob1 == 0):
     non_pipelining = five_steps()
     non_pipelining.PC = 0
     while (non_pipelining.PC <= last_PC):
-        non_pipelining.fetch(Instruct[non_pipelining.PC])
+        k = Cache_for_Instruction(non_pipelining.PC)
+        if k == -1:
+            #work_for_miss
+            miss_instruct = miss_instruct + 1
+        else: hit_instruct = hit_instruct + 1
+        non_pipelining.fetch(k)
         non_pipelining.decode(non_pipelining.IF)
         if (non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
             nDataTransfer += 1
@@ -1271,18 +1319,33 @@ elif (knob1 == 1):
         pipelining.PC = 0
         while (pipelining.PC <= last_PC + 16):
             if (pipelining.cycle == 0):
-                pipelining.fetch(Instruct[pipelining.PC])
+                k = Cache_for_Instruction(pipelining.PC)
+                if k == -1:
+                    #work_for_miss
+                    miss_instruct = miss_instruct + 1
+                else: hit_instruct = hit_instruct + 1
+                pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 1):
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)
-                pipelining.fetch(Instruct[pipelining.PC])
+                k = Cache_for_Instruction(pipelining.PC)
+                if k == -1:
+                    #work_for_miss
+                    miss_instruct = miss_instruct + 1
+                else: hit_instruct = hit_instruct + 1
+                pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 2):
                 pipelining.execute()
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)
-                pipelining.fetch(Instruct[pipelining.PC])
+                k = Cache_for_Instruction(pipelining.PC)
+                if k == -1:
+                    #work_for_miss
+                    miss_instruct = miss_instruct + 1
+                else: hit_instruct = hit_instruct + 1
+                pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 3):
                 pipelining.save_last_called_memory()
@@ -1299,7 +1362,12 @@ elif (knob1 == 1):
                     pipelining.decode(pipelining.IF)
                     pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
                     pipelining.rd_array1.pop(0)  # No use of rd of instruction1
-                    pipelining.fetch(Instruct[pipelining.PC])
+                    k = Cache_for_Instruction(pipelining.PC)
+                    if k == -1:
+                    #work_for_miss
+                        miss_instruct = miss_instruct + 1
+                    else: hit_instruct = hit_instruct + 1
+                    pipelining.fetch(k)
                     pipelining.cycle += 1
             elif (pipelining.cycle >= 4):
 
@@ -1350,7 +1418,12 @@ elif (knob1 == 1):
                                 pipelining.PC += 4
 
                         if (pipelining.PC <= last_PC):
-                            pipelining.fetch(Instruct[pipelining.PC])
+                            k = Cache_for_Instruction(pipelining.PC)
+                            if k == -1:
+                            #work_for_miss
+                                miss_instruct = miss_instruct + 1
+                            else: hit_instruct = hit_instruct + 1
+                            pipelining.fetch(k)
 
                         pipelining.cycle += 1
                     else:
@@ -1420,7 +1493,12 @@ elif (knob1 == 1):
                                     pipelining.PC += 4
 
                             if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
+                                k = Cache_for_Instruction(pipelining.PC)
+                                if k == -1:
+                                #work_for_miss
+                                    miss_instruct = miss_instruct + 1
+                                else: hit_instruct = hit_instruct + 1
+                                pipelining.fetch(k)
 
                             pipelining.cycle += 1
                     else:
