@@ -1199,6 +1199,8 @@ blockoffset = math.log(CacheBlockSize,2)# block size = 16, 4 -> 0,1,2,3
 blockoffset = int(blockoffset)
 indexx = math.log(noOfset_d,2)
 indexx = int(indexx)
+S = [] #status bit for recency info
+V = [] #valid bit to check whether way is empty or it already has a block
 
 tag = 32-indexx-blockoffset
 for i in range(noOfset_d): #instruction
@@ -1269,14 +1271,48 @@ def Cache_for_Data(address):
 
     print("miss")
     return -1
-mainmemory = [] #array of blocks
+mainmemory_i = [] #array of blocks
+bytebybyte_i = []
+counter_i = 0
+
+
+for key in Instruct:
+    first = Instruct[key][0:8]
+    second = Instruct[key][8:16]
+    third = Instruct[key][16:24]
+    fourth = Instruct[key][24:32]
+    bytebybyte_i.append(first)
+    bytebybyte_i.append(second)
+    bytebybyte_i.append(third)
+    bytebybyte_i.append(fourth)
+
+p = len(bytebybyte_i)
 for i in range(noOfBlocks_d):
-    mainmemory.append([])
+    mainmemory_i.append([])
     for j in range(CacheBlockSize):
-        mainmemory[i].append([])
+        if counter >= p:
+            break
+        mainmemory_i[i].append(bytebybyte_i[counter_i])
+        counter_i = counter_i + 1
+
+    #print("main memory:", mainmemory)
+
+print("main memory:",mainmemory_i)
+print("bytebybyte:",bytebybyte_i)
 
 
-#def work_for_miss(k):
+
+#LRU implementation
+
+
+def work_for_miss(pc):
+   var = pc/CacheBlockSize
+   var_mod = pc%CacheBlockSize
+   mainmemory[var+var_mod] =
+#LRU 2
+#write_strategy 3
+#Main memory intialization 1
+
 
 '''
 nDataTransfer = 0
