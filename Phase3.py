@@ -1,4 +1,5 @@
 import math
+
 x = []  # Registers
 
 x.append(0)
@@ -952,9 +953,9 @@ class five_steps:
         else:
             imm = int(imm, 2)
         dataa = hex(x[rs2])[2:].zfill(8)
-        #print("dataa: ", dataa)
-        #print("rs1 ", rs1)
-        #print("imm ", imm)
+        # print("dataa: ", dataa)
+        # print("rs1 ", rs1)
+        # print("imm ", imm)
 
         self.dataa = dataa
         if (string == "sw"):
@@ -982,7 +983,7 @@ class five_steps:
     def MemoryStore(self, string, dataa, address):
         print("Memory: accessed memory location at", address)
         if (string == "sw"):
-            #print("datak: ", dataa)
+            # print("datak: ", dataa)
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
             memory[address + 2] = dataa[2:4]
@@ -992,7 +993,7 @@ class five_steps:
             memory[address + 1] = dataa[4:6]
         elif (string == "sb"):
             memory[address] = dataa[6:]
-        #print("WRITEBACK: no writeback \n")
+        # print("WRITEBACK: no writeback \n")
 
     def executeRead(self, string, rs1, rd, imm):
         rs1 = int(rs1, 2)
@@ -1085,7 +1086,7 @@ class five_steps:
         self.jot2 = self.jot
 
     def WriteBack(self, rd, content):
-        #print(content, rd)
+        # print(content, rd)
         if (len(rd) == 0):
             print("WRITEBACK: no writeback ")
             return
@@ -1093,7 +1094,7 @@ class five_steps:
         if rd != 0:
             x[rd] = content
             print("WRITEBACK: write", content, " to x[", rd, "]")
-        #print("\n")
+        # print("\n")
 
     def findnegative(self,
                      string):  # Pratima_Singh 2018CEB1021 function to get the sign extended value of a negative imm field
@@ -1174,33 +1175,35 @@ knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number.\n"))
 knob5 = int(input("enter knob5"))
 
-knob6=int(input("Type 1 to implement phase3 and 0 to not ="))
-#variables for phase3
-CacheSize=int(input("Enter CacheSize"))
-CacheBlockSize=int(input("Enter CacheBlock Size"))
-nWaysperSetAssoc=int(input("Enter no. of ways per set of associativity"))
-
+knob6 = int(input("Type 1 to implement phase3 and 0 to not ="))
+# variables for phase3
+CacheSize = int(input("Enter CacheSize"))
+CacheBlockSize = int(input("Enter CacheBlock Size"))
+nWaysperSetAssoc = int(input("Enter no. of ways per set of associativity"))
 
 tagArrinstruct_d = []
 instruct_cache = []
-hit_instruct= 0
+hit_instruct = 0
 miss_instruct = 0
-data_cache=[]
-tagArrdata_d=[]
+data_cache = []
+tagArrdata_d = []
 hit_data = 0
 miss_data = 0
 instruct_access = 0
 data_access = 0
-noOfBlocks_d=CacheSize/CacheBlockSize
+noOfBlocks_d = CacheSize / CacheBlockSize
 noOfBlocks_d = int(noOfBlocks_d)
-noOfset_d=noOfBlocks_d/nWaysperSetAssoc
+noOfset_d = noOfBlocks_d / nWaysperSetAssoc
 noOfset_d = int(noOfset_d)
-blockoffset = math.log(CacheBlockSize,2)# block size = 16, 4 -> 0,1,2,3
+blockoffset = math.log(CacheBlockSize, 2)  # block size = 16, 4 -> 0,1,2,3
 blockoffset = int(blockoffset)
-indexx = math.log(noOfset_d,2)
+indexx = math.log(noOfset_d, 2)
 indexx = int(indexx)
-S = [] #status bit for recency info
-V = [] #valid bit to check whether way is empty or it already has a block
+S = []  # status bit for recency info
+V = []  # valid bit to check whether way is empty or it already has a block
+Sd = []  # status bit for recency info
+Vd = []  # valid bit to check whether way is empty or it already has a block
+
 
 for i in range(noOfset_d):
     S.append([])
@@ -1208,12 +1211,17 @@ for i in range(noOfset_d):
     for j in range(nWaysperSetAssoc):
         S[i].append(-1)
         V[i].append(0)
-        
-tag = 32-indexx-blockoffset
-for i in range(noOfset_d): #instruction
-    p=[]
-    tagArrdata_d.append(p)
-    data_cache.append(p)
+for i in range(noOfset_d):
+    Sd.append([])
+    Vd.append([])
+    for j in range(nWaysperSetAssoc):
+        Sd[i].append(-1)
+        Vd[i].append(0)
+
+tag = 32 - indexx - blockoffset
+for i in range(noOfset_d):  # instruction
+    tagArrdata_d.append([])
+    data_cache.append([])
 
 for i in range(noOfset_d):
     for j in range(nWaysperSetAssoc):
@@ -1221,9 +1229,8 @@ for i in range(noOfset_d):
         data_cache[i].append([])
 
 for i in range(noOfset_d):
-    p=[]
-    tagArrinstruct_d.append(p)
-    instruct_cache.append(p)
+    tagArrinstruct_d.append([])
+    instruct_cache.append([])
 
 for i in range(noOfset_d):
     for j in range(nWaysperSetAssoc):
@@ -1231,7 +1238,7 @@ for i in range(noOfset_d):
         instruct_cache[i].append([])
 
 
-def  Cache_for_Instruction(pc):
+def Cache_for_Instruction(pc):
     binarypc = bin(pc)[2:].zfill(32)  # 00000000000000000000000000000000000000
     # binaryno = bin(int(inputsArray[1][2:], 16))[2:].zfill(32)
     tagbit = binarypc[0:tag]  # 000000000000
@@ -1242,28 +1249,24 @@ def  Cache_for_Instruction(pc):
     print(indexbit)
     print(blockoffsetbit)
     print(" ")
-    flag =0 
+    flag = 0
 
-    indexbit = int(indexbit,2)
-    for i in range(0,nWaysperSetAssoc):
-        if(tagArrinstruct_d[indexbit][i] == tagbit and flag==0):#hit
+    indexbit = int(indexbit, 2)
+    blockoffsetbit = int(blockoffsetbit, 2)
+    for i in range(0, nWaysperSetAssoc):
+        if (tagArrinstruct_d[indexbit][i] == tagbit and flag == 0):  # hit
             # this is LRU block
-            S[indexbit][i]=nWaysperSetAssoc -1
-            
-            blockaddress=instruct_cache[indexbit][i]
-            #print(blockaddress)
-            #print(actualblockaddress)
-            instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
-            flag=1
+            S[indexbit][i] = nWaysperSetAssoc - 1
+            instruction = instruct_cache[indexbit][i][blockoffsetbit] + instruct_cache[indexbit][i][blockoffsetbit + 1] + instruct_cache[indexbit][i][blockoffsetbit + 2] + instruct_cache[indexbit][i][blockoffsetbit + 3]
+            flag = 1
 
-        if(S[indexbit][i]>0):
-            S[indexbit][i]= S[indexbit][i] -1
-                    
-    if(flag==1):
-        return instruction        
+        if (S[indexbit][i] > 0):
+            S[indexbit][i] = S[indexbit][i] - 1
+
+    if (flag == 1):
+        return instruction
     print("miss")
     return -1
-
 
 
 def Cache_for_Data(address):
@@ -1277,31 +1280,32 @@ def Cache_for_Data(address):
     print(indexbit)
     print(blockoffsetbit)
     print(" ")
-    
-    flag=0
-    indexbit = int(indexbit,2)
-    for i in range(0,nWaysperSetAssoc):
-        if(tagArrdata_d[indexbit][i] == tagbit and flag==0):#hit
-            S[indexbit][i]=nWaysperSetAssoc -1
-            
-            blockaddress=data_cache[indexbit][i]
-            #print(blockaddress)
-            #print(actualblockaddress)
-            instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
-            flag=1
-        if(S[indexbit][i]>0):
-            S[indexbit][i]= S[indexbit][i] -1
-            
-    if(flag==1):
+
+    flag = 0
+    indexbit = int(indexbit, 2)
+    blockoffsetbit = int(blockoffsetbit, 2)
+    for i in range(0, nWaysperSetAssoc):
+        if (tagArrdata_d[indexbit][i] == tagbit and flag == 0):  # hit
+            Sd[indexbit][i] = nWaysperSetAssoc - 1
+
+            # print(blockaddress)
+            # print(actualblockaddress)
+            instruction = data_cache[indexbit][i][blockoffsetbit] + data_cache[indexbit][i][blockoffsetbit + 1] + data_cache[indexbit][i][blockoffsetbit + 2] + data_cache[indexbit][i][blockoffsetbit + 3]
+            flag = 1
+        if (Sd[indexbit][i] > 0):
+            Sd[indexbit][i] = Sd[indexbit][i] - 1
+
+    if (flag == 1):
         return instruction
     print("miss")
     return -1
 
-mainmemory_i = [] #array of blocks
+
+mainmemory_i = []  # array of blocks
 bytebybyte_i = []
 counter_i = 0
 
-mainmemory_d = [] #array of blocks
+mainmemory_d = []  # array of blocks
 bytebybyte_d = []
 counter_d = 0
 
@@ -1316,18 +1320,20 @@ for key in Instruct:
     bytebybyte_i.append(fourth)
 
 p = len(bytebybyte_i)
-for i in range(noOfBlocks_d):
+i=0
+#for i in range(noOfBlocks_d):
+while(counter_i<p):
     mainmemory_i.append([])
     for j in range(CacheBlockSize):
         if counter_i >= p:
             break
         mainmemory_i[i].append(bytebybyte_i[counter_i])
         counter_i = counter_i + 1
+    i+=1
+    # print("main memory:", mainmemory)
 
-    #print("main memory:", mainmemory)
-
-print("main memory in instruct cache:",mainmemory_i)
-print("bytebybyte in instruct cache:",bytebybyte_i)
+print("main memory in instruct cache:", mainmemory_i)
+print("bytebybyte in instruct cache:", bytebybyte_i)
 
 for key in memory:
     first = memory[key][0:8]
@@ -1340,99 +1346,118 @@ for key in memory:
     bytebybyte_d.append(fourth)
 
 p = len(bytebybyte_d)
-for i in range(noOfBlocks_d):
+i=0
+#for i in range(noOfBlocks_d):
+while(counter_d<p):
     mainmemory_d.append([])
     for j in range(CacheBlockSize):
         if counter_d >= p:
             break
-        mainmemory_d[i].append(bytebybyte_d[counter_i])
+        mainmemory_d[i].append(bytebybyte_d[counter_d])
         counter_d = counter_d + 1
+    i+=1
+    # print("main memory:", mainmemory)
 
-    #print("main memory:", mainmemory)
-
-print("main memory in data cache:",mainmemory_d)
-print("bytebybyte in data cache:",bytebybyte_d)
-
-#LRU implementation
+print("main memory in data cache:", mainmemory_d)
+print("bytebybyte in data cache:", bytebybyte_d)
 
 
-def work_for_miss(pc,S,V,tagArrinstruct_d,instruct_cache):
-    var = pc/CacheBlockSize
-    #var_mod = pc%CacheBlockSize
-    binarypc = bin(pc)[2:].zfill(32)  
+# LRU implementation
+
+
+def work_for_miss(pc):
+    global S
+    global V
+    global tagArrinstruct_d
+    global instruct_cache
+    var = pc / CacheBlockSize
+    var = int(var)
+    # var_mod = pc%CacheBlockSize
+    binarypc = bin(pc)[2:].zfill(32)
     indexbit = binarypc[tag:tag + indexx]
-    tagbit = binarypc[0:tag] 
-    flag =0 # free space available in set
-    indexbit = int(indexbit,2)
+    tagbit = binarypc[0:tag]
+    flag = 0  # free space available in set
+    indexbit = int(indexbit, 2)
     for j in range(nWaysperSetAssoc):
-        if(V[indexbit][j]==0 and S[indexbit][j]==-1):
-            #way is empty
+        if (V[indexbit][j] == 0 and S[indexbit][j] == -1):
+            # way is empty
             tagArrinstruct_d[indexbit][j] = tagbit
-            S[indexbit][j]= nWaysperSetAssoc -1 
-            V[indexbit][j] =1
-            flag =1
-            instruct_cache[indexbit][j] = mainmemory_i[var] 
-            
+            S[indexbit][j] = nWaysperSetAssoc - 1
+            V[indexbit][j] = 1
+            flag = 1
+            instruct_cache[indexbit][j] = mainmemory_i[var]
+
             break
         else:
-            if(S[indexbit][j]>0):
-                S[indexbit][j]= S[indexbit][j] -1
-               
-    if(flag==0):
-        #we need to evict least recently used block from set.
+            if (S[indexbit][j] > 0):
+                S[indexbit][j] = S[indexbit][j] - 1
+
+    if (flag == 0):
+        # we need to evict least recently used block from set.
         for i in range(nWaysperSetAssoc):
-            if(S[indexbit][i]==0):
+            if (S[indexbit][i] == 0):
                 # this is LRU block
                 tagArrinstruct_d[indexbit][i] = tagbit
-                S[indexbit][i]=nWaysperSetAssoc -1
+                S[indexbit][i] = nWaysperSetAssoc - 1
                 instruct_cache[indexbit][i] = mainmemory_i[var]
             else:
-                if(S[indexbit][i]!=0):
-                    S[indexbit][i]= S[indexbit][i] -1
-               
-    return (S,V,instruct_cache,tagArrinstruct_d)                
-            
-#LRU 2
-def work_for_miss_for_datacache(address,S,V,tagArrdata_d,data_cache):
-    #adress ~ PC
-    #binary address ~ binarryPC
-    var = address/CacheBlockSize
-    #var_mod = pc%CacheBlockSize
-    binaryaddress = bin(address)[2:].zfill(32)  
+                if (S[indexbit][i] > 0):
+                    S[indexbit][i] = S[indexbit][i] - 1
+
+
+
+
+# LRU 2
+def work_for_miss_for_datacache(address):
+    # adress ~ PC
+    # binary address ~ binarryPC
+    global Sd
+    global Vd
+    global tagArrdata_d
+    global data_cache
+
+
+    var = address / CacheBlockSize
+    var = int(var)
+    # var_mod = pc%CacheBlockSize
+    binaryaddress = bin(address)[2:].zfill(32)
     indexbit = binaryaddress[tag:tag + indexx]
-    tagbit = binaryaddress[0:tag] 
-    flag =0 # free space available in set
-    indexbit = int(indexbit,2)
+    tagbit = binaryaddress[0:tag]
+    flag = 0  # free space available in set
+    indexbit = int(indexbit, 2)
     for j in range(nWaysperSetAssoc):
-        if(V[indexbit][j]==0 and S[indexbit][j]==-1):
-            #way is empty
+        if (Vd[indexbit][j] == 0 and Sd[indexbit][j] == -1):
+            # way is empty
             tagArrdata_d[indexbit][j] = tagbit
-            S[indexbit][j]= nWaysperSetAssoc -1 
-            V[indexbit][j] =1
-            flag =1
-            data_cache[indexbit][j] = mainmemory_d[var] 
-            
+            Sd[indexbit][j] = nWaysperSetAssoc - 1
+            Vd[indexbit][j] = 1
+            flag = 1
+            data_cache[indexbit][j] = mainmemory_d[var]
+
             break
         else:
-            if(S[indexbit][j]>0):
-                S[indexbit][j]= S[indexbit][j] -1
-               
-    if(flag==0):
-        #we need to evict least recently used block from set.
+            if (Sd[indexbit][j] > 0):
+                Sd[indexbit][j] = Sd[indexbit][j] - 1
+
+    if (flag == 0):
+        # we need to evict least recently used block from set.
         for i in range(nWaysperSetAssoc):
-            if(S[indexbit][i]==0):
+            if (S[indexbit][i] == 0):
                 # this is LRU block
                 tagArrdata_d[indexbit][i] = tagbit
-                S[indexbit][i]=nWaysperSetAssoc -1
+                S[indexbit][i] = nWaysperSetAssoc - 1
                 data_cache[indexbit][i] = mainmemory_d[var]
             else:
-                if(S[indexbit][i]!=0):
-                    S[indexbit][i]= S[indexbit][i] -1
-               
-    return (S,V,data_cache,tagArrdata_d)
-#write_strategy 3
-#Main memory intialization 1
+                if (S[indexbit][i] > 0):
+                    S[indexbit][i] = S[indexbit][i] - 1
 
+
+print("datacache",data_cache)
+print("mainmemory",mainmemory_d)
+print("tagdata",tagArrdata_d)
+
+# write_strategy 3
+# Main memory intialization 1
 
 
 nDataTransfer = 0
@@ -1446,25 +1471,22 @@ if (knob1 == 0):
     while (non_pipelining.PC <= last_PC):
         k = Cache_for_Instruction(non_pipelining.PC)
         if k == -1:
-            #work_for_miss
-            
-            Z=work_for_miss(non_pipelining.PC,S,V,tagArrinstruct_d,instruct_cache)
-            S=Z[0]
-            V=Z[1]
-            instruct_cache=Z[2]
-            tagArrinstruct_d = Z[3]
-            
+            # work_for_miss
+            work_for_miss(non_pipelining.PC)
             k = Cache_for_Instruction(non_pipelining.PC)
             miss_instruct = miss_instruct + 1
-        else: hit_instruct = hit_instruct + 1
-        print("the value of k is",k)
-        print(instruct_cache)
-        print(tagArrinstruct_d)
+        else:
+            hit_instruct = hit_instruct + 1
+        print("the value of k is", k)
+        print("instruct_cache", instruct_cache)
+        print("tagArrinstruct_d", tagArrinstruct_d)
         non_pipelining.fetch(k)
         non_pipelining.decode(non_pipelining.IF)
-        if (non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
+        if (
+                non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
             nDataTransfer += 1
-        elif (non_pipelining.operation == "beq" or non_pipelining.operation == "bge" or non_pipelining.operation == "bne" or non_pipelining.operation == "blt" or non_pipelining.operation == "jal" or non_pipelining.operation == "jalr"):
+        elif (
+                non_pipelining.operation == "beq" or non_pipelining.operation == "bge" or non_pipelining.operation == "bne" or non_pipelining.operation == "blt" or non_pipelining.operation == "jal" or non_pipelining.operation == "jalr"):
             nCtrlInstr += 1
         else:
             nALU += 1
@@ -1488,11 +1510,12 @@ elif (knob1 == 1):
             if (pipelining.cycle == 0):
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
-                    #work_for_miss
+                    # work_for_miss
                     work_for_miss(pipelining.PC)
                     k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
-                else: hit_instruct = hit_instruct + 1
+                else:
+                    hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 1):
@@ -1500,11 +1523,12 @@ elif (knob1 == 1):
                 pipelining.rd_array1.append(pipelining.rd)
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
-                    #work_for_miss
+                    # work_for_miss
                     work_for_miss(pipelining.PC)
                     k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
-                else: hit_instruct = hit_instruct + 1
+                else:
+                    hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 2):
@@ -1513,11 +1537,12 @@ elif (knob1 == 1):
                 pipelining.rd_array1.append(pipelining.rd)
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
-                    #work_for_miss
+                    # work_for_miss
                     work_for_miss(pipelining.PC)
                     k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
-                else: hit_instruct = hit_instruct + 1
+                else:
+                    hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
                 pipelining.cycle += 1
             elif (pipelining.cycle == 3):
@@ -1537,11 +1562,12 @@ elif (knob1 == 1):
                     pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                     k = Cache_for_Instruction(pipelining.PC)
                     if k == -1:
-                    #work_for_miss
+                        # work_for_miss
                         work_for_miss(pipelining.PC)
                         k = Cache_for_Instruction(pipelining.PC)
                         miss_instruct = miss_instruct + 1
-                    else: hit_instruct = hit_instruct + 1
+                    else:
+                        hit_instruct = hit_instruct + 1
                     pipelining.fetch(k)
                     pipelining.cycle += 1
             elif (pipelining.cycle >= 4):
@@ -1595,17 +1621,19 @@ elif (knob1 == 1):
                         if (pipelining.PC <= last_PC):
                             k = Cache_for_Instruction(pipelining.PC)
                             if k == -1:
-                            #work_for_miss
+                                # work_for_miss
                                 work_for_miss(pipelining.PC)
                                 k = Cache_for_Instruction(pipelining.PC)
                                 miss_instruct = miss_instruct + 1
-                            else: hit_instruct = hit_instruct + 1
+                            else:
+                                hit_instruct = hit_instruct + 1
                             pipelining.fetch(k)
 
                         pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1, pipelining.rd_array2)
+                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1,
+                                  pipelining.rd_array2)
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
@@ -1639,14 +1667,16 @@ elif (knob1 == 1):
                 elif (len(pipelining.rd_array2) == 1):
                     if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
                         if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2, pipelining.rd_array1, pipelining.rd_array2)
+                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2,
+                                  pipelining.rd_array1, pipelining.rd_array2)
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
                             pipelining.rd_array1.pop(0)
                             pipelining.cycle += 1
                         elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.1.0", pipelining.rs1, pipelining.rs2, pipelining.rd_array2, pipelining.rd_array1)
+                            print("Stalling>4 2.0.1.1.0", pipelining.rs1, pipelining.rs2, pipelining.rd_array2,
+                                  pipelining.rd_array1)
                             pipelining.rd_array2.pop(0)
                             pipelining.cycle += 1
                         else:
@@ -1672,17 +1702,19 @@ elif (knob1 == 1):
                             if (pipelining.PC <= last_PC):
                                 k = Cache_for_Instruction(pipelining.PC)
                                 if k == -1:
-                                #work_for_miss
+                                    # work_for_miss
                                     work_for_miss(pipelining.PC)
                                     k = Cache_for_Instruction(pipelining.PC)
                                     miss_instruct = miss_instruct + 1
-                                else: hit_instruct = hit_instruct + 1
+                                else:
+                                    hit_instruct = hit_instruct + 1
                                 pipelining.fetch(k)
 
                             pipelining.cycle += 1
                     else:
                         if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0], pipelining.rd_array2[0])
+                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0],
+                                  pipelining.rd_array2[0])
                             pipelining.rd_array2.pop(0)
                             pipelining.cycle += 1
                         else:
@@ -1714,7 +1746,6 @@ elif (knob1 == 1):
             print("\n")
             # for i in range(0, 32):
             #    print("x[", i, "]=", x[i])
-
 
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
