@@ -1163,7 +1163,7 @@ for line in file:
     Instruct[tempc] = binaryno
     last_PC = tempc
 file.close()
-'''
+
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
 if (knob1 == 1):
     knob2 = int(
@@ -1172,7 +1172,7 @@ knob3 = int(input(
     "Enter the value of Knob3(0/1): 0 for not printing and 1 for printing values in register file at the end of each cycle \n"))
 knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number.\n"))
-knob5 = int(input(""))'''
+knob5 = int(input("enter knob5"))
 
 knob6=int(input("Type 1 to implement phase3 and 0 to not ="))
 #variables for phase3
@@ -1202,6 +1202,13 @@ indexx = int(indexx)
 S = [] #status bit for recency info
 V = [] #valid bit to check whether way is empty or it already has a block
 
+for i in range(noOfset_d):
+    S.append([])
+    V.append([])
+    for j in range(nWaysperSetAssoc):
+        S[i].append(-1)
+        V[i].append(0)
+        
 tag = 32-indexx-blockoffset
 for i in range(noOfset_d): #instruction
     p=[]
@@ -1235,15 +1242,25 @@ def  Cache_for_Instruction(pc):
     print(indexbit)
     print(blockoffsetbit)
     print(" ")
+    flag =0 
 
     indexbit = int(indexbit,2)
     for i in range(0,nWaysperSetAssoc):
-        if(tagArrinstruct_d[indexbit][i] == tagbit):#hit
+        if(tagArrinstruct_d[indexbit][i] == tagbit and flag==0):#hit
+            # this is LRU block
+            S[indexbit][i]=nWaysperSetAssoc -1
+            
             blockaddress=instruct_cache[indexbit][i]
             #print(blockaddress)
             #print(actualblockaddress)
             instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
-            return instruction
+            flag=1
+
+        if(S[indexbit][i]!=0):
+            S[indexbit][i]= S[indexbit][i] -1
+                    
+    if(flag==1):
+        return instruction        
     print("miss")
     return -1
 
@@ -1290,7 +1307,7 @@ p = len(bytebybyte_i)
 for i in range(noOfBlocks_d):
     mainmemory_i.append([])
     for j in range(CacheBlockSize):
-        if counter >= p:
+        if counter_i >= p:
             break
         mainmemory_i[i].append(bytebybyte_i[counter_i])
         counter_i = counter_i + 1
@@ -1305,16 +1322,48 @@ print("bytebybyte:",bytebybyte_i)
 #LRU implementation
 
 
-def work_for_miss(pc):
-   var = pc/CacheBlockSize
-   var_mod = pc%CacheBlockSize
-   mainmemory[var+var_mod] =
+def work_for_miss(pc,S,V,tagArrinstruct_d,instruct_cache):
+    var = pc/CacheBlockSize
+    #var_mod = pc%CacheBlockSize
+    binarypc = bin(pc)[2:].zfill(32)  
+    indexbit = binarypc[tag:tag + indexx]
+    tagbit = binarypc[0:tag] 
+    flag =0 # free space available in set
+    indexbit = int(indexbit,2)
+    for j in range(nWaysperSetAssoc):
+        if(V[indexbit][j]==0 and S[indexbit][j]==-1):
+            #way is empty
+            tagArrinstruct_d[indexbit][j] = tagbit
+            S[indexbit][j]= nWaysperSetAssoc -1 
+            V[indexbit][j] =1
+            flag =1
+            instruct_cache[indexbit][j] = mainmemory_i[var] 
+            
+            break
+        else:
+            if(S[indexbit][j]!=0):
+                S[indexbit][j]= S[indexbit][j] -1
+               
+    if(flag==0):
+        #we need to evict least recently used block from set.
+        for i in range(nWaysperSetAssoc):
+            if(S[indexbit][i]==0):
+                # this is LRU block
+                tagArrinstruct_d[indexbit][i] = tagbit
+                S[indexbit][i]=nWaysperSetAssoc -1
+                instruct_cache[indexbit][i] = mainmemory_i[var]
+            else:
+                if(S[indexbit][i]!=0):
+                    S[indexbit][i]= S[indexbit][i] -1
+               
+    return (S,V,instruct_cache,tagArrinstruct_d)                
+            
 #LRU 2
 #write_strategy 3
 #Main memory intialization 1
 
 
-'''
+
 nDataTransfer = 0
 nALU = 0
 nCtrlInstr = 0
@@ -1327,8 +1376,19 @@ if (knob1 == 0):
         k = Cache_for_Instruction(non_pipelining.PC)
         if k == -1:
             #work_for_miss
+            
+            Z=work_for_miss(non_pipelining.PC,S,V,tagArrinstruct_d,instruct_cache)
+            S=Z[0]
+            V=Z[1]
+            instruct_cache=Z[2]
+            tagArrinstruct_d = Z[3]
+            
+            k = Cache_for_Instruction(non_pipelining.PC)
             miss_instruct = miss_instruct + 1
         else: hit_instruct = hit_instruct + 1
+        print("the value of k is",k)
+        print(instruct_cache)
+        print(tagArrinstruct_d)
         non_pipelining.fetch(k)
         non_pipelining.decode(non_pipelining.IF)
         if (non_pipelining.operation == "lb" or non_pipelining.operation == "lh" or non_pipelining.operation == "lw" or non_pipelining.operation == "sb" or non_pipelining.operation == "sh" or non_pipelining.operation == "sw"):
@@ -1358,6 +1418,8 @@ elif (knob1 == 1):
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
                     #work_for_miss
+                    work_for_miss(pipelining.PC)
+                    k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
                 else: hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
@@ -1368,6 +1430,8 @@ elif (knob1 == 1):
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
                     #work_for_miss
+                    work_for_miss(pipelining.PC)
+                    k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
                 else: hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
@@ -1379,6 +1443,8 @@ elif (knob1 == 1):
                 k = Cache_for_Instruction(pipelining.PC)
                 if k == -1:
                     #work_for_miss
+                    work_for_miss(pipelining.PC)
+                    k = Cache_for_Instruction(pipelining.PC)
                     miss_instruct = miss_instruct + 1
                 else: hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
@@ -1401,6 +1467,8 @@ elif (knob1 == 1):
                     k = Cache_for_Instruction(pipelining.PC)
                     if k == -1:
                     #work_for_miss
+                        work_for_miss(pipelining.PC)
+                        k = Cache_for_Instruction(pipelining.PC)
                         miss_instruct = miss_instruct + 1
                     else: hit_instruct = hit_instruct + 1
                     pipelining.fetch(k)
@@ -1457,6 +1525,8 @@ elif (knob1 == 1):
                             k = Cache_for_Instruction(pipelining.PC)
                             if k == -1:
                             #work_for_miss
+                                work_for_miss(pipelining.PC)
+                                k = Cache_for_Instruction(pipelining.PC)
                                 miss_instruct = miss_instruct + 1
                             else: hit_instruct = hit_instruct + 1
                             pipelining.fetch(k)
@@ -1532,6 +1602,8 @@ elif (knob1 == 1):
                                 k = Cache_for_Instruction(pipelining.PC)
                                 if k == -1:
                                 #work_for_miss
+                                    work_for_miss(pipelining.PC)
+                                    k = Cache_for_Instruction(pipelining.PC)
                                     miss_instruct = miss_instruct + 1
                                 else: hit_instruct = hit_instruct + 1
                                 pipelining.fetch(k)
@@ -1577,4 +1649,4 @@ elif (knob1 == 1):
         print("x[", i, "]=", x[i])
     print("cycle no. ", pipelining.cycle)
 
-    print(memory)'''
+    print(memory)
