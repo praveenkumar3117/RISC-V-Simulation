@@ -1256,7 +1256,7 @@ def  Cache_for_Instruction(pc):
             instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
             flag=1
 
-        if(S[indexbit][i]!=0):
+        if(S[indexbit][i]>0):
             S[indexbit][i]= S[indexbit][i] -1
                     
     if(flag==1):
@@ -1277,21 +1277,33 @@ def Cache_for_Data(address):
     print(indexbit)
     print(blockoffsetbit)
     print(" ")
+    
+    flag=0
     indexbit = int(indexbit,2)
     for i in range(0,nWaysperSetAssoc):
-        if(tagArrdata_d[indexbit][i] == tagbit):#hit
+        if(tagArrdata_d[indexbit][i] == tagbit and flag==0):#hit
+            S[indexbit][i]=nWaysperSetAssoc -1
+            
             blockaddress=data_cache[indexbit][i]
             #print(blockaddress)
             #print(actualblockaddress)
             instruction = blockaddress[blockoffsetbit] + blockaddress[blockoffsetbit+ 1] + blockaddress[blockoffsetbit + 2] + blockaddress[blockoffsetbit + 3]
-            return instruction
-
+            flag=1
+        if(S[indexbit][i]>0):
+            S[indexbit][i]= S[indexbit][i] -1
+            
+    if(flag==1):
+        return instruction
     print("miss")
     return -1
+
 mainmemory_i = [] #array of blocks
 bytebybyte_i = []
 counter_i = 0
 
+mainmemory_d = [] #array of blocks
+bytebybyte_d = []
+counter_d = 0
 
 for key in Instruct:
     first = Instruct[key][0:8]
@@ -1314,10 +1326,32 @@ for i in range(noOfBlocks_d):
 
     #print("main memory:", mainmemory)
 
-print("main memory:",mainmemory_i)
-print("bytebybyte:",bytebybyte_i)
+print("main memory in instruct cache:",mainmemory_i)
+print("bytebybyte in instruct cache:",bytebybyte_i)
 
+for key in memory:
+    first = memory[key][0:8]
+    second = memory[key][8:16]
+    third = memory[key][16:24]
+    fourth = memory[key][24:32]
+    bytebybyte_d.append(first)
+    bytebybyte_d.append(second)
+    bytebybyte_d.append(third)
+    bytebybyte_d.append(fourth)
 
+p = len(bytebybyte_d)
+for i in range(noOfBlocks_d):
+    mainmemory_d.append([])
+    for j in range(CacheBlockSize):
+        if counter_d >= p:
+            break
+        mainmemory_d[i].append(bytebybyte_d[counter_i])
+        counter_d = counter_d + 1
+
+    #print("main memory:", mainmemory)
+
+print("main memory in data cache:",mainmemory_d)
+print("bytebybyte in data cache:",bytebybyte_d)
 
 #LRU implementation
 
@@ -1341,7 +1375,7 @@ def work_for_miss(pc,S,V,tagArrinstruct_d,instruct_cache):
             
             break
         else:
-            if(S[indexbit][j]!=0):
+            if(S[indexbit][j]>0):
                 S[indexbit][j]= S[indexbit][j] -1
                
     if(flag==0):
@@ -1359,6 +1393,43 @@ def work_for_miss(pc,S,V,tagArrinstruct_d,instruct_cache):
     return (S,V,instruct_cache,tagArrinstruct_d)                
             
 #LRU 2
+def work_for_miss_for_datacache(address,S,V,tagArrdata_d,data_cache):
+    #adress ~ PC
+    #binary address ~ binarryPC
+    var = address/CacheBlockSize
+    #var_mod = pc%CacheBlockSize
+    binaryaddress = bin(address)[2:].zfill(32)  
+    indexbit = binaryaddress[tag:tag + indexx]
+    tagbit = binaryaddress[0:tag] 
+    flag =0 # free space available in set
+    indexbit = int(indexbit,2)
+    for j in range(nWaysperSetAssoc):
+        if(V[indexbit][j]==0 and S[indexbit][j]==-1):
+            #way is empty
+            tagArrdata_d[indexbit][j] = tagbit
+            S[indexbit][j]= nWaysperSetAssoc -1 
+            V[indexbit][j] =1
+            flag =1
+            data_cache[indexbit][j] = mainmemory_d[var] 
+            
+            break
+        else:
+            if(S[indexbit][j]>0):
+                S[indexbit][j]= S[indexbit][j] -1
+               
+    if(flag==0):
+        #we need to evict least recently used block from set.
+        for i in range(nWaysperSetAssoc):
+            if(S[indexbit][i]==0):
+                # this is LRU block
+                tagArrdata_d[indexbit][i] = tagbit
+                S[indexbit][i]=nWaysperSetAssoc -1
+                data_cache[indexbit][i] = mainmemory_d[var]
+            else:
+                if(S[indexbit][i]!=0):
+                    S[indexbit][i]= S[indexbit][i] -1
+               
+    return (S,V,data_cache,tagArrdata_d)
 #write_strategy 3
 #Main memory intialization 1
 
