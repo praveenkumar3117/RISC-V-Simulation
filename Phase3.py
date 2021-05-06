@@ -1,3 +1,4 @@
+import sys
 import math
 
 x = []  # Registers
@@ -84,9 +85,9 @@ class five_steps:
     def fetch(self, binaryCode):
         self.IF = binaryCode
         self.PC_temp = self.PC
-        print(
+        '''print(
             "FETCH:Fetch instruction " + hex(int(self.IF, 2))[2:].zfill(8) + " from address " + hex(self.PC)[2:].zfill(
-                8))
+                8))'''
         self.PC += 4
 
     def decode(self, binaryInstruction):
@@ -368,10 +369,10 @@ class five_steps:
             if (func3 == '000'):
 
                 self.operation = "sb"
-                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # Execution of store_byte(sb)
 
                 # execute("sb", rs1, rs2, " ", imm, PC)
@@ -379,10 +380,10 @@ class five_steps:
             elif (func3 == '001'):
 
                 self.operation = "sh"
-                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # Execution of store_halfword(sh)
 
                 # execute("sh", rs1, rs2, " ", imm, PC)
@@ -390,15 +391,16 @@ class five_steps:
             elif (func3 == '010'):
 
                 self.operation = "sw"
-                print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation: ", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # Execution of store_word(sw)
 
                 # execute("sw", rs1, rs2, " ", imm, PC)
             else:
-                print("ERROR")
+                pass
+                #print("ERROR")
         elif opcode in SB_oper:
             funct3 = binaryInstruction[17:20]
             rs1 = binaryInstruction[12:17]
@@ -413,37 +415,38 @@ class five_steps:
             if funct3 == '000':
 
                 self.operation = "beq"
-                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # pc = execute("beq", rs1, rs2, " ", imm, pc)
             elif funct3 == '001':
 
                 self.operation = "bne"
-                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # pc = execute("bne", rs1, rs2, " ", imm, pc)
             elif funct3 == '101':
 
                 self.operation = "bge"
-                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # pc = execute("bge", rs1, rs2, " ", imm, pc)
             elif funct3 == '100':
 
                 self.operation = "blt"
-                print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                       ",Source register 2:",
                       int(self.rs2, 2),
-                      ",Immediate: ", imm, end=" \n", sep=" ")
+                      ",Immediate: ", imm, end=" \n", sep=" ")'''
                 # pc = execute("blt", rs1, rs2, " ", imm, pc)
             else:
-                print("Error")
+                pass
+                #print("Error")
         elif opcode in U_oper:
             # decode
 
@@ -459,19 +462,20 @@ class five_steps:
             if (opcode == "0010111"):
                 # auipc
                 self.operation = "auipc"
-                print("Decode -> operation :", self.operation, ",Immediate:", imm,
-                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                '''print("Decode -> operation :", self.operation, ",Immediate:", imm,
+                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                 # execute("auipc", " ", " ", rd, imm, PC)
 
             elif (opcode == "0110111"):
                 # lui
 
                 self.operation = "lui"
-                print("Decode -> operation :", self.operation, ",Immediate:", imm,
-                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                '''print("Decode -> operation :", self.operation, ",Immediate:", imm,
+                      ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                 # execute("lui", " ", " ", rd, imm, PC)
             else:
-                print("Error")
+                pass
+                #print("Error")
         elif opcode in UJ_oper:
             opcode = binaryInstruction[25:32]
             imm = binaryInstruction[0] + binaryInstruction[12:20] + binaryInstruction[11] + binaryInstruction[1:11]
@@ -486,14 +490,16 @@ class five_steps:
                 # jal
 
                 self.operation = "jal"
-                print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
-                      imm, end=" \n", sep=" ")
+                '''print("Decode:-> operation: ", self.operation, ",destinaton register:", int(self.rd, 2), ",Immediate: ",
+                      imm, end=" \n", sep=" ")'''
                 # pc = execute("jal", " ", " ", rd, imm, pc)
 
             else:
-                print("Error")
+                pass
+                #print("Error")
         else:
-            print("Error")
+            pass
+            #print("Error")
 
     def execute(self):
         # self.operation is referring to the the operation we are going to do
@@ -641,7 +647,7 @@ class five_steps:
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
             s = x[rs1] + x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            #print("Execute :", string, x[rs1], "and", x[rs2])
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -653,7 +659,7 @@ class five_steps:
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
             s = x[rs1] & x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            #print("Execute :", string, x[rs1], "and", x[rs2])
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -665,7 +671,7 @@ class five_steps:
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
             s = x[rs1] | x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            #print("Execute :", string, x[rs1], "and", x[rs2])
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -677,7 +683,7 @@ class five_steps:
             rs2 = int(rs2, 2)
             rd = int(rd, 2)
             s = x[rs1] << x[rs2]
-            print("Execute :", string, x[rs1], "and", x[rs2])
+            #print("Execute :", string, x[rs1], "and", x[rs2])
             # print("MEMORY:No memory  operation")
             if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
                 self.jot = s
@@ -690,28 +696,28 @@ class five_steps:
         if string == 'xor':
             output = x[rs1] ^ x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == 'mul':
             output = x[rs1] * x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "div":
             output = x[rs1] // x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
         elif string == "rem":
             output = x[rs1] % x[rs2]
             if -(pow(2, 31)) <= output <= (pow(2, 31)) - 1:  # Underflow and overflow
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = output
                 # WriteBack(rd, output)
@@ -730,7 +736,7 @@ class five_steps:
                 temp = 0 | imm
                 temp = temp << 12
                 if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rd], "and", imm)
+                    #print("Execute :", string, x[rd], "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = temp
                     # WriteBack(rd, temp)
@@ -740,12 +746,13 @@ class five_steps:
                 temp = temp << 12
                 temp = temp + PC
                 if (temp >= -(pow(2, 31)) and temp <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rd], "and", imm)
+                    #print("Execute :", string, x[rd], "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = temp
                     # WriteBack(rd, temp)
         else:
-            print("Error")
+            pass
+            #print("Error")
 
     def executeRajasekhar(self, string, rs1, rs2, rd):
         # slt,sra,srl,sub
@@ -756,13 +763,13 @@ class five_steps:
         if (string == "slt"):
             if (x[rs1] < x[rs2]):
                 jot = 1
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
             else:
                 jot = 0
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = jot
                 # WriteBack(rd, jot)
@@ -771,7 +778,7 @@ class five_steps:
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):  # checking underflow and overflow condition
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
@@ -780,7 +787,7 @@ class five_steps:
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
@@ -789,7 +796,7 @@ class five_steps:
             lowerlimit = -1 * (1 << 31)
             upperlimit = (1 << 31) - 1
             if (lowerlimit <= result and result <= upperlimit):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 self.jot = result
                 # WriteBack(rd, result)
@@ -809,7 +816,7 @@ class five_steps:
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
                 s = x[rs1] + imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    #print("Execute :", string, x[rs1], "and", imm)
                     # print("MEMORY:No memory  operation")
 
                     self.jot = s
@@ -819,7 +826,7 @@ class five_steps:
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
                 s = x[rs1] & imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    #print("Execute :", string, x[rs1], "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
@@ -829,7 +836,7 @@ class five_steps:
             if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
                 s = x[rs1] | imm
                 if (s >= -(pow(2, 31)) and s <= (pow(2, 31)) - 1):  # checking for underflow or overflow
-                    print("Execute :", string, x[rs1], "and", imm)
+                    #print("Execute :", string, x[rs1], "and", imm)
                     # print("MEMORY:No memory  operation")
                     self.jot = s
                     # WriteBack(rd, s)
@@ -846,23 +853,23 @@ class five_steps:
         imm = imm << 1
         if string == "bge":
             if x[rs1] >= x[rs2]:
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
-                print("Execute :No execute")
+                #print("Execute :No execute")
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif string == 'blt':
             if x[rs1] < x[rs2]:
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
-                print("Execute :No execute")
+                #print("Execute :No execute")
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
@@ -881,23 +888,23 @@ class five_steps:
         imm = imm << 1
         if (string == 'beq'):
             if (x[rs1] == x[rs2]):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
-                print("Execute :No execute")
+                #print("Execute :No execute")
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
         elif (string == 'bne'):
             if (x[rs1] != x[rs2]):
-                print("Execute :", string, x[rs1], "and", x[rs2])
+                #print("Execute :", string, x[rs1], "and", x[rs2])
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + imm
             else:
-                print("Execute :No execute")
+                #print("Execute :No execute")
                 # print("MEMORY:No memory  operation")
                 # print("WRITEBACK: no writeback \n")
                 pc = pc + 4
@@ -923,7 +930,7 @@ class five_steps:
             pc = pc + imm
 
             jot = temp + 4
-            print("Execute :", string, x[rd], "and", imm)
+            #print("Execute :", string, x[rd], "and", imm)
             # print("MEMORY:No memory  operation")
             if rd != 0:
                 self.jot = jot
@@ -945,7 +952,7 @@ class five_steps:
         if (string == 'jalr'):
             temp = pc
             pc = x[rs1] + imm
-            print("Execute :", string, x[rs1], "and", imm)
+            #print("Execute :", string, x[rs1], "and", imm)
             # print("MEMORY:No memory  operation")
             if (rd != 0):
                 jot = temp + 4
@@ -974,27 +981,27 @@ class five_steps:
         if (string == "sw"):
             if (x[rs1] + imm >= 268435456):  # data segment starts with address 268435456 or 0x10000000
                 adds = x[rs1] + imm  # calculating address
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+                #print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sw"
                 self.address = adds
                 # self.MemoryStore("sw", dataa, address)
         elif (string == "sh"):
             if (x[rs1] + imm >= 268435456):
                 adds = x[rs1] + imm
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+                #print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sh"
                 self.address = adds
                 # self.MemoryStore("sh", dataa, address)
         elif (string == "sb"):
             if (x[rs1] + imm >= 268435456):
                 adds = x[rs1] + imm
-                print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+                #print("Execute : calculating effective address by adding", x[rs1], "and", imm)
                 self.string = "sb"
                 self.address = adds
                 # self.MemoryStore("sb", dataa, address)
 
     def MemoryStore(self, string, dataa, address):
-        print("Memory: accessed memory location at", address)
+        #print("Memory: accessed memory location at", address)
         if (string == "sw"):
             # print("datak: ", dataa)
             if address in memory:
@@ -1175,7 +1182,7 @@ class five_steps:
 
         temp1 = x[rs1] + imm  # calculating address
         self.address = temp1
-        print("Execute : calculating effective address by adding", x[rs1], "and", imm)
+        #print("Execute : calculating effective address by adding", x[rs1], "and", imm)
         self.imm = imm
         # self.Memoryread(self, string, temp1, rd, imm)
 
@@ -1224,7 +1231,7 @@ class five_steps:
                         self.hit_data = self.hit_data +1
 
                     if temp1 in memory:
-                        print("Memory: accessed memory location at", temp1)
+                        #print("Memory: accessed memory location at", temp1)
                         # temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
                         temp2 = k4 + k3 + k2 + k1
 
@@ -1239,8 +1246,9 @@ class five_steps:
                         memory[temp1 + 3] = "00"
                         self.Memoryread(string, temp1, rd, imm)
                 else:
-                    print("\n Invalid offset")
-                    print(temp1)
+                    pass
+                    #print("\n Invalid offset")
+                    #print(temp1)
             elif string == "lh":
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
@@ -1264,7 +1272,7 @@ class five_steps:
                         else:
                             self.hit_data = self.hit_data +1
 
-                        print("Memory: accessed memory location at", temp1)
+                        #print("Memory: accessed memory location at", temp1)
                         # temp2 = memory[temp1 + 1] + memory[temp1]
                         temp2 = k2 + k1
                         jot = int(temp2, 16)
@@ -1277,8 +1285,9 @@ class five_steps:
                         memory[temp1 + 3] = "00"
                         self.Memoryread(string, temp1, rd, imm)
                 else:
-                    print("\n Invalid offset")
-                    print(temp1)
+                    pass
+                    #print("\n Invalid offset")
+                    #print(temp1)
             elif string == "lb":
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
@@ -1293,7 +1302,7 @@ class five_steps:
                         else:
                             self.hit_data = self.hit_data +1
 
-                        print("Memory: accessed memory location at", temp1)
+                        #print("Memory: accessed memory location at", temp1)
                         # temp2 = memory[temp1]
                         temp2 = k1
                         jot = int(temp2, 16)
@@ -1306,10 +1315,12 @@ class five_steps:
                         memory[temp1 + 3] = "00"
                         self.Memoryread(string, temp1, rd, imm)
                 else:
-                    print("\n Invalid offset")
-                    print(temp1)
+                    pass
+                    #print("\n Invalid offset")
+                    #print(temp1)
             else:
-                print("\nError")
+                pass
+                #print("\nError")
 
     def Memory(self, string, dataa, rd, imm, address):
         if (string == "lb" or string == "lw" or string == "lh"):
@@ -1318,19 +1329,20 @@ class five_steps:
             self.MemoryStore(string, dataa, address)
         # writeback  pipelining.rd1, pipelining.jot1
         else:
-            print("NO memory operation")
+            pass
+            #print("NO memory operation")
         self.rd2 = rd
         self.jot2 = self.jot
 
     def WriteBack(self, rd, content):
         # print(content, rd)
         if (len(rd) == 0):
-            print("WRITEBACK: no writeback ")
+            #print("WRITEBACK: no writeback ")
             return
         rd = int(rd, 2)
         if rd != 0:
             x[rd] = content
-            print("WRITEBACK: write", content, " to x[", rd, "]")
+            #print("WRITEBACK: write", content, " to x[", rd, "]")
         # print("\n")
 
     def findnegative(self,
@@ -1376,7 +1388,8 @@ class five_steps:
         self.previous_writeback_content = 0
 
 
-file = open('machinecd.mc', 'r')
+
+file = open(sys.argv[1], 'r')
 datasegOrnot = 0
 Instruct = {}
 for line in file:
@@ -1391,7 +1404,7 @@ for line in file:
 file.close()
 
 last_PC = 0
-file = open('machinecd.mc', 'r')
+file = open(sys.argv[1], 'r')
 for line in file:
     if (line == "\n"):
         break
@@ -1403,7 +1416,7 @@ for line in file:
 file.close()
 
 knob1 = int(input("Enter the value of Knob1(0/1): 0 for choosing non-pipelining and 1 for choosing pipelining\n"))
-if (knob1 == 1):
+'''if (knob1 == 1):
     knob2 = int(
         input("Enter the value of Knob2(0/1):0 if pipeline is expected to work with stalling and 1 for vice-versa\n"))
 knob3 = int(input(
@@ -1412,11 +1425,11 @@ knob4 = int(input(
     "Enter the value of Knob4(0/1): 0 for not printing and 1 for printing the information in the pipeline registers at the end of each cycle (similar to tracing), along with cycle number.\n"))
 knob5 = int(input("enter knob5"))
 
-knob6 = int(input("Type 1 to implement phase3 and 0 to not ="))
+knob6 = int(input("Type 1 to implement phase3 and 0 to not ="))'''
 # variables for phase3
-CacheSize = int(input("Enter CacheSize"))
-CacheBlockSize = int(input("Enter CacheBlock Size"))
-nWaysperSetAssoc = int(input("Enter no. of ways per set of associativity"))
+CacheSize = int(input("Enter CacheSize :"))
+CacheBlockSize = int(input("Enter CacheBlock Size :"))
+nWaysperSetAssoc = int(input("Enter no. of ways per set of associativity :"))
 
 tagArrinstruct_d = []
 instruct_cache = []
@@ -1482,11 +1495,11 @@ def Cache_for_Instruction(pc):
     tagbit = binarypc[0:tag]  # 000000000000
     indexbit = binarypc[tag:tag + indexx]
     blockoffsetbit = binarypc[tag + indexx:32]
-    print(binarypc)
+    '''print(binarypc)
     print(tagbit)
     print(indexbit)
     print(blockoffsetbit)
-    print(" ")
+    print(" ")'''
     flag = 0
 
     indexbit = int(indexbit, 2)
@@ -1505,7 +1518,7 @@ def Cache_for_Instruction(pc):
 
     if (flag == 1):
         return instruction
-    print("miss")
+    #print("miss")
     return -1
 
 
@@ -1515,11 +1528,11 @@ def Cache_for_Data(address):
     tagbit = binaryaddress[0:tag]  # 000000000000
     indexbit = binaryaddress[tag:tag + indexx]
     blockoffsetbit = binaryaddress[tag + indexx:32]
-    print(binaryaddress)
+    '''print(binaryaddress)
     print(tagbit)
     print(indexbit)
     print(blockoffsetbit)
-    print(" ")
+    print(" ")'''
 
     flag = 0
     indexbit = int(indexbit, 2)
@@ -1537,7 +1550,7 @@ def Cache_for_Data(address):
 
     if (flag == 1):
         return instruction
-    print("miss")
+    #print("miss")
     return -1
 
 
@@ -1572,8 +1585,8 @@ while (counter_i < p):
     i += 1
     # print("main memory:", mainmemory)
 
-print("main memory in instruct cache:", mainmemory_i)
-print("bytebybyte in instruct cache:", bytebybyte_i)
+'''print("main memory in instruct cache:", mainmemory_i)
+print("bytebybyte in instruct cache:", bytebybyte_i)'''
 
 for key in memory:
     first = memory[key]
@@ -1596,9 +1609,9 @@ while (counter_d < p):
     i += 1
     # print("main memory:", mainmemory)
 
-print("main memory in data cache:", mainmemory_d)
+'''print("main memory in data cache:", mainmemory_d)
 print("bytebybyte in data cache:", bytebybyte_d)
-print("memory address in data caches", memoryaddress)
+print("memory address in data caches", memoryaddress)'''
 
 
 # LRU implementation
@@ -1692,9 +1705,9 @@ def work_for_miss_for_datacache(address):
                     Sd[indexbit][i] = Sd[indexbit][i] - 1
 
 
-print("datacache", data_cache)
+'''print("datacache", data_cache)
 print("mainmemory", mainmemory_d)
-print("tagdata", tagArrdata_d)
+print("tagdata", tagArrdata_d)'''
 
 # write_strategy 3
 # Main memory intialization 1
@@ -1722,9 +1735,9 @@ if (knob1 == 0):
         else:
             hit_instruct = hit_instruct + 1
             
-        print("the value of k is", k)
+        '''print("the value of k is", k)
         print("instruct_cache", instruct_cache)
-        print("tagArrinstruct_d", tagArrinstruct_d)
+        print("tagArrinstruct_d", tagArrinstruct_d)'''
         non_pipelining.fetch(k)
         non_pipelining.decode(non_pipelining.IF)
         if (
@@ -1739,23 +1752,24 @@ if (knob1 == 0):
         non_pipelining.Memory(non_pipelining.operation, non_pipelining.dataa, non_pipelining.rd, non_pipelining.imm,
                               non_pipelining.address)
         non_pipelining.WriteBack(non_pipelining.rd, non_pipelining.jot)
-        if (knob3 == 1):
+        '''if (knob3 == 1):
             for i in range(32):
-                print("x[", i, "]=", x[i], end=" ,")
+                print("x[", i, "]=", x[i], end=" ,")'''
         clock += 1
-        print("datacache", data_cache)
+        '''print("datacache", data_cache)
         print("mainmemory", mainmemory_d)
-        print("tagdata", tagArrdata_d)
+        print("tagdata", tagArrdata_d)'''
 
-    print("\n")
+    '''print("\n")
     print(x)
     print(memory)
     print("datacache", data_cache)
     print("mainmemory", mainmemory_d)
     print("mainmemory address",memoryaddress)
-    print("tagdata", tagArrdata_d)
+    print("tagdata", tagArrdata_d)'''
     
     ############################# printing in phase3
+    print("\n")
     print("Stats for instruction cache:")
     print("Number of instruction cache access : ", instruct_cache_access)
     print("Number of instruction mainmemory access : ", instruct_mainmemory_access)
@@ -1770,44 +1784,72 @@ if (knob1 == 0):
     
     
 elif (knob1 == 1):
-    if (knob2 == 0):
-        pipelining = five_steps()
-        pipelining.PC = 0
-        while (pipelining.PC <= last_PC + 16):
-            if (pipelining.cycle == 0):
+    #if (knob2 == 0):
+    pipelining = five_steps()
+    pipelining.PC = 0
+    while (pipelining.PC <= last_PC + 16):
+        if (pipelining.cycle == 0):
+            k = Cache_for_Instruction(pipelining.PC)
+            instruct_cache_access = instruct_cache_access +1
+            if k == -1:
+                # work_for_miss
+                work_for_miss(pipelining.PC)
+                instruct_mainmemory_access = instruct_mainmemory_access +1
                 k = Cache_for_Instruction(pipelining.PC)
                 instruct_cache_access = instruct_cache_access +1
-                if k == -1:
-                    # work_for_miss
-                    work_for_miss(pipelining.PC)
-                    instruct_mainmemory_access = instruct_mainmemory_access +1
-                    k = Cache_for_Instruction(pipelining.PC)
-                    instruct_cache_access = instruct_cache_access +1
-                    miss_instruct = miss_instruct + 1
-                else:
-                    hit_instruct = hit_instruct + 1
-                pipelining.fetch(k)
-                pipelining.cycle += 1
-            elif (pipelining.cycle == 1):
-                pipelining.decode(pipelining.IF)
-                pipelining.rd_array1.append(pipelining.rd)
+                miss_instruct = miss_instruct + 1
+            else:
+                hit_instruct = hit_instruct + 1
+            pipelining.fetch(k)
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 1):
+            pipelining.decode(pipelining.IF)
+            pipelining.rd_array1.append(pipelining.rd)
+            k = Cache_for_Instruction(pipelining.PC)
+            instruct_cache_access = instruct_cache_access +1
+            if k == -1:
+                # work_for_miss
+                work_for_miss(pipelining.PC)
+                instruct_mainmemory_access = instruct_mainmemory_access +1
                 k = Cache_for_Instruction(pipelining.PC)
                 instruct_cache_access = instruct_cache_access +1
-                if k == -1:
-                    # work_for_miss
-                    work_for_miss(pipelining.PC)
-                    instruct_mainmemory_access = instruct_mainmemory_access +1
-                    k = Cache_for_Instruction(pipelining.PC)
-                    instruct_cache_access = instruct_cache_access +1
-                    miss_instruct = miss_instruct + 1
-                else:
-                    hit_instruct = hit_instruct + 1
-                pipelining.fetch(k)
+                miss_instruct = miss_instruct + 1
+            else:
+                hit_instruct = hit_instruct + 1
+            pipelining.fetch(k)
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 2):
+            pipelining.execute()
+            pipelining.decode(pipelining.IF)
+            pipelining.rd_array1.append(pipelining.rd)
+            k = Cache_for_Instruction(pipelining.PC)
+            instruct_cache_access = instruct_cache_access +1
+            if k == -1:
+                # work_for_miss
+                work_for_miss(pipelining.PC)
+                instruct_mainmemory_access = instruct_mainmemory_access +1
+                k = Cache_for_Instruction(pipelining.PC)
+                instruct_cache_access = instruct_cache_access +1
+                miss_instruct = miss_instruct + 1
+            else:
+                hit_instruct = hit_instruct + 1
+            pipelining.fetch(k)
+            pipelining.cycle += 1
+        elif (pipelining.cycle == 3):
+            pipelining.save_last_called_memory()
+            pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
+                              pipelining.address1)
+            if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
+                #print("Stalling at cycle:", pipelining.cycle)
+                pipelining.rd_array2.append(
+                    pipelining.rd_array1[0])  # contains rd of instruction2 and array_2 with instruction1
+                pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                 pipelining.cycle += 1
-            elif (pipelining.cycle == 2):
+            else:
                 pipelining.execute()
                 pipelining.decode(pipelining.IF)
-                pipelining.rd_array1.append(pipelining.rd)
+                pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
+                pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                 k = Cache_for_Instruction(pipelining.PC)
                 instruct_cache_access = instruct_cache_access +1
                 if k == -1:
@@ -1821,63 +1863,120 @@ elif (knob1 == 1):
                     hit_instruct = hit_instruct + 1
                 pipelining.fetch(k)
                 pipelining.cycle += 1
-            elif (pipelining.cycle == 3):
-                pipelining.save_last_called_memory()
-                pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
-                                  pipelining.address1)
-                if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                    print("Stalling at cycle:", pipelining.cycle)
-                    pipelining.rd_array2.append(
-                        pipelining.rd_array1[0])  # contains rd of instruction2 and array_2 with instruction1
-                    pipelining.rd_array1.pop(0)  # No use of rd of instruction1
-                    pipelining.cycle += 1
-                else:
-                    pipelining.execute()
-                    pipelining.decode(pipelining.IF)
-                    pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
-                    pipelining.rd_array1.pop(0)  # No use of rd of instruction1
-                    k = Cache_for_Instruction(pipelining.PC)
-                    instruct_cache_access = instruct_cache_access +1
-                    if k == -1:
-                        # work_for_miss
-                        work_for_miss(pipelining.PC)
-                        instruct_mainmemory_access = instruct_mainmemory_access +1
+        elif (pipelining.cycle >= 4):
+
+            if (len(pipelining.rd_array2) == 2):
+                pipelining.rd_array2.pop(0)
+            if (len(pipelining.rd_array1) == 3):
+                pipelining.rd_array2.append(pipelining.rd_array1[0])
+                pipelining.rd_array1.pop(0)
+            if (len(pipelining.rd_array2) == 2):
+                pipelining.rd_array2.pop(0)
+
+            if (pipelining.PC == last_PC + 16):
+                pipelining.PC += 4
+            if (pipelining.check_already_called_writeback() == 0):
+                pipelining.save_last_called_writeback()
+                pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
+            else:
+                pass
+                #print("Writeback Already Called")
+            if (pipelining.PC <= last_PC + 12):
+                if (pipelining.check_already_called_memory() == 0):
+                    pipelining.save_last_called_memory()
+                    pipelining.clear_already_called_writeback()
+
+                    pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
+                                      pipelining.address1)
+                if (pipelining.PC == last_PC + 12):
+                    pipelining.PC += 4
+
+            if (len(pipelining.rd_array2) == 0):
+                if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 0):
+                    if (len(pipelining.rd_array1) == 2):
+                        pipelining.rd_array2.append(pipelining.rd_array1[0])
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
+                        pipelining.rd_array1.pop(0)
+                    if (len(pipelining.rd_array2) == 2):
+                        pipelining.rd_array2.pop(0)
+
+                    if (pipelining.PC <= last_PC + 8):
+                        pipelining.execute()
+                        if (pipelining.PC == last_PC + 8):
+                            pipelining.PC += 4
+
+                    if (pipelining.PC <= last_PC + 4):
+                        pipelining.decode(pipelining.IF)
+                        pipelining.rd_array1.append(pipelining.rd)
+                        if (pipelining.PC == last_PC + 4):
+                            pipelining.PC += 4
+
+                    if (pipelining.PC <= last_PC):
                         k = Cache_for_Instruction(pipelining.PC)
                         instruct_cache_access = instruct_cache_access +1
-                        miss_instruct = miss_instruct + 1
-                    else:
-                        hit_instruct = hit_instruct + 1
-                    pipelining.fetch(k)
+                        if k == -1:
+                            # work_for_miss
+                            work_for_miss(pipelining.PC)
+                            instruct_mainmemory_access = instruct_mainmemory_access +1
+                            k = Cache_for_Instruction(pipelining.PC)
+                            instruct_cache_access = instruct_cache_access +1
+                            miss_instruct = miss_instruct + 1
+                        else:
+                            hit_instruct = hit_instruct + 1
+                        pipelining.fetch(k)
+
                     pipelining.cycle += 1
-            elif (pipelining.cycle >= 4):
-
-                if (len(pipelining.rd_array2) == 2):
-                    pipelining.rd_array2.pop(0)
-                if (len(pipelining.rd_array1) == 3):
-                    pipelining.rd_array2.append(pipelining.rd_array1[0])
-                    pipelining.rd_array1.pop(0)
-                if (len(pipelining.rd_array2) == 2):
-                    pipelining.rd_array2.pop(0)
-
-                if (pipelining.PC == last_PC + 16):
-                    pipelining.PC += 4
-                if (pipelining.check_already_called_writeback() == 0):
-                    pipelining.save_last_called_writeback()
-                    pipelining.WriteBack(pipelining.rd2, pipelining.jot2)
                 else:
-                    print("Writeback Already Called")
-                if (pipelining.PC <= last_PC + 12):
-                    if (pipelining.check_already_called_memory() == 0):
-                        pipelining.save_last_called_memory()
-                        pipelining.clear_already_called_writeback()
+                    if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
+                        '''print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1,
+                              pipelining.rd_array2)'''
+                        pipelining.rd_array2.append(pipelining.rd_array1[0])
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
+                        pipelining.rd_array1.pop(0)
+                        pipelining.cycle += 1
+                    else:
+                        if (len(pipelining.rd_array1) == 2):
+                            pipelining.rd_array2.append(pipelining.rd_array1[0])
+                            if (len(pipelining.rd_array2) == 2):
+                                pipelining.rd_array2.pop(0)
+                            pipelining.rd_array1.pop(0)
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
 
-                        pipelining.Memory(pipelining.operation1, pipelining.dataa1, pipelining.rd1, pipelining.imm1,
-                                          pipelining.address1)
-                    if (pipelining.PC == last_PC + 12):
-                        pipelining.PC += 4
+                        if (pipelining.PC <= last_PC + 8):
+                            pipelining.execute()
+                            if (pipelining.PC == last_PC + 8):
+                                pipelining.PC += 4
 
-                if (len(pipelining.rd_array2) == 0):
-                    if (len(pipelining.rd_array1) == 1 or len(pipelining.rd_array1) == 0):
+                        if (pipelining.PC <= last_PC + 4):
+                            pipelining.decode(pipelining.IF)
+                            pipelining.rd_array1.append(pipelining.rd)
+                            if (pipelining.PC == last_PC + 4):
+                                pipelining.PC += 4
+
+                        if (pipelining.PC <= last_PC):
+                            pipelining.fetch(Instruct[pipelining.PC])
+
+                        pipelining.cycle += 1
+
+            elif (len(pipelining.rd_array2) == 1):
+                if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
+                    if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
+                        '''print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2,
+                              pipelining.rd_array1, pipelining.rd_array2)'''
+                        pipelining.rd_array2.append(pipelining.rd_array1[0])
+                        if (len(pipelining.rd_array2) == 2):
+                            pipelining.rd_array2.pop(0)
+                        pipelining.rd_array1.pop(0)
+                        pipelining.cycle += 1
+                    elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
+                        '''print("Stalling>4 2.0.1.1.0", pipelining.rs1, pipelining.rs2, pipelining.rd_array2,
+                              pipelining.rd_array1)'''
+                        pipelining.rd_array2.pop(0)
+                        pipelining.cycle += 1
+                    else:
                         if (len(pipelining.rd_array1) == 2):
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
@@ -1912,131 +2011,48 @@ elif (knob1 == 1):
                             pipelining.fetch(k)
 
                         pipelining.cycle += 1
+                else:
+                    if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
+                        '''print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0],
+                              pipelining.rd_array2[0])'''
+                        pipelining.rd_array2.pop(0)
+                        pipelining.cycle += 1
                     else:
-                        if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0.0000000 at cycle:", pipelining.cycle, pipelining.rd_array1,
-                                  pipelining.rd_array2)
+                        if (len(pipelining.rd_array1) == 2):
                             pipelining.rd_array2.append(pipelining.rd_array1[0])
                             if (len(pipelining.rd_array2) == 2):
                                 pipelining.rd_array2.pop(0)
                             pipelining.rd_array1.pop(0)
-                            pipelining.cycle += 1
-                        else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
 
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
-
-                            pipelining.cycle += 1
-
-                elif (len(pipelining.rd_array2) == 1):
-                    if (len(pipelining.rd_array1) == 3 or len(pipelining.rd_array1) == 2):
-                        if (pipelining.rd_array1[0] == pipelining.rs1 or pipelining.rd_array1[0] == pipelining.rs2):
-                            print("Stalling>4 1.0 at cycle:", pipelining.cycle, pipelining.rs1, pipelining.rs2,
-                                  pipelining.rd_array1, pipelining.rd_array2)
-                            pipelining.rd_array2.append(pipelining.rd_array1[0])
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-                            pipelining.rd_array1.pop(0)
-                            pipelining.cycle += 1
-                        elif (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.1.0", pipelining.rs1, pipelining.rs2, pipelining.rd_array2,
-                                  pipelining.rd_array1)
+                        if (len(pipelining.rd_array2) == 2):
                             pipelining.rd_array2.pop(0)
-                            pipelining.cycle += 1
-                        else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
 
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
+                        if (pipelining.PC <= last_PC + 8):
+                            pipelining.execute()
+                            if (pipelining.PC == last_PC + 8):
+                                pipelining.PC += 4
 
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
+                        if (pipelining.PC <= last_PC + 4):
+                            pipelining.decode(pipelining.IF)
+                            pipelining.rd_array1.append(pipelining.rd)
+                            if (pipelining.PC == last_PC + 4):
+                                pipelining.PC += 4
 
-                            if (pipelining.PC <= last_PC):
-                                k = Cache_for_Instruction(pipelining.PC)
-                                instruct_cache_access = instruct_cache_access +1
-                                if k == -1:
-                                    # work_for_miss
-                                    work_for_miss(pipelining.PC)
-                                    instruct_mainmemory_access = instruct_mainmemory_access +1
-                                    k = Cache_for_Instruction(pipelining.PC)
-                                    instruct_cache_access = instruct_cache_access +1
-                                    miss_instruct = miss_instruct + 1
-                                else:
-                                    hit_instruct = hit_instruct + 1
-                                pipelining.fetch(k)
+                        if (pipelining.PC <= last_PC):
+                            pipelining.fetch(Instruct[pipelining.PC])
 
-                            pipelining.cycle += 1
-                    else:
-                        if (pipelining.rd_array2[0] == pipelining.rs1 or pipelining.rd_array2[0] == pipelining.rs2):
-                            print("Stalling>4 2.0.1.2", pipelining.rs1, pipelining.rs2, pipelining.rd_array1[0],
-                                  pipelining.rd_array2[0])
-                            pipelining.rd_array2.pop(0)
-                            pipelining.cycle += 1
-                        else:
-                            if (len(pipelining.rd_array1) == 2):
-                                pipelining.rd_array2.append(pipelining.rd_array1[0])
-                                if (len(pipelining.rd_array2) == 2):
-                                    pipelining.rd_array2.pop(0)
-                                pipelining.rd_array1.pop(0)
+                        pipelining.cycle += 1
+        '''print("datacache", data_cache)
+        print("mainmemory", mainmemory_d)
+        print("tagdata", tagArrdata_d)
 
-                            if (len(pipelining.rd_array2) == 2):
-                                pipelining.rd_array2.pop(0)
-
-                            if (pipelining.PC <= last_PC + 8):
-                                pipelining.execute()
-                                if (pipelining.PC == last_PC + 8):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC + 4):
-                                pipelining.decode(pipelining.IF)
-                                pipelining.rd_array1.append(pipelining.rd)
-                                if (pipelining.PC == last_PC + 4):
-                                    pipelining.PC += 4
-
-                            if (pipelining.PC <= last_PC):
-                                pipelining.fetch(Instruct[pipelining.PC])
-
-                            pipelining.cycle += 1
-            print("datacache", data_cache)
-            print("mainmemory", mainmemory_d)
-            print("tagdata", tagArrdata_d)
-
-            print("cycle no. ", pipelining.cycle)
-            print("\n")
-            # for i in range(0, 32):
-            #    print("x[", i, "]=", x[i])
+        print("cycle no. ", pipelining.cycle)
+        print("\n")'''
+        # for i in range(0, 32):
+        #    print("x[", i, "]=", x[i])
             
     ############################# printing in phase3
+    print("\n")
     print("Stats for instruction cache:")
     print("Number of instruction cache access : ", instruct_cache_access)
     print("Number of instruction mainmemory access : ", instruct_mainmemory_access)
@@ -2050,9 +2066,9 @@ elif (knob1 == 1):
     print("Number of miss in data cache : ", pipelining.miss_data)
     
     
-    for i in range(0, 32):
+    '''for i in range(0, 32):
         print("x[", i, "]=", x[i])
     print("cycle no. ", pipelining.cycle)
 
-    print(memory)
+    print(memory)'''
     
