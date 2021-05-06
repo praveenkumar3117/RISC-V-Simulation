@@ -64,6 +64,11 @@ class five_steps:
         # self.stall_one = False
         # self.stall_two = False
         self.total_cycles = 0
+        
+        self.miss_data = 0
+        self.hit_data = 0
+        self.data_cache_access = 0
+        self.data_mainmemory_access = 0
 
         #####  Previous called memory   #####
         self.previous_memory_operation = ''
@@ -112,9 +117,9 @@ class five_steps:
                 if (funct7 == "0000000"):
                     if (funct3 == "000"):
                         self.operation = "add"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:", int(self.rs2, 2), ",destination register:", int(self.rd, 2),
-                              end=" \n", sep=" ")
+                              end=" \n", sep=" ")'''
                         # add
                         # execute("add", rs1, rs2, rd, " ", PC)  # " " is don't care for imm
 
@@ -122,30 +127,30 @@ class five_steps:
                     elif (funct3 == "111"):
 
                         self.operation = "and"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # and
                         # execute("and", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "110"):
 
                         self.operation = "or"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # or
                         # execute("or", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "001"):
 
                         self.operation = "sll"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # sll
                         # execute("sll", rs1, rs2, rd, " ", PC)
 
@@ -153,30 +158,30 @@ class five_steps:
                     elif (funct3 == "010"):
 
                         self.operation = "slt"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # slt
                         # execute("slt", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "101"):
 
                         self.operation = "srl"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # srl
                         # execute("srl", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "100"):
 
                         self.operation = "xor"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # xor
                         # execute("xor", rs1, rs2, rd, " ", PC)
 
@@ -186,20 +191,20 @@ class five_steps:
                     if (funct3 == "000"):
 
                         self.operation = "sub"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # sub
                         # execute("sub", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "101"):
 
                         self.operation = "sra"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # sra
                         # execute("sra", rs1, rs2, rd, " ", PC)
 
@@ -209,37 +214,40 @@ class five_steps:
                     if (funct3 == "000"):
 
                         self.operation = "mul"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # mul
                         # execute("mul", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "100"):
                         self.operation = "div"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # div
                         # execute("div", rs1, rs2, rd, " ", PC)
 
                     elif (funct3 == "110"):
                         self.operation = "rem"
-                        print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                        '''print("Decode-> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                               ",source register 2:",
                               int(self.rs2, 2),
-                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                              ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                         # rem
                         # execute("rem", rs1, rs2, rd, " ", PC)
 
                     else:
-                        print("Error")
+                        #print("Error")
+                        pass
                 else:
-                    print("Error")
+                    #print("Error")
+                    pass
             else:
-                print("Error")
+                #print("Error")
+                pass
         elif opcode in I_oper:
             imm = binaryInstruction[0:12]
             rs1 = binaryInstruction[12:17]
@@ -258,17 +266,17 @@ class five_steps:
                     # lb
 
                     self.operation = "lb"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # execute("lb", rs1, " ", rd, imm, PC)
                     # PC += 4
                 elif (funct3 == "001"):
 
                     self.operation = "lh"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # lh
 
                     # execute("lh", rs1, " ", rd, imm, PC)
@@ -276,23 +284,24 @@ class five_steps:
                 elif (funct3 == "010"):
 
                     self.operation = "lw"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # lw
 
                     # execute("lw", rs1, " ", rd, imm, PC)
                     # PC += 4
                 else:
-                    print("Error")
+                    #print("Error")
+                    pass
                     # PC += 4
             elif (opcode == "0010011"):
                 if (funct3 == "000"):
 
                     self.operation = "addi"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # addi
                     # execute("addi", rs1, " ", rd, imm, PC)
 
@@ -300,9 +309,9 @@ class five_steps:
                 elif (funct3 == "111"):
 
                     self.operation = "andi"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # andi
                     # execute("andi", rs1, " ", rd, imm, PC)
 
@@ -310,25 +319,27 @@ class five_steps:
                 elif (funct3 == "110"):
                     # ori
                     self.operation = "ori"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # execute("ori", rs1, " ", rd, imm, PC)
 
                 else:
-                    print("Error")
+                    #print("Error")
+                    pass
             elif (opcode == "1100111"):
                 if (funct3 == "000"):
 
                     self.operation = "jalr"
-                    print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
+                    '''print("Decode -> operation :", self.operation, ",source register 1:", int(self.rs1, 2),
                           ",Immediate:", imm,
-                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")
+                          ",destination register : ", int(self.rd, 2), end=" \n", sep=" ")'''
                     # jalr
                     # PC = execute("jalr", rs1, " ", rd, imm, PC)
 
                 else:
-                    print("Error")
+                    #print("Error")
+                    pass
         elif opcode in S_oper:
 
             func3 = binaryInstruction[17:20]  # funct3
@@ -991,7 +1002,12 @@ class five_steps:
                 z = memoryaddress[address][1]
                 mainmemory_d[y][z] = dataa[6:]
                 work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1007,8 +1023,13 @@ class five_steps:
                 y = memoryaddress[address + 1][0]
                 z = memoryaddress[address + 1][1]
                 mainmemory_d[y][z] = dataa[4:6]
-                work_for_miss_for_datacache(address + 1)
+                work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1025,8 +1046,13 @@ class five_steps:
                 y = memoryaddress[address + 2][0]
                 z = memoryaddress[address + 2][1]
                 mainmemory_d[y][z] = dataa[2:4]
-                work_for_miss_for_datacache(address + 2)
+                work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1043,8 +1069,13 @@ class five_steps:
                 y = memoryaddress[address + 3][0]
                 z = memoryaddress[address + 3][1]
                 mainmemory_d[y][z] = dataa[0:2]
-                work_for_miss_for_datacache(address + 3)
+                work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1063,7 +1094,12 @@ class five_steps:
                 z = memoryaddress[address][1]
                 mainmemory_d[y][z] = dataa[6:]
                 work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1079,8 +1115,13 @@ class five_steps:
                 y = memoryaddress[address+1][0]
                 z = memoryaddress[address+1][1]
                 mainmemory_d[y][z] = dataa[4:6]
-                work_for_miss_for_datacache(address+1)
+                work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1099,7 +1140,12 @@ class five_steps:
                 z = memoryaddress[address][1]
                 mainmemory_d[y][z] = dataa[6:]
                 work_for_miss_for_datacache(address)
+                self.hit_data = self.hit_data +1
+                self.data_cache_access += 1
+                self.data_mainmemory_access +=1
             else:
+                self.data_mainmemory_access +=1
+                self.miss_data = self.miss_data +1
                 length = len(mainmemory_d)
                 width = len(mainmemory_d[length - 1])
                 if (width < CacheBlockSize):
@@ -1142,19 +1188,40 @@ class five_steps:
                     k2 = Cache_for_Data(temp1 + 1)
                     k3 = Cache_for_Data(temp1 + 2)
                     k4 = Cache_for_Data(temp1 + 3)
+                    self.data_cache_access +=4 #here we are assuming data_cache_accesses = num of times we call that function
 
                     if (k1 == -1):
                         work_for_miss_for_datacache(temp1)
                         k1 = Cache_for_Data(temp1)
+                        self.miss_data = self.miss_data+1
+                        self.data_mainmemory_access +=1
+                        self.data_cache_access +=1
+                    else:
+                        self.hit_data = self.hit_data +1
                     if (k2 == -1):
                         work_for_miss_for_datacache(temp1)
                         k2 = Cache_for_Data(temp1 + 1)
+                        self.miss_data = self.miss_data+1
+                        self.data_mainmemory_access +=1
+                        self.data_cache_access +=1
+                    else:
+                        self.hit_data = self.hit_data +1
                     if (k3 == -1):
                         work_for_miss_for_datacache(temp1)
                         k3 = Cache_for_Data(temp1 + 2)
+                        self.miss_data = self.miss_data+1
+                        self.data_mainmemory_access +=1
+                        self.data_cache_access +=1
+                    else:
+                        self.hit_data = self.hit_data +1
                     if (k4 == -1):
                         work_for_miss_for_datacache(temp1)
                         k4 = Cache_for_Data(temp1 + 3)
+                        self.miss_data = self.miss_data+1
+                        self.data_mainmemory_access +=1
+                        self.data_cache_access +=1
+                    else:
+                        self.hit_data = self.hit_data +1
 
                     if temp1 in memory:
                         print("Memory: accessed memory location at", temp1)
@@ -1183,9 +1250,19 @@ class five_steps:
                         if (k1 == -1):
                             work_for_miss_for_datacache(temp1)
                             k1 = Cache_for_Data(temp1)
+                            self.miss_data = self.miss_data+1
+                            self.data_mainmemory_access +=1
+                            self.data_cache_access +=1
+                        else:
+                            self.hit_data = self.hit_data +1
                         if (k2 == -1):
                             work_for_miss_for_datacache(temp1)
                             k2 = Cache_for_Data(temp1 + 1)
+                            self.miss_data = self.miss_data+1
+                            self.data_mainmemory_access +=1
+                            self.data_cache_access +=1
+                        else:
+                            self.hit_data = self.hit_data +1
 
                         print("Memory: accessed memory location at", temp1)
                         # temp2 = memory[temp1 + 1] + memory[temp1]
@@ -1210,6 +1287,11 @@ class five_steps:
                         if (k1 == -1):
                             work_for_miss_for_datacache(temp1)
                             k1 = Cache_for_Data(temp1)
+                            self.miss_data = self.miss_data+1
+                            self.data_mainmemory_access +=1
+                            self.data_cache_access +=1
+                        else:
+                            self.hit_data = self.hit_data +1
 
                         print("Memory: accessed memory location at", temp1)
                         # temp2 = memory[temp1]
@@ -1342,10 +1424,12 @@ hit_instruct = 0
 miss_instruct = 0
 data_cache = []
 tagArrdata_d = []
-hit_data = 0
-miss_data = 0
-instruct_access = 0
-data_access = 0
+
+instruct_cache_access = 0
+instruct_mainmemory_access = 0
+data_cache_access = 0
+data_mainmemory_access = 0
+
 noOfBlocks_d = CacheSize / CacheBlockSize
 noOfBlocks_d = int(noOfBlocks_d)
 noOfset_d = noOfBlocks_d / nWaysperSetAssoc
@@ -1626,13 +1710,18 @@ if (knob1 == 0):
     non_pipelining.PC = 0
     while (non_pipelining.PC <= last_PC):
         k = Cache_for_Instruction(non_pipelining.PC)
+        instruct_cache_access = instruct_cache_access +1
         if k == -1:
             # work_for_miss
             work_for_miss(non_pipelining.PC)
+            instruct_mainmemory_access = instruct_mainmemory_access +1
             k = Cache_for_Instruction(non_pipelining.PC)
+            instruct_cache_access = instruct_cache_access +1
             miss_instruct = miss_instruct + 1
+            
         else:
             hit_instruct = hit_instruct + 1
+            
         print("the value of k is", k)
         print("instruct_cache", instruct_cache)
         print("tagArrinstruct_d", tagArrinstruct_d)
@@ -1665,6 +1754,21 @@ if (knob1 == 0):
     print("mainmemory", mainmemory_d)
     print("mainmemory address",memoryaddress)
     print("tagdata", tagArrdata_d)
+    
+    ############################# printing in phase3
+    print("Stats for instruction cache:")
+    print("Number of instruction cache access : ", instruct_cache_access)
+    print("Number of instruction mainmemory access : ", instruct_mainmemory_access)
+    print("Number of hits in instruction cache : ", hit_instruct )
+    print("Number of miss in instruction cache : ", miss_instruct)
+    print("\n")
+    print("Stats for data cache:")
+    print("Number of data cache access : ", non_pipelining.data_cache_access)
+    print("Number of data mainmemory access : ", non_pipelining.data_mainmemory_access)
+    print("Number of hits in data cache : ", non_pipelining.hit_data )
+    print("Number of miss in data cache : ", non_pipelining.miss_data)
+    
+    
 elif (knob1 == 1):
     if (knob2 == 0):
         pipelining = five_steps()
@@ -1672,10 +1776,13 @@ elif (knob1 == 1):
         while (pipelining.PC <= last_PC + 16):
             if (pipelining.cycle == 0):
                 k = Cache_for_Instruction(pipelining.PC)
+                instruct_cache_access = instruct_cache_access +1
                 if k == -1:
                     # work_for_miss
                     work_for_miss(pipelining.PC)
+                    instruct_mainmemory_access = instruct_mainmemory_access +1
                     k = Cache_for_Instruction(pipelining.PC)
+                    instruct_cache_access = instruct_cache_access +1
                     miss_instruct = miss_instruct + 1
                 else:
                     hit_instruct = hit_instruct + 1
@@ -1685,10 +1792,13 @@ elif (knob1 == 1):
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)
                 k = Cache_for_Instruction(pipelining.PC)
+                instruct_cache_access = instruct_cache_access +1
                 if k == -1:
                     # work_for_miss
                     work_for_miss(pipelining.PC)
+                    instruct_mainmemory_access = instruct_mainmemory_access +1
                     k = Cache_for_Instruction(pipelining.PC)
+                    instruct_cache_access = instruct_cache_access +1
                     miss_instruct = miss_instruct + 1
                 else:
                     hit_instruct = hit_instruct + 1
@@ -1699,10 +1809,13 @@ elif (knob1 == 1):
                 pipelining.decode(pipelining.IF)
                 pipelining.rd_array1.append(pipelining.rd)
                 k = Cache_for_Instruction(pipelining.PC)
+                instruct_cache_access = instruct_cache_access +1
                 if k == -1:
                     # work_for_miss
                     work_for_miss(pipelining.PC)
+                    instruct_mainmemory_access = instruct_mainmemory_access +1
                     k = Cache_for_Instruction(pipelining.PC)
+                    instruct_cache_access = instruct_cache_access +1
                     miss_instruct = miss_instruct + 1
                 else:
                     hit_instruct = hit_instruct + 1
@@ -1724,10 +1837,13 @@ elif (knob1 == 1):
                     pipelining.rd_array1.append(pipelining.rd)  # contains rd of instruction2 and instruction3
                     pipelining.rd_array1.pop(0)  # No use of rd of instruction1
                     k = Cache_for_Instruction(pipelining.PC)
+                    instruct_cache_access = instruct_cache_access +1
                     if k == -1:
                         # work_for_miss
                         work_for_miss(pipelining.PC)
+                        instruct_mainmemory_access = instruct_mainmemory_access +1
                         k = Cache_for_Instruction(pipelining.PC)
+                        instruct_cache_access = instruct_cache_access +1
                         miss_instruct = miss_instruct + 1
                     else:
                         hit_instruct = hit_instruct + 1
@@ -1783,10 +1899,13 @@ elif (knob1 == 1):
 
                         if (pipelining.PC <= last_PC):
                             k = Cache_for_Instruction(pipelining.PC)
+                            instruct_cache_access = instruct_cache_access +1
                             if k == -1:
                                 # work_for_miss
                                 work_for_miss(pipelining.PC)
+                                instruct_mainmemory_access = instruct_mainmemory_access +1
                                 k = Cache_for_Instruction(pipelining.PC)
+                                instruct_cache_access = instruct_cache_access +1
                                 miss_instruct = miss_instruct + 1
                             else:
                                 hit_instruct = hit_instruct + 1
@@ -1864,10 +1983,13 @@ elif (knob1 == 1):
 
                             if (pipelining.PC <= last_PC):
                                 k = Cache_for_Instruction(pipelining.PC)
+                                instruct_cache_access = instruct_cache_access +1
                                 if k == -1:
                                     # work_for_miss
                                     work_for_miss(pipelining.PC)
+                                    instruct_mainmemory_access = instruct_mainmemory_access +1
                                     k = Cache_for_Instruction(pipelining.PC)
+                                    instruct_cache_access = instruct_cache_access +1
                                     miss_instruct = miss_instruct + 1
                                 else:
                                     hit_instruct = hit_instruct + 1
@@ -1913,9 +2035,24 @@ elif (knob1 == 1):
             print("\n")
             # for i in range(0, 32):
             #    print("x[", i, "]=", x[i])
-
+            
+    ############################# printing in phase3
+    print("Stats for instruction cache:")
+    print("Number of instruction cache access : ", instruct_cache_access)
+    print("Number of instruction mainmemory access : ", instruct_mainmemory_access)
+    print("Number of hits in instruction cache : ", hit_instruct )
+    print("Number of miss in instruction cache : ", miss_instruct)
+    print("\n")
+    print("Stats for data cache:")
+    print("Number of data cache access : ", pipelining.data_cache_access)
+    print("Number of data mainmemory access : ", pipelining.data_mainmemory_access)
+    print("Number of hits in data cache : ", pipelining.hit_data )
+    print("Number of miss in data cache : ", pipelining.miss_data)
+    
+    
     for i in range(0, 32):
         print("x[", i, "]=", x[i])
     print("cycle no. ", pipelining.cycle)
 
     print(memory)
+    
