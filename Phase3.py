@@ -13,6 +13,8 @@ for i in range(1, 32):
 memory = {}
 
 
+memoryaddress={}
+
 class five_steps:
     def __init__(self):
         self.PC = 0x0
@@ -992,7 +994,22 @@ class five_steps:
             memory[address] = dataa[6:]
             memory[address + 1] = dataa[4:6]
         elif (string == "sb"):
-            memory[address] = dataa[6:]
+            if address in memory:       
+                y = memoryaddress[address][0] 
+                z = memoryaddress[address][1] 
+                #memory[address] = dataa[6:]
+                mainmemory_d[y][z] = dataa[6:]
+                work_for_miss_for_datacache(address)
+            else:
+                length = len(mainmemory_d)  
+                width = len(mainmemory_d[length - 1])
+                if(width < CacheBlockSize):
+                    mainmemory_d[length-1].append(dataa[6:])
+                    memoryaddress[address] = [length-1,width]
+                else:
+                    mainmemory_d.append([])
+                    mainmemory_d[length+1].append(dataa[6:])
+                    memoryaddress[address] = [length+1,0]
         # print("WRITEBACK: no writeback \n")
 
     def executeRead(self, string, rs1, rd, imm):
@@ -1021,14 +1038,34 @@ class five_steps:
         if (imm <= pow(2, 11) - 1 and imm >= -pow(2, 11)):  # checking range of imm
             if (string == "lw"):
                 if (temp1 >= 268435456):  # data segment starts with address 268435456 or 0x10000000
+                    k1=Cache_for_Data(temp1)
+                    k2=Cache_for_Data(temp1+1)
+                    k3=Cache_for_Data(temp1+2)
+                    k4=Cache_for_Data(temp1+3)
+                    
+                    if(k1 ==-1):
+                        work_for_miss_for_datacache(temp1)
+                        k1=Cache_for_Data(temp1)
+                    if(k2 ==-1):
+                        work_for_miss_for_datacache(temp1)
+                        k2=Cache_for_Data(temp1+1)
+                    if(k3 ==-1):
+                        work_for_miss_for_datacache(temp1)
+                        k3=Cache_for_Data(temp1+2)
+                    if(k4 ==-1):
+                        work_for_miss_for_datacache(temp1)
+                        k4=Cache_for_Data(temp1+3)
+                    
                     if temp1 in memory:
                         print("Memory: accessed memory location at", temp1)
-                        temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
+                        #temp2 = memory[temp1 + 3] + memory[temp1 + 2] + memory[temp1 + 1] + memory[temp1]
+                        temp2= k4+k3+k2+k1
 
                         jot = int(temp2, 16)
                         self.jot = jot
                         # WriteBack(rd, jot)
                     else:
+                        #here we have to edit 
                         memory[temp1] = "00"
                         memory[temp1 + 1] = "00"
                         memory[temp1 + 2] = "00"
@@ -1040,8 +1077,19 @@ class five_steps:
             elif string == "lh":
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
+                        k1=Cache_for_Data(temp1)
+                        k2=Cache_for_Data(temp1+1)
+                        
+                        if(k1 ==-1):
+                            work_for_miss_for_datacache(temp1)
+                            k1=Cache_for_Data(temp1)
+                        if(k2 ==-1):
+                            work_for_miss_for_datacache(temp1)
+                            k2=Cache_for_Data(temp1+1)
+                        
                         print("Memory: accessed memory location at", temp1)
-                        temp2 = memory[temp1 + 1] + memory[temp1]
+                        #temp2 = memory[temp1 + 1] + memory[temp1]
+                        temp2= k2+k1
                         jot = int(temp2, 16)
                         self.jot = jot
                         # WriteBack(rd, jot)
@@ -1057,8 +1105,15 @@ class five_steps:
             elif string == "lb":
                 if temp1 >= 268435456:  # data segment starts with address 268435456 or 0x10000000
                     if temp1 in memory:
+                        k1=Cache_for_Data(temp1)
+                        
+                        if(k1 ==-1):
+                            work_for_miss_for_datacache(temp1)
+                            k1=Cache_for_Data(temp1)
+                            
                         print("Memory: accessed memory location at", temp1)
-                        temp2 = memory[temp1]
+                        #temp2 = memory[temp1]
+                        temp2 = k1
                         jot = int(temp2, 16)
                         self.jot = jot
                         # WriteBack(rd, jot)
@@ -1290,7 +1345,7 @@ def Cache_for_Data(address):
 
             # print(blockaddress)
             # print(actualblockaddress)
-            instruction = data_cache[indexbit][i][blockoffsetbit] + data_cache[indexbit][i][blockoffsetbit + 1] + data_cache[indexbit][i][blockoffsetbit + 2] + data_cache[indexbit][i][blockoffsetbit + 3]
+            instruction = data_cache[indexbit][i][blockoffsetbit] 
             flag = 1
         if (Sd[indexbit][i] > 0):
             Sd[indexbit][i] = Sd[indexbit][i] - 1
@@ -1336,14 +1391,11 @@ print("main memory in instruct cache:", mainmemory_i)
 print("bytebybyte in instruct cache:", bytebybyte_i)
 
 for key in memory:
-    first = memory[key][0:8]
-    second = memory[key][8:16]
-    third = memory[key][16:24]
-    fourth = memory[key][24:32]
-    bytebybyte_d.append(first)
-    bytebybyte_d.append(second)
-    bytebybyte_d.append(third)
-    bytebybyte_d.append(fourth)
+    first = memory[key]
+    l=[]
+    l.append(first)
+    l.append(key)
+    bytebybyte_d.append(l)
 
 p = len(bytebybyte_d)
 i=0
@@ -1353,13 +1405,15 @@ while(counter_d<p):
     for j in range(CacheBlockSize):
         if counter_d >= p:
             break
-        mainmemory_d[i].append(bytebybyte_d[counter_d])
+        mainmemory_d[i].append(bytebybyte_d[counter_d][0])
+        memoryaddress[bytebybyte_d[counter_d][1]] = [i,j]
         counter_d = counter_d + 1
     i+=1
     # print("main memory:", mainmemory)
 
 print("main memory in data cache:", mainmemory_d)
 print("bytebybyte in data cache:", bytebybyte_d)
+print("memory address in data caches",memoryaddress)
 
 
 # LRU implementation
@@ -1424,6 +1478,8 @@ def work_for_miss_for_datacache(address):
     indexbit = binaryaddress[tag:tag + indexx]
     tagbit = binaryaddress[0:tag]
     flag = 0  # free space available in set
+    
+    
     indexbit = int(indexbit, 2)
     for j in range(nWaysperSetAssoc):
         if (Vd[indexbit][j] == 0 and Sd[indexbit][j] == -1):
@@ -1432,7 +1488,8 @@ def work_for_miss_for_datacache(address):
             Sd[indexbit][j] = nWaysperSetAssoc - 1
             Vd[indexbit][j] = 1
             flag = 1
-            data_cache[indexbit][j] = mainmemory_d[var]
+            y = memoryaddress[address][0]
+            data_cache[indexbit][j] = mainmemory_d[y]
 
             break
         else:
@@ -1442,14 +1499,16 @@ def work_for_miss_for_datacache(address):
     if (flag == 0):
         # we need to evict least recently used block from set.
         for i in range(nWaysperSetAssoc):
-            if (S[indexbit][i] == 0):
+            if (Sd[indexbit][i] == 0):
                 # this is LRU block
                 tagArrdata_d[indexbit][i] = tagbit
-                S[indexbit][i] = nWaysperSetAssoc - 1
-                data_cache[indexbit][i] = mainmemory_d[var]
+                Sd[indexbit][i] = nWaysperSetAssoc - 1
+                y = memoryaddress[address][0]
+                data_cache[indexbit][j] = mainmemory_d[y]
+                
             else:
-                if (S[indexbit][i] > 0):
-                    S[indexbit][i] = S[indexbit][i] - 1
+                if (Sd[indexbit][i] > 0):
+                    Sd[indexbit][i] = Sd[indexbit][i] - 1
 
 
 print("datacache",data_cache)
