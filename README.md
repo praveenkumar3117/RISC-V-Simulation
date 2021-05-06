@@ -1,5 +1,5 @@
 # RISC-V-Simulater
-The project consist of three phases:
+The project consists of three phases:
 
 Phase1: Nonpipelining Implementation
 
