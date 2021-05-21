@@ -1,8 +1,8 @@
 # RISC-V-Simulater
 The project consists of three phases:
 
-Phase1: Nonpipelining Implementation
+Phase1: Non-pipelining Implementation
 
-Phase2: Implemention of Pipeling using Stalling and Data Forwarding  
+Phase2: Implementation of Pipelining using Stalling and Data Forwarding  
 
-Phase3: Implemention Data Cache and Instruction Cache
+Phase3: Implementation of Data Cache and Instruction Cache
